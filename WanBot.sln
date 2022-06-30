@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32602.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot", "WanBot\WanBot.csproj", "{CFA7AD21-03FC-4FF5-94B2-082B7F7FC5D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Api", "WanBot.Api\WanBot.Api.csproj", "{8362D4AF-1295-4AE4-A3B7-17E11429940E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Test", "WanBot.Test\WanBot.Test.csproj", "{EEC3CCCF-2400-44C1-AD11-345950FAF6FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CFA7AD21-03FC-4FF5-94B2-082B7F7FC5D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFA7AD21-03FC-4FF5-94B2-082B7F7FC5D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFA7AD21-03FC-4FF5-94B2-082B7F7FC5D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFA7AD21-03FC-4FF5-94B2-082B7F7FC5D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8362D4AF-1295-4AE4-A3B7-17E11429940E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8362D4AF-1295-4AE4-A3B7-17E11429940E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8362D4AF-1295-4AE4-A3B7-17E11429940E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8362D4AF-1295-4AE4-A3B7-17E11429940E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEC3CCCF-2400-44C1-AD11-345950FAF6FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEC3CCCF-2400-44C1-AD11-345950FAF6FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEC3CCCF-2400-44C1-AD11-345950FAF6FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEC3CCCF-2400-44C1-AD11-345950FAF6FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {733BB9E7-7AEE-4A32-B63F-B3542C86370B}
+	EndGlobalSection
+EndGlobal
