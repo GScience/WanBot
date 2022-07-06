@@ -9,12 +9,16 @@ namespace WanBot.Api.Mirai
     /// <summary>
     /// 群成员
     /// </summary>
-    public class Member : ISender
+    public struct Member
     {
+        public Member()
+        {
+        }
+
         /// <summary>
         /// 成员QQ Id
         /// </summary>
-        public long Id { get; set; }
+        public long Id { get; set; } = 0;
 
         /// <summary>
         /// 成员名称
@@ -34,17 +38,17 @@ namespace WanBot.Api.Mirai
         /// <summary>
         /// 加入时间
         /// </summary>
-        public int JoinTimestamp { get; set; }
+        public int JoinTimestamp { get; set; } = 0;
 
         /// <summary>
         /// 上次发言时间
         /// </summary>
-        public int LastSpeakTimestamp { get; set; }
+        public int LastSpeakTimestamp { get; set; } = 0;
 
         /// <summary>
         /// 禁言剩余时间
         /// </summary>
-        public int MuteTimeRemaining { get; set; }
+        public int MuteTimeRemaining { get; set; } = 0;
 
         /// <summary>
         /// 所在群组

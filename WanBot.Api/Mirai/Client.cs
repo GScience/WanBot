@@ -9,12 +9,16 @@ namespace WanBot.Api.Mirai
     /// <summary>
     /// 客户端消息
     /// </summary>
-    public class Client : ISender
+    public struct Client
     {
+        public Client()
+        {
+        }
+
         /// <summary>
         /// 客户端Id
         /// </summary>
-        public long Id { get; set; }
+        public long Id { get; set; } = 0;
 
         /// <summary>
         /// 客户端平台

@@ -7,27 +7,23 @@ using System.Threading.Tasks;
 namespace WanBot.Api.Mirai
 {
     /// <summary>
-    /// 群组
+    /// Mirai配置
     /// </summary>
-    public struct Group
+    public class MiraiConfig
     {
-        public Group()
-        {
-        }
+        /// <summary>
+        /// 绑定的QQ号
+        /// </summary>
+        public long QQ { get; set; }
 
         /// <summary>
-        /// 群号
+        /// 链接
         /// </summary>
-        public long Id { get; set; } = 0;
+        public string Url { get; set; } = string.Empty;
 
         /// <summary>
-        /// 群名称
+        /// 验证Key
         /// </summary>
-        public string Name { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Bot在群内的权限
-        /// </summary>
-        public string Permission { get; set; } = string.Empty;
+        public string VerifyKey { get; set; } = string.Empty;
     }
 }

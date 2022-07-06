@@ -9,12 +9,16 @@ namespace WanBot.Api.Mirai
     /// <summary>
     /// 好友
     /// </summary>
-    public class Friend : ISender
+    public struct Friend
     {
+        public Friend()
+        {
+        }
+
         /// <summary>
         /// QQ号
         /// </summary>
-        public long Id { get; set; }
+        public long Id { get; set; } = 0;
 
         /// <summary>
         /// 昵称

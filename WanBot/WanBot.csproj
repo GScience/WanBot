@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WanBot.Api\WanBot.Api.csproj" />
+  </ItemGroup>
+
 </Project>
