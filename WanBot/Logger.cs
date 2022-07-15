@@ -30,6 +30,15 @@ namespace WanBot
             _logger = _globalLogger.ForContext("Category", _category);
         }
 
+        /// <summary>
+        /// 绑定日志目录
+        /// </summary>
+        /// <param name="category"></param>
+        internal void SetCategory(string category)
+        {
+            _logger = _globalLogger.ForContext("Category", category);
+        }
+
         public Logger CreateSubLogger(string subCategory)
         {
             return new Logger($"_category.{subCategory}");

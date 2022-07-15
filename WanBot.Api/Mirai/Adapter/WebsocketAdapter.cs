@@ -173,7 +173,7 @@ namespace WanBot.Api.Mirai.Adapter
             await _wsClient.SendAsync(requestJson);
 
             // 获取响应
-            if (typeof(ResponsePayload).IsAssignableFrom(typeof(Response)))
+            if (typeof(IResponse).IsAssignableFrom(typeof(ResponsePayload)))
             {
                 var response = WaitForResponse<ResponsePayload>(syncId);
                 return response.Data;

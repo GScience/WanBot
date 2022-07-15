@@ -41,7 +41,7 @@ namespace WanBot.Api.Mirai.Adapter
             if (!httpResponse.IsSuccessStatusCode)
                 throw new Exception($"Http request with error code: {httpResponse.StatusCode}");
 
-            if (typeof(ResponsePayload).IsAssignableFrom(typeof(Response)))
+            if (typeof(IResponse).IsAssignableFrom(typeof(ResponsePayload)))
             {
                 var obj = await httpResponse.Content.ReadFromJsonAsync<ResponsePayload>(MiraiJsonContext.Default.Options);
 

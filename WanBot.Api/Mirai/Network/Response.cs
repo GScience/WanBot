@@ -21,10 +21,14 @@ namespace WanBot.Api.Mirai.Network
         public T? Data { get; set; }
     }
 
-    public class Response
+    public class Response : IResponse
     {
         public int Code { get; set; } = -1;
         public string Msg { get; set; } = string.Empty;
+    }
+
+    public interface IResponse
+    {
     }
 
     /// <summary>

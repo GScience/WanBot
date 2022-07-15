@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using WanBot.Api.Mirai.Adapter;
 using WanBot.Api.Util;
 
@@ -59,6 +61,7 @@ namespace WanBot.Api.Mirai.Network
             foreach (var property in _properties!)
             {
                 var name = property.Name;
+                name = name[..1].ToLower() + name[1..];
                 var value = property.GetValue(payload);
                 if (!string.IsNullOrEmpty(args))
                     args += "&";

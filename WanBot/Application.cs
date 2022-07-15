@@ -70,31 +70,29 @@ namespace WanBot
             var config = ReadConfigFromFile<WanBotConfig>("WanBot.conf");
             foreach (var miraiConfig in config.MiraiConfigs)
             {
-                var bot = new MiraiBot(new Logger($"QQ({miraiConfig.QQ})"));
+                var botLogger = new Logger($"QQ({miraiConfig.QQ})");
+                var bot = new MiraiBot(botLogger);
                 bots.Add(bot);
                 try
                 {
                     _logger.Info($"Try add bot {miraiConfig.QQ}");
                     bot.ConnectAsync(miraiConfig).Wait();
-                    bot.Subscripe<GroupMessage>(0, async (e) =>
+                    var version = Version.Parse(bot.AboutAsync().Result.Version);
+                    if (version.Major < 2)
                     {
-                        var chain = e.Event.MessageChain;
-                        if (chain.Count() != 2)
-                            return;
+                        _logger.Error("Mirai http {version} is no longer support", "1.x.x");
+                        continue;
+                    }
 
-                        var first = chain.ElementAt(1);
-                        if (first is not Plain plain)
-                            return;
-                        if (plain.Text != "犊子开发机呢")
-                            return;
+                    var botProfile = bot.BotProfileAsync().Result;
+                    botLogger.SetCategory($"{botProfile.Nickname}({miraiConfig.QQ})");
 
-                        await bot.SendGroupMessageAsync(e.Event.Sender.Group.Id, null, new MessageChain(new[] { new Plain() { Text = "在这呢" } }));
-                    });
-                    _logger.Info($"Bot {miraiConfig.QQ} connected");
+                    botLogger.Info("Mirai http version: {version}", version);
+                    botLogger.Info("Bot {Nickname} connected", botProfile.Nickname);
                 }
                 catch (AggregateException e)
                 {
-                    _logger.Info($"Failed to add bot {miraiConfig.QQ} because {e.InnerException}");
+                    _logger.Info("Failed to add bot {miraiConfig} because {e}", miraiConfig.QQ, e);
                     continue;
                 }
             }

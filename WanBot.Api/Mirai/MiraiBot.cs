@@ -23,7 +23,7 @@ namespace WanBot.Api.Mirai
 
         public bool IsConnected { get; private set; } = false;
 
-        internal string SessionId
+        internal string SessionKey
         {
             get
             {
@@ -97,7 +97,7 @@ namespace WanBot.Api.Mirai
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"Error while deal with event. {ex}\nPayload: \n{msg}");
+                    _logger.Error("Error while deal with event. {ex}\nPayload: \n{msg}", ex, msg);
                 }
             }
         }
