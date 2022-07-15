@@ -14,16 +14,26 @@ namespace WanBot.Api.Mirai
         /// <summary>
         /// 绑定的QQ号
         /// </summary>
-        public long QQ { get; set; }
+        public long QQ { get; set; } = 123456789;
 
         /// <summary>
-        /// 链接
+        /// host
         /// </summary>
-        public string Url { get; set; } = string.Empty;
+        public string Host { get; set; } = "localhost";
+
+        /// <summary>
+        /// 端口
+        /// </summary>
+        public ushort Port { get; set; } = 8080;
+
+        /// <summary>
+        /// 事件同步Id
+        /// </summary>
+        public string EventSyncId { get; set; } = "-1";
 
         /// <summary>
         /// 验证Key
         /// </summary>
-        public string VerifyKey { get; set; } = string.Empty;
+        public string VerifyKey { get; set; } = "YourVerifyKey";
     }
 }

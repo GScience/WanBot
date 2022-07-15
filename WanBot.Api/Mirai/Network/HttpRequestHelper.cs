@@ -27,31 +27,29 @@ namespace WanBot.Api.Mirai.Network
 
         static HttpRequestHelper()
         {
-            var methodAttr = typeof(T).GetCustomAttribute<HttpAdapterMethodAttribute>();
+            // 获取Api信息
+            var httpApiAttr = typeof(T).GetCustomAttribute<HttpApiAttribute>();
+            if (httpApiAttr == null)
+                throw new Exception($"{typeof(T)} is not a http api payload");
+            else
+                _apiName = httpApiAttr.Name;
 
-            if (methodAttr == null || methodAttr.Method == HttpAdapterMethod.Get)
+            if (httpApiAttr.Method == HttpAdapterMethod.Get)
             {
                 _properties = typeof(T).GetProperties();
                 SendHandleAsync = GetAsync;
             }
-            else if (methodAttr.Method == HttpAdapterMethod.PostJson)
+            else if (httpApiAttr.Method == HttpAdapterMethod.PostJson)
             {
                 SendHandleAsync = PostJsonAsync;
             }
-            else if (methodAttr.Method == HttpAdapterMethod.PostMultipart)
+            else if (httpApiAttr.Method == HttpAdapterMethod.PostMultipart)
             {
                 _properties = typeof(T).GetProperties();
                 SendHandleAsync = PostMultipartAsync;
             }
             else
                 throw new NotImplementedException();
-
-            // 获取Api名称
-            var nameAttr = typeof(T).GetCustomAttribute<HttpApiAttribute>();
-            if (nameAttr == null)
-                throw new Exception($"{typeof(T)} is not a http api payload");
-            else
-                _apiName = nameAttr.Name;
         }
 
         private static async Task<HttpResponseMessage> GetAsync(HttpAdapter adapter, T payload)

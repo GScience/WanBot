@@ -58,31 +58,34 @@ namespace WanBot.Api.Mirai.Network
         /// <param name="status"></param>
         /// <param name="desc"></param>
         /// <returns></returns>
-        public async Task CloseAsync(WebSocketCloseStatus? status, string? desc = null)
+        public void Close(WebSocketCloseStatus? status, string? desc = null)
         {
-            _cts.Cancel();
-
-            if (_wsClient.State == WebSocketState.Open)
-                await _wsClient.CloseAsync(status ?? WebSocketCloseStatus.NormalClosure, desc, CancellationToken.None);
-
-            if (_recvTask != null)
+            lock (this)
             {
-                try
-                {
-                    _recvTask.Wait();
-                }
-                catch (AggregateException e)
-                {
-                    if (e.InnerException?.GetType() != typeof(TaskCanceledException))
-                        throw e;
-                }
+                _cts.Cancel();
 
-                _recvTask.Dispose();
-                _recvTask = null;
+                if (_wsClient.State == WebSocketState.Open)
+                    _wsClient.CloseAsync(status ?? WebSocketCloseStatus.NormalClosure, desc, CancellationToken.None).Wait();
+
+                if (_recvTask != null)
+                {
+                    try
+                    {
+                        _recvTask.Wait();
+                    }
+                    catch (AggregateException e)
+                    {
+                        if (e.InnerException?.GetType() != typeof(TaskCanceledException))
+                            throw e;
+                    }
+
+                    _recvTask.Dispose();
+                    _recvTask = null;
+                }
+                _cts.Dispose();
+                _cts = new CancellationTokenSource();
+                IsConnected = false;
             }
-            _cts.Dispose();
-            _cts = new CancellationTokenSource();
-            IsConnected = false;
         }
 
         /// <summary>
@@ -112,8 +115,11 @@ namespace WanBot.Api.Mirai.Network
         private void HandleExceptedClose(WebSocketCloseStatus? status, string? desc)
         {
             IsConnected = false;
-            CloseAsync(status, desc).Wait();
-            OnClose?.Invoke(this, status, desc);
+            Task.Run(() =>
+            {
+                Close(status, desc);
+                OnClose?.Invoke(this, status, desc);
+            });
         }
 
         /// <summary>
@@ -130,7 +136,7 @@ namespace WanBot.Api.Mirai.Network
                 {
                     result = await _wsClient.ReceiveAsync(_buffer, _cts.Token);
                 }
-                catch (WebSocketException e)
+                catch (WebSocketException)
                 {
                     HandleExceptedClose(_wsClient.CloseStatus, _wsClient.CloseStatusDescription);
                     break;
@@ -156,7 +162,7 @@ namespace WanBot.Api.Mirai.Network
 
         public void Dispose()
         {
-            CloseAsync(WebSocketCloseStatus.NormalClosure, "Disposed").Wait();
+            Close(WebSocketCloseStatus.NormalClosure, "Disposed");
 
             _cts.Dispose();
             _wsClient.Dispose();

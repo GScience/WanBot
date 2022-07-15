@@ -17,6 +17,8 @@ namespace WanBot.Api.Mirai.Adapter
 
         public long QQ { get; }
 
+        public bool IsConnected { get; }
+
         /// <summary>
         /// 执行
         /// </summary>
@@ -27,5 +29,11 @@ namespace WanBot.Api.Mirai.Adapter
         public Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)
             where RequestPayload : class
             where ResponsePayload : class;
+
+        /// <summary>
+        /// 异步连接
+        /// </summary>
+        /// <returns></returns>
+        public Task ConnectAsync();
     }
 }

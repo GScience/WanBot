@@ -19,6 +19,7 @@ namespace WanBot.Api.Mirai.Adapter
         public string BaseUrl { get; protected set; }
         public string VerifyKey { get; protected set; }
         public long QQ { get; protected set; }
+        public bool IsConnected { get; private set; }
 
         private HttpClient _httpClient;
 
@@ -36,9 +37,24 @@ namespace WanBot.Api.Mirai.Adapter
             where ResponsePayload : class
         {
             using var httpResponse = await HttpRequestHelper<RequestPayload>.SendHandleAsync(this, request);
-            var obj = await httpResponse.Content.ReadFromJsonAsync<Response<ResponsePayload>>(MiraiJsonContext.Default.Options);
 
-            return obj!.Data;
+            if (!httpResponse.IsSuccessStatusCode)
+                throw new Exception($"Http request with error code: {httpResponse.StatusCode}");
+
+            if (typeof(ResponsePayload).IsAssignableFrom(typeof(Response)))
+            {
+                var obj = await httpResponse.Content.ReadFromJsonAsync<ResponsePayload>(MiraiJsonContext.Default.Options);
+
+                return obj!;
+            }
+            else
+            {
+                var obj = await httpResponse.Content.ReadFromJsonAsync<Response<ResponsePayload>>(MiraiJsonContext.Default.Options);
+
+                if (obj!.Code != ResponseCode.Ok)
+                    throw new Exception($"{ResponseCode.Reason(obj!.Code)}");
+                return obj!.Data;
+            }
         }
 
         internal async Task<HttpResponseMessage> GetAsync(string apiPath)
@@ -56,6 +72,12 @@ namespace WanBot.Api.Mirai.Adapter
             _httpClient?.Dispose();
             GC.SuppressFinalize(this);
         }
+
+        public Task ConnectAsync()
+        {
+            IsConnected = true;
+            return Task.CompletedTask;
+        }
     }
 
     /// <summary>
@@ -65,10 +87,12 @@ namespace WanBot.Api.Mirai.Adapter
     public class HttpApiAttribute : Attribute
     {
         public string Name { get; }
+        public HttpAdapterMethod Method { get; }
 
-        public HttpApiAttribute(string name)
+        public HttpApiAttribute(string name, HttpAdapterMethod method = HttpAdapterMethod.Get)
         {
             Name = name;
+            Method = method;
         }
     }
 
@@ -78,20 +102,5 @@ namespace WanBot.Api.Mirai.Adapter
     public enum HttpAdapterMethod
     {
         Get, PostJson, PostMultipart
-    }
-
-
-    /// <summary>
-    /// 适配器方法
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
-    public class HttpAdapterMethodAttribute : Attribute
-    {
-        public HttpAdapterMethod Method { get; }
-
-        public HttpAdapterMethodAttribute(HttpAdapterMethod method = HttpAdapterMethod.Get)
-        {
-            Method = method;
-        }
     }
 }

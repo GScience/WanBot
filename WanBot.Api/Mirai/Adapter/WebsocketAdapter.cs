@@ -28,6 +28,7 @@ namespace WanBot.Api.Mirai.Adapter
         public string BaseUrl { get; protected set; }
         public string VerifyKey { get; protected set; }
         public long QQ { get; protected set; }
+        public bool IsConnected { get; private set; }
 
         /// <summary>
         /// 同步消息监听
@@ -44,12 +45,6 @@ namespace WanBot.Api.Mirai.Adapter
         /// </summary>
         public string SessionId { get; private set; } = string.Empty;
 
-        public void Dispose()
-        {
-            _wsClient.Dispose();
-            GC.SuppressFinalize(this);
-        }
-
         public WebSocketAdapter(string baseUrl, string verifyKey, long qq)
         {
             BaseUrl = baseUrl;
@@ -58,8 +53,6 @@ namespace WanBot.Api.Mirai.Adapter
 
             _wsClient.OnMessage += OnWebSocketRecv;
             _wsClient.OnClose += OnWebSocketClose;
-
-            ConnectAsync().Wait();
         }
 
         private static string GetJsonSyncId(string json)
@@ -105,18 +98,17 @@ namespace WanBot.Api.Mirai.Adapter
         {
             var connected = false;
 
-            while (!connected)
+            while (!connected && IsConnected)
             {
                 try
                 {
                     ConnectAsync().Wait();
                     connected = true;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     
                 }
-
             }
         }
 
@@ -144,17 +136,30 @@ namespace WanBot.Api.Mirai.Adapter
         }
 
         /// <summary>
+        /// 设置同步监听器
+        /// </summary>
+        /// <param name="syncId"></param>
+        /// <param name="func"></param>
+        public void SetSyncListener(string syncId, Action<string> func)
+        {
+            _syncListener[syncId] = func;
+        }
+
+        /// <summary>
         /// 连接到mirai
         /// </summary>
-        private async Task ConnectAsync()
+        public async Task ConnectAsync()
         {
             await _wsClient.ConnectAsync($"{BaseUrl}/all?verifyKey={VerifyKey}&qq={QQ}");
             var verifyResponse = WaitForResponse<VerifyResponse>("");
 
             if (verifyResponse.Data!.Code != ResponseCode.Ok)
-                throw new Exception($"Failed to connect to mirai because {ResponseCode.Reason(verifyResponse.Data!.Code)}");
+                throw new Exception(ResponseCode.Reason(verifyResponse.Data!.Code));
 
-            OnSessionKeyChanged?.Invoke(verifyResponse!.Data!.Session);
+            var sessionId = verifyResponse!.Data!.Session;
+            SessionId = sessionId;
+            OnSessionKeyChanged?.Invoke(sessionId);
+            IsConnected = true;
         }
 
         public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)
@@ -168,10 +173,25 @@ namespace WanBot.Api.Mirai.Adapter
             await _wsClient.SendAsync(requestJson);
 
             // 获取响应
-            var response = WaitForResponse<Response<ResponsePayload>>(syncId);
-            if (response.Data!.Code != ResponseCode.Ok)
-                throw new Exception($"Failed with error: {ResponseCode.Reason(response.Data!.Code)}. \nRequest payload: {requestJson}");
-            return response.Data.Data;
+            if (typeof(ResponsePayload).IsAssignableFrom(typeof(Response)))
+            {
+                var response = WaitForResponse<ResponsePayload>(syncId);
+                return response.Data;
+            }
+            else
+            {
+                var response = WaitForResponse<Response<ResponsePayload>>(syncId);
+                if (response.Data!.Code != ResponseCode.Ok)
+                    throw new Exception($"{ResponseCode.Reason(response.Data!.Code)}. \nRequest payload: {requestJson}");
+                return response.Data.Data;
+            }
+        }
+
+        public void Dispose()
+        {
+            IsConnected = false;
+            _wsClient.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 
