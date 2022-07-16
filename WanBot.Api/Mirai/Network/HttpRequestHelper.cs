@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text;
@@ -84,17 +85,27 @@ namespace WanBot.Api.Mirai.Network
 
         private static async Task<HttpResponseMessage> PostMultipartAsync(HttpAdapter adapter, T payload)
         {
-            var content = new MultipartFormDataContent();
+            var boundary = $"--{DateTime.Now.Ticks:x}";
+            var content = new MultipartFormDataContent(boundary);
+            content.Headers.ContentType = new MediaTypeHeaderValue($"multipart/form-data");
+            content.Headers.ContentType.Parameters.Add(new NameValueHeaderValue("boundary", boundary));
 
             foreach (var property in _properties!)
             {
                 var name = property.Name;
+                name = name[..1].ToLower() + name[1..];
                 var value = property.GetValue(payload);
 
                 if (value is Stream stream)
-                    content.Add(new StreamContent(stream), name);
+                {
+                    var streamContent = new StreamContent(stream);
+                    content.Add(streamContent, name, "img.png");
+                }
                 else
-                    content.Add(new StringContent(value?.ToString()!), name);
+                {
+                    var stringContent = new StringContent(value?.ToString()!);
+                    content.Add(stringContent, name);
+                }
             }
 
             return await adapter.PostAsync(_apiName, content);

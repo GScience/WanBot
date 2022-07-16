@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WanBot.Api.Message;
 using WanBot.Api.Mirai.Adapter;
 using WanBot.Api.Mirai.Message;
 using WanBot.Api.Mirai.Payload;
@@ -21,7 +22,6 @@ namespace WanBot.Api.Mirai
 
             return result!;
         }
-
         public async Task<SendGroupMessageResponse> SendGroupMessageAsync(long target, int? quote, MessageChain messageChain)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
@@ -32,6 +32,36 @@ namespace WanBot.Api.Mirai
                     Target = target,
                     Quote = quote,
                     MessageChain = messageChain
+                });
+
+            return result!;
+        }
+
+        public async Task<SendGroupMessageResponse> SendGroupMessageAsync(long target, int? quote, string message)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<SendGroupMessageResponse, SendGroupMessageRequest>(
+                new SendGroupMessageRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target,
+                    Quote = quote,
+                    MessageChain = new MessageChain(new[] { new Plain { Text = message } })
+                });
+
+            return result!;
+        }
+
+        public async Task<SendGroupMessageResponse> SendGroupMessageAsync(long target, int? quote, MessageBuilder messageBuilder)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<SendGroupMessageResponse, SendGroupMessageRequest>(
+                new SendGroupMessageRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target,
+                    Quote = quote,
+                    MessageChain = new MessageChain(messageBuilder.Build(MessageType.Group))
                 });
 
             return result!;
@@ -121,6 +151,26 @@ namespace WanBot.Api.Mirai
                 {
                     SessionKey = SessionKey,
                     Target = target
+                });
+
+            return result!;
+        }
+
+        /// <summary>
+        /// 上传图像
+        /// </summary>
+        /// <param name="type">friend或group或temp</param>
+        /// <param name="img"></param>
+        /// <returns></returns>
+        public async Task<UploadImageResponse> UploadImageAsync(string type, Stream img)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<UploadImageResponse, UploadImageRequest>(
+                new UploadImageRequest()
+                {
+                    SessionKey = SessionKey,
+                    Type = type,
+                    Img = img
                 });
 
             return result!;

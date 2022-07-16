@@ -29,7 +29,8 @@ namespace WanBot.Api.Mirai.Adapter
             VerifyKey = verifyKey;
             QQ = qq;
             _httpClient = new HttpClient();
-            _httpClient.DefaultRequestHeaders.Connection.Add("keep-alive");
+            _httpClient.DefaultRequestHeaders.Add("Connection", "Keep-Alive");
+            _httpClient.DefaultRequestHeaders.Add("Keep-Alive", "timeout=600");
         }
 
         public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)

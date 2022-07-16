@@ -1,4 +1,5 @@
 ﻿using WanBot;
+using WanBot.Api.Message;
 
 using var application = new Application();
 
