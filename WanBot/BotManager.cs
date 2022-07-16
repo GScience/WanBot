@@ -57,8 +57,8 @@ namespace WanBot
             }
         }
 
-        public MiraiEventHandler Subscript<T>(int priority, Func<MiraiBot, MiraiEventArgs<T>, Task> func)
-            where T : BaseEvent
+        public MiraiEventHandler Subscript<T>(int priority, Func<MiraiBot, T, Task> func)
+            where T : MiraiEventArgs
         {
             var handler = new MiraiEventHandler<T>(priority, func);
             foreach (var bot in _bots)

@@ -70,7 +70,7 @@ namespace WanBot.Api.Mirai
         /// <param name="eventHandler"></param>
         /// <returns></returns>
         public MiraiEventHandler Subscripe<T>(MiraiEventHandler<T> eventHandler) 
-            where T:BaseEvent
+            where T : MiraiEventArgs
         {
             if (_eventDict.TryGetValue(typeof(T), out var e))
                 e.Add(eventHandler);
@@ -109,7 +109,7 @@ namespace WanBot.Api.Mirai
             var eventType = baseEvent!.GetType();
             if (_eventDict.TryGetValue(eventType, out var e))
             {
-                var task = e.InvokeAsync(this, new MiraiEventArgs(baseEvent));
+                var task = e.InvokeAsync(this, baseEvent);
 
                 task.GetAwaiter().OnCompleted(() =>
                 {

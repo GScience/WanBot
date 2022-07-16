@@ -37,17 +37,15 @@ namespace WanBot.Api
         {
             // 检查插件参数
             var args = method.GetParameters();
-            var eventTypeSignature = Type.MakeGenericSignatureType(typeof(MiraiEventArgs<>), miraiEvent.EventType);
             if (args.Length != 2 ||
                 args[0].ParameterType != typeof(MiraiBot) ||
-                args[1].ParameterType.GetGenericTypeDefinition() != typeof(MiraiEventArgs<>) ||
-                args[1].ParameterType.GenericTypeArguments[0] != miraiEvent.EventType ||
+                args[1].ParameterType != miraiEvent.EventType ||
                 method.IsStatic ||
                 method.ReturnType != typeof(Task))
             {
                 Logger.Error(
                     "Not a valid mirai event handler. Require:\n {RequireFunc}\nBut Get:\n {GetFunc}",
-                    $"{typeof(Task)} {method.Name}({typeof(MiraiBot)}, {eventTypeSignature});",
+                    $"{typeof(Task)} {method.Name}({typeof(MiraiBot)}, {miraiEvent.EventType});",
                     method.ToString());
                 return;
             }
@@ -56,7 +54,7 @@ namespace WanBot.Api
             Application.BotManager.Subscript(
                 miraiEvent.EventType, 
                 miraiEvent.Priority, 
-                (bot, e) => (Task)method.Invoke(this, new object?[] { bot, Activator.CreateInstance(args[1].ParameterType, e) })!
+                (bot, e) => (Task)method.Invoke(this, new object?[] { bot, e })!
                 );
         }
     }

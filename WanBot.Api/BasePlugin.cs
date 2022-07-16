@@ -29,9 +29,9 @@ namespace WanBot.Api
         /// <param name="priority"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        public MiraiEventHandler Subscripe<T>(int priority, Func<MiraiBot, MiraiEventArgs<T>, Task> func)
-            where T : BaseEvent
-            => Application.BotManager.Subscript(priority, func);
+        public MiraiEventHandler Subscripe<T>(int priority, Func<MiraiBot, T, Task> func)
+            where T : MiraiEventArgs
+            => Application.BotManager.Subscript<T>(priority, func);
 
         /// <summary>
         /// 创建插件实例

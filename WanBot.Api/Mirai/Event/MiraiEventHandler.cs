@@ -26,9 +26,9 @@ namespace WanBot.Api.Mirai.Event
     /// 泛形事件处理器
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class MiraiEventHandler<T> : MiraiEventHandler where T : BaseEvent
+    public class MiraiEventHandler<T> : MiraiEventHandler where T : MiraiEventArgs
     {
-        public MiraiEventHandler(int priority, Func<MiraiBot, MiraiEventArgs<T>, Task> handler)
-            : base(priority, (s, e) => handler(s, new MiraiEventArgs<T>(e))) { }
+        public MiraiEventHandler(int priority, Func<MiraiBot, T, Task> handler)
+            : base(priority, (s, e) => handler(s, (T)e)) { }
     }
 }
