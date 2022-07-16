@@ -67,8 +67,7 @@ namespace WanBot.Api.Mirai
         /// 订阅事件
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="priority"></param>
-        /// <param name="action"></param>
+        /// <param name="eventHandler"></param>
         /// <returns></returns>
         public MiraiEventHandler Subscripe<T>(MiraiEventHandler<T> eventHandler) 
             where T:BaseEvent
@@ -84,20 +83,40 @@ namespace WanBot.Api.Mirai
             return eventHandler;
         }
 
+        /// <summary>
+        /// 订阅事件
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="eventHandler"></param>
+        /// <returns></returns>
+        public MiraiEventHandler Subscripe(Type type, MiraiEventHandler eventHandler)
+        {
+            if (_eventDict.TryGetValue(type, out var e))
+                e.Add(eventHandler);
+            else
+            {
+                e = new();
+                e.Add(eventHandler);
+                _eventDict[type] = e;
+            }
+            return eventHandler;
+        }
+
         private void OnWSMessage(string msg)
         {
             var wsResponse = JsonSerializer.Deserialize<WsAdapterResponse<BaseEvent>>(msg, MiraiJsonContext.Default.Options);
             var baseEvent = wsResponse!.Data;
-            if (_eventDict.TryGetValue(baseEvent!.GetType(), out var e))
+            var eventType = baseEvent!.GetType();
+            if (_eventDict.TryGetValue(eventType, out var e))
             {
-                try
+                var task = e.InvokeAsync(this, new MiraiEventArgs(baseEvent));
+
+                task.GetAwaiter().OnCompleted(() =>
                 {
-                    e.InvokeAsync(new MiraiEventArgs(baseEvent)).Wait();
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error("Error while deal with event. {ex}\nPayload: \n{msg}", ex, msg);
-                }
+                    var ex = task.Exception;
+                    if (ex != null)
+                        _logger.Error("Error while deal with event {EventType} because of:\n {ex}\nPayload: \n{msg}", eventType, ex, msg);
+                });
             }
         }
 
@@ -119,5 +138,17 @@ namespace WanBot.Api.Mirai
                 return adapter as T;
             return null;
         }
+    }
+    public static class Priority
+    {
+        public const int BottomMost = int.MinValue;
+        public const int Lowest     = -10000;
+        public const int Lower      = -1000;
+        public const int Low        = -100;
+        public const int Default    = 0;
+        public const int High       = 100;
+        public const int Higher     = 1000;
+        public const int Highest    = 10000;
+        public const int TopMost    = int.MaxValue;
     }
 }

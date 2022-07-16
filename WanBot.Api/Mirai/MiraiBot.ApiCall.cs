@@ -61,6 +61,19 @@ namespace WanBot.Api.Mirai
             return result!;
         }
 
+        public async Task<MemberListResponse> MemberListAsync(long target)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<MemberListResponse, MemberListRequest>(
+                new MemberListRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target
+                });
+
+            return result!;
+        }
+
         public async Task<BotProfileResponse> BotProfileAsync()
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
@@ -68,6 +81,46 @@ namespace WanBot.Api.Mirai
                 new BotProfileRequest()
                 {
                     SessionKey= SessionKey
+                });
+
+            return result!;
+        }
+
+        public async Task<FriendProfileResponse> FriendProfileAsync(long target)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<FriendProfileResponse, FriendProfileRequest>(
+                new FriendProfileRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target
+                });
+
+            return result!;
+        }
+
+        public async Task<MemberProfileResponse> MemberProfileAsync(long target, long memberId)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<MemberProfileResponse, MemberProfileRequest>(
+                new MemberProfileRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target,
+                    MemberId = memberId
+                });
+
+            return result!;
+        }
+
+        public async Task<UserProfileResponse> UserProfileAsync(long target)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<UserProfileResponse, UserProfileRequest>(
+                new UserProfileRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target
                 });
 
             return result!;

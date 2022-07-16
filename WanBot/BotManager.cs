@@ -24,7 +24,7 @@ namespace WanBot
         /// </summary>
         /// <param name="miraiConfig"></param>
         /// <exception cref="Exception"></exception>
-        internal void AddAccount(MiraiConfig miraiConfig)
+        internal async Task AddAccountAsync(MiraiConfig miraiConfig)
         {
             var botLogger = new Logger($"QQ({miraiConfig.QQ})");
             var bot = new MiraiBot(botLogger);
@@ -32,15 +32,17 @@ namespace WanBot
             try
             {
                 botLogger.Info($"Try add bot {miraiConfig.QQ}");
-                bot.ConnectAsync(miraiConfig).Wait();
-                var aboutResult = bot.AboutAsync().Result;
+                await bot.ConnectAsync(miraiConfig);
+                botLogger.Info($"Checking mirai http version");
+
+                var aboutResult = await bot.AboutAsync();
                 var version = Version.Parse(aboutResult.Data!.Version);
                 if (version.Major < 2)
                 {
                     throw new Exception("Mirai http 1.x.x is no longer support");
                 }
 
-                var botProfile = bot.BotProfileAsync().Result;
+                var botProfile = await bot.BotProfileAsync();
                 botLogger.SetCategory($"{botProfile.Nickname}({miraiConfig.QQ})");
 
                 botLogger.Info("Mirai http version: {version}", version);
@@ -55,12 +57,21 @@ namespace WanBot
             }
         }
 
-        public MiraiEventHandler Subscript<T>(int priority, Func<MiraiEventArgs<T>, Task> func) 
+        public MiraiEventHandler Subscript<T>(int priority, Func<MiraiBot, MiraiEventArgs<T>, Task> func)
             where T : BaseEvent
         {
             var handler = new MiraiEventHandler<T>(priority, func);
             foreach (var bot in _bots)
                 bot.Subscripe(handler);
+
+            return handler;
+        }
+
+        public MiraiEventHandler Subscript(Type type, int priority, Func<MiraiBot, MiraiEventArgs, Task> func)
+        {
+            var handler = new MiraiEventHandler(priority, func);
+            foreach (var bot in _bots)
+                bot.Subscripe(type, handler);
 
             return handler;
         }

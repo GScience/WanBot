@@ -13,13 +13,13 @@ namespace WanBot.Api.Mirai.Event
     {
         public int Priority { get; }
 
-        public MiraiEventHandler(int priority, Func<MiraiEventArgs, Task> handler)
+        public MiraiEventHandler(int priority, Func<MiraiBot, MiraiEventArgs, Task> handler)
         {
             Priority = priority;
             Handler = handler;
         }
 
-        public Func<MiraiEventArgs, Task> Handler { get; }
+        public Func<MiraiBot, MiraiEventArgs, Task> Handler { get; }
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ namespace WanBot.Api.Mirai.Event
     /// <typeparam name="T"></typeparam>
     public class MiraiEventHandler<T> : MiraiEventHandler where T : BaseEvent
     {
-        public MiraiEventHandler(int priority, Func<MiraiEventArgs<T>, Task> handler)
-            : base(priority, (e) => handler(new MiraiEventArgs<T>(e))) { }
+        public MiraiEventHandler(int priority, Func<MiraiBot, MiraiEventArgs<T>, Task> handler)
+            : base(priority, (s, e) => handler(s, new MiraiEventArgs<T>(e))) { }
     }
 }

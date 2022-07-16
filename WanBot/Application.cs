@@ -15,10 +15,19 @@ namespace WanBot
 {
     public class Application : IApplication, IDisposable
     {
+        public static Application Current = null!;
+
+        private BotManager _botManager = new();
+
         /// <summary>
         /// 账户管理器
         /// </summary>
-        private BotManager _botManager = new();
+        public IBotManager BotManager => _botManager;
+
+        /// <summary>
+        /// 插件管理器
+        /// </summary>
+        public PluginManager PluginManager { get; } = new();
 
         /// <summary>
         /// 日志
@@ -30,8 +39,18 @@ namespace WanBot
         /// </summary>
         internal string ConfigPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "Config");
 
+        /// <summary>
+        /// 插件路径
+        /// </summary>
+        internal string PluginPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "Plugin");
+
         private Semaphore _consoleCloseSemaphore = new(0, 1);
         private bool _isClosing = false;
+
+        public Application()
+        {
+            Current = this;
+        }
 
         /// <summary>
         /// 从相对路径读取配置
@@ -64,25 +83,50 @@ namespace WanBot
 
             CheckDir();
 
+            var bindAccountTask = BindAccountAsync();
+
+            // 初始化插件系统
+            _logger.Info("Loading plugins");
+            PluginManager.LoadAssemblysFromDir(PluginPath);
+            PluginManager.FindPlugins();
+            PluginManager.InitPlugins();
+
+            // 等待账户绑定
+            bindAccountTask.Wait();
+
+            PluginManager.PostInitPlugins();
+            _logger.Info("All done");
+
+            // 等待程序退出
+            _consoleCloseSemaphore.WaitOne();
+        }
+
+        /// <summary>
+        /// 绑定账户
+        /// </summary>
+        /// <returns></returns>
+        internal async Task BindAccountAsync()
+        {
             // 创建Bot
-            _logger.Info("Loading WanBot Config and connecting to mirai");
+            _logger.Info("Loading WanBot config and connecting to mirai");
 
             var config = ReadConfigFromFile<WanBotConfig>("WanBot.conf");
+            var tasks = new List<Task>();
             foreach (var miraiConfig in config.MiraiConfigs)
             {
                 try
                 {
-                    _botManager.AddAccount(miraiConfig);
+                    tasks.Add(_botManager.AddAccountAsync(miraiConfig));
                 }
                 catch (Exception e)
                 {
                     _logger.Error(e.ToString());
                 }
             }
-            _logger.Info("All done");
-
-            // 等待程序退出
-            _consoleCloseSemaphore.WaitOne();
+            _logger.Info("Waiting mirai connection");
+            foreach (var task in tasks)
+                await task;
+            _logger.Info("Mirai init finished");
         }
 
         internal void OnConsoleExit()

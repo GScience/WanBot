@@ -31,11 +31,13 @@ namespace WanBot.Api.Mirai.Event
                 }
         }
 
-        public async Task InvokeAsync(MiraiEventArgs e)
+        public async Task InvokeAsync(MiraiBot sender, MiraiEventArgs e)
         {
             foreach (var handler in _handlers)
             {
-                await handler?.Handler?.Invoke(e)!;
+                await handler.Handler.Invoke(sender, e);
+                if (e.Cancel)
+                    break;
             }
         }
     }
