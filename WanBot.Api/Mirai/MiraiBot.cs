@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace WanBot.Api.Mirai
     /// </summary>
     public partial class MiraiBot : IDisposable
     {
-        private Dictionary<Type, MiraiEvent> _eventDict = new();
+        private ConcurrentDictionary<Type, MiraiEvent> _eventDict = new();
         internal ILogger _logger;
 
         private Dictionary<Type, IAdapter> _adapterDict = new();
@@ -69,11 +70,9 @@ namespace WanBot.Api.Mirai
         /// <param name="priority"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        public MiraiEventHandler Subscripe<T>(int priority, Func<MiraiEventArgs<T>, Task> action) 
+        public MiraiEventHandler Subscripe<T>(MiraiEventHandler<T> eventHandler) 
             where T:BaseEvent
         {
-            var eventHandler = new MiraiEventHandler<T>(priority, action);
-
             if (_eventDict.TryGetValue(typeof(T), out var e))
                 e.Add(eventHandler);
             else

@@ -34,26 +34,26 @@ namespace WanBot.Api.Mirai.Adapter
 
         public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)
             where RequestPayload : class
-            where ResponsePayload : class
+            where ResponsePayload : IResponse
         {
             using var httpResponse = await HttpRequestHelper<RequestPayload>.SendHandleAsync(this, request);
 
             if (!httpResponse.IsSuccessStatusCode)
                 throw new Exception($"Http request with error code: {httpResponse.StatusCode}");
 
-            if (typeof(IResponse).IsAssignableFrom(typeof(ResponsePayload)))
+            if (typeof(Response).IsAssignableFrom(typeof(ResponsePayload)))
+            {
+                var obj = await httpResponse.Content.ReadFromJsonAsync<ResponsePayload>(MiraiJsonContext.Default.Options);
+                var response = obj as Response;
+                if (response!.Code != ResponseCode.Ok)
+                    throw new Exception($"{ResponseCode.Reason(response!.Code)}");
+                return obj;
+            }
+            else
             {
                 var obj = await httpResponse.Content.ReadFromJsonAsync<ResponsePayload>(MiraiJsonContext.Default.Options);
 
                 return obj!;
-            }
-            else
-            {
-                var obj = await httpResponse.Content.ReadFromJsonAsync<Response<ResponsePayload>>(MiraiJsonContext.Default.Options);
-
-                if (obj!.Code != ResponseCode.Ok)
-                    throw new Exception($"{ResponseCode.Reason(obj!.Code)}");
-                return obj!.Data;
             }
         }
 

@@ -16,9 +16,9 @@ namespace WanBot
     public class Application : IApplication, IDisposable
     {
         /// <summary>
-        /// Bot列表
+        /// 账户管理器
         /// </summary>
-        internal List<MiraiBot> bots = new();
+        private BotManager _botManager = new();
 
         /// <summary>
         /// 日志
@@ -70,33 +70,15 @@ namespace WanBot
             var config = ReadConfigFromFile<WanBotConfig>("WanBot.conf");
             foreach (var miraiConfig in config.MiraiConfigs)
             {
-                var botLogger = new Logger($"QQ({miraiConfig.QQ})");
-                var bot = new MiraiBot(botLogger);
-                bots.Add(bot);
                 try
                 {
-                    _logger.Info($"Try add bot {miraiConfig.QQ}");
-                    bot.ConnectAsync(miraiConfig).Wait();
-                    var version = Version.Parse(bot.AboutAsync().Result.Version);
-                    if (version.Major < 2)
-                    {
-                        _logger.Error("Mirai http {version} is no longer support", "1.x.x");
-                        continue;
-                    }
-
-                    var botProfile = bot.BotProfileAsync().Result;
-                    botLogger.SetCategory($"{botProfile.Nickname}({miraiConfig.QQ})");
-
-                    botLogger.Info("Mirai http version: {version}", version);
-                    botLogger.Info("Bot {Nickname} connected", botProfile.Nickname);
+                    _botManager.AddAccount(miraiConfig);
                 }
-                catch (AggregateException e)
+                catch (Exception e)
                 {
-                    _logger.Info("Failed to add bot {miraiConfig} because {e}", miraiConfig.QQ, e);
-                    continue;
+                    _logger.Error(e.ToString());
                 }
             }
-
             _logger.Info("All done");
 
             // 等待程序退出
@@ -115,8 +97,7 @@ namespace WanBot
             _logger.Info("Dispose resources");
 
             _consoleCloseSemaphore.Dispose();
-            foreach (var bot in bots)
-                bot.Dispose();
+            _botManager.Dispose();
 
             GC.SuppressFinalize(this);
         }

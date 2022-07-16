@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WanBot.Api.Mirai.Network;
 
 namespace WanBot.Api.Mirai.Adapter
 {
@@ -28,7 +29,7 @@ namespace WanBot.Api.Mirai.Adapter
         /// <returns></returns>
         public Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)
             where RequestPayload : class
-            where ResponsePayload : class;
+            where ResponsePayload : IResponse;
 
         /// <summary>
         /// 异步连接

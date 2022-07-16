@@ -35,7 +35,7 @@ namespace WanBot.Api.Mirai.Event
         {
             foreach (var handler in _handlers)
             {
-                await handler?.Handler?.Invoke(e);
+                await handler?.Handler?.Invoke(e)!;
             }
         }
     }

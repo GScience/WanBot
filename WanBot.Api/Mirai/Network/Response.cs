@@ -16,12 +16,12 @@ namespace WanBot.Api.Mirai.Network
         public string SyncId { get; set; } = string.Empty;
     }
 
-    public class Response<T> : Response
+    public class Response<ResponseContent> : Response
     {
-        public T? Data { get; set; }
+        public ResponseContent? Data { get; set; }
     }
 
-    public class Response : IResponse
+    public abstract class Response : IResponse
     {
         public int Code { get; set; } = -1;
         public string Msg { get; set; } = string.Empty;

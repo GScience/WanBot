@@ -163,8 +163,8 @@ namespace WanBot.Api.Mirai.Adapter
         }
 
         public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)
-            where ResponsePayload : class
             where RequestPayload : class
+            where ResponsePayload : IResponse
         {
             // 等待连接
             var syncId = SyncIdHelper.Next();
@@ -173,17 +173,17 @@ namespace WanBot.Api.Mirai.Adapter
             await _wsClient.SendAsync(requestJson);
 
             // 获取响应
-            if (typeof(IResponse).IsAssignableFrom(typeof(ResponsePayload)))
+            if (typeof(Response).IsAssignableFrom(typeof(ResponsePayload)))
             {
-                var response = WaitForResponse<ResponsePayload>(syncId);
-                return response.Data;
+                var response = WaitForResponse<ResponsePayload>(syncId) as WsAdapterResponse<Response<ResponsePayload>>;
+                if (response!.Data!.Code != ResponseCode.Ok)
+                    throw new Exception($"{ResponseCode.Reason(response.Data!.Code)}. \nRequest payload: {requestJson}");
+                return response.Data.Data;
             }
             else
             {
-                var response = WaitForResponse<Response<ResponsePayload>>(syncId);
-                if (response.Data!.Code != ResponseCode.Ok)
-                    throw new Exception($"{ResponseCode.Reason(response.Data!.Code)}. \nRequest payload: {requestJson}");
-                return response.Data.Data;
+                var response = WaitForResponse<ResponsePayload>(syncId);
+                return response.Data;
             }
         }
 
