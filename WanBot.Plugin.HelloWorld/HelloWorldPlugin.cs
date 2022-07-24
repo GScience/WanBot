@@ -19,6 +19,8 @@ namespace WanBot.Plugin.HelloWorld
         private CommandDispatcher _commandDispatcher = new();
         private CommandDispatcher _essentialCommandDispatcher = new();
 
+        private HttpClient _client = new HttpClient();
+
         public override void PreInit()
         {
             base.PreInit();
@@ -50,7 +52,13 @@ namespace WanBot.Plugin.HelloWorld
         public async Task OnEssentialCommand(MiraiBot bot, CommandEventArgs commandEvent)
         {
             if (!await _essentialCommandDispatcher.HandleCommandAsync(bot, commandEvent))
-                await commandEvent.Sender.ReplyAsync("在这呢");
+                await commandEvent.Sender.ReplyAsync("语法错误哦");
+        }
+
+        [Command("每日一言")]
+        public async Task OnDailyCommand(MiraiBot bot, CommandEventArgs commandEvent)
+        {
+            await commandEvent.Sender.ReplyAsync(await _client.GetStringAsync("https://api.mcloc.cn/words/"));
         }
 
         [Command("完犊子呢")]
