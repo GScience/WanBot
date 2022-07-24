@@ -4,6 +4,7 @@ using WanBot.Api.Message;
 using WanBot.Api.Mirai;
 using WanBot.Api.Mirai.Event;
 using System.Linq;
+using WanBot.Api.Util;
 
 namespace WanBot.Plugin.HelloWorld
 {
@@ -15,16 +16,23 @@ namespace WanBot.Plugin.HelloWorld
 
         public override Version PluginVersion => Version.Parse("1.0.0");
 
+        private CommandDispatcher _commandDispatcher = new();
+
+        public override void PreInit()
+        {
+            base.PreInit();
+            _commandDispatcher["在"]["哪"]["呢"].Handle = async (e) =>
+            {
+                await e.Sender.ReplyAsync("在~这~呢~");
+                return true;
+            };
+        }
 
         [Command("完犊子呢")]
         public async Task OnTestCommand(MiraiBot bot, CommandEventArgs commandEvent)
         {
-            var messageBuilder = new MessageBuilder().Text("在这呢");
-            var remain = commandEvent.GetRemain()!.ToArray();
-            if (remain == null || remain.Length == 0)
-                await commandEvent.Sender.ReplyAsync(messageBuilder);
-            else
-                await commandEvent.Sender.ReplyAsync(messageBuilder.Text("，你刚才说").Chains(remain).Text("干啥"));
+            if (!await _commandDispatcher.HandleCommandAsync(commandEvent))
+                await commandEvent.Sender.ReplyAsync("在这呢");
         }
 
         [At]
