@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api.Event;
+using WanBot.Api.Mirai;
 
 namespace WanBot.Api.Util
 {
@@ -12,11 +14,11 @@ namespace WanBot.Api.Util
     /// </summary>
     public class CommandDispatcher
     {
-        private Dictionary<string, CommandDispatcher> _dispatcherDict = new();
+        private ConcurrentDictionary<string, CommandDispatcher> _dispatcherDict = new();
 
-        public Func<CommandEventArgs, Task<bool>>? Handle { get; set; }
+        public Func<MiraiBot, CommandEventArgs, Task<bool>>? Handle { get; set; }
 
-        public async Task<bool> HandleCommandAsync(CommandEventArgs commandEvent)
+        public async Task<bool> HandleCommandAsync(MiraiBot bot, CommandEventArgs commandEvent)
         {
             string subCmd;
             try
@@ -31,8 +33,8 @@ namespace WanBot.Api.Util
             if (_dispatcherDict.TryGetValue(subCmd, out var dispatcher))
             {
                 if (dispatcher.Handle != null)
-                    return await dispatcher.Handle.Invoke(commandEvent);
-                return await dispatcher.HandleCommandAsync(commandEvent);
+                    return await dispatcher.Handle.Invoke(bot, commandEvent);
+                return await dispatcher.HandleCommandAsync(bot, commandEvent);
             }
             return false;
         }
@@ -41,9 +43,7 @@ namespace WanBot.Api.Util
         {
             get
             {
-                var newDispatcher = new CommandDispatcher();
-                _dispatcherDict[cmd] = newDispatcher;
-                return newDispatcher;
+                return _dispatcherDict.GetOrAdd(cmd, static (str) => new CommandDispatcher());
             }
             set
             {
