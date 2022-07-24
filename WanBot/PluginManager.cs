@@ -8,7 +8,7 @@ using WanBot.Api;
 
 namespace WanBot
 {
-    public class PluginManager
+    public class PluginManager : IPluginManager
     {
         private ILogger _logger = new Logger("PluginManager");
 
@@ -114,12 +114,36 @@ namespace WanBot
                 {
                     plugin.PostInit();
                 }
-                catch
+                catch (Exception e)
                 {
-                    _logger.Error("Failed while PostInit plugin {PluginName}", plugin.GetType().Name);
+                    _logger.Error("Failed while PostInit plugin {PluginName}\n{e}", plugin.GetType().Name, e);
                 }
             }
             _logger.Info("PostInit Stage Finished");
+        }
+        public void StartPlugins()
+        {
+            _logger.Info("Start Stage");
+            foreach (var plugin in _plugins)
+            {
+                try
+                {
+                    plugin.Start();
+                }
+                catch (Exception e)
+                {
+                    _logger.Error("Failed while PostInit plugin {PluginName}\n{e}", plugin.GetType().Name, e);
+                }
+            }
+            _logger.Info("Start Stage Finished");
+        }
+        
+        public T? GetPlugin<T>() where T : BasePlugin
+        {
+            foreach (var plugin in _plugins)
+                if (plugin is T result)
+                    return result;
+            return null;
         }
     }
 }

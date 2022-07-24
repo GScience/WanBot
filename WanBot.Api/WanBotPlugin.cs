@@ -30,6 +30,12 @@ namespace WanBot.Api
                         case CommandAttribute commandEvent:
                             AddCommandEvent(method, commandEvent);
                             break;
+                        case AtAttribute atEvent:
+                            AddAtEvent(method, atEvent);
+                            break;
+                        case RegexAttribute keywordEvent:
+                            AddRegexEvent(method, keywordEvent);
+                            break;
                     }
                 }
             }
@@ -44,23 +50,66 @@ namespace WanBot.Api
             return Application.ReadConfig<T>(GetType().Name);
         }
 
-        private void AddCommandEvent(MethodInfo method, CommandAttribute commandEvent)
+        private bool CheckArgs<T>(MethodInfo method) where T : BlockableEventArgs
+        {
+            return CheckArgs(method, typeof(T));
+        }
+
+        private bool CheckArgs(MethodInfo method, Type type)
         {
             // 检查插件参数
             var args = method.GetParameters();
             if (args.Length != 2 ||
                 args[0].ParameterType != typeof(MiraiBot) ||
-                args[1].ParameterType != typeof(CommandEventArgs) ||
+                args[1].ParameterType != type ||
                 method.IsStatic ||
                 method.ReturnType != typeof(Task))
             {
                 Logger.Error(
                     "Not a valid mirai event handler. Require:\n {RequireFunc}\nBut Get:\n {GetFunc}",
-                    $"{typeof(Task)} {method.Name}({typeof(MiraiBot)}, {typeof(CommandEventArgs)});",
+                    $"{typeof(Task)} {method.Name}({typeof(MiraiBot)}, {type});",
                     method.ToString());
-                return;
+                return false;
             }
-            
+            return true;
+        }
+
+        private void AddRegexEvent(MethodInfo method, RegexAttribute regexEvent)
+        {
+            // 检查插件参数
+            if (!CheckArgs<RegexEventArgs>(method))
+                return;
+
+            // 注册事件
+            Application.BotManager.Subscript(
+                RegexEventArgs.GetEventName(regexEvent.Regex),
+                regexEvent.Priority,
+                (bot, e) => (Task)method.Invoke(this, new object?[] { bot, e })!
+                );
+
+            // 注册正则监听到事件插件
+            Application.PluginManager.GetPlugin<SimpleEventsPlugin>()!.RegexTable.Add(regexEvent);
+        }
+
+        private void AddAtEvent(MethodInfo method, AtAttribute commandEvent)
+        {
+            if (!CheckArgs<AtEventArgs>(method))
+                return;
+
+            // 注册事件
+            Application.BotManager.Subscript(
+                typeof(AtEventArgs),
+                commandEvent.Priority,
+                (bot, e) => (Task)method.Invoke(this, new object?[] { bot, e })!
+                );
+        }
+
+        private void AddCommandEvent(MethodInfo method, CommandAttribute commandEvent)
+        {
+            // 检查插件参数
+            if (!CheckArgs<CommandEventArgs>(method))
+                return;
+
             // 注册事件
             Application.BotManager.Subscript(
                 CommandEventArgs.GetEventName(commandEvent.Command),
@@ -72,19 +121,8 @@ namespace WanBot.Api
         private void AddMiraiEvent(MethodInfo method, MiraiEventAttribute miraiEvent)
         {
             // 检查插件参数
-            var args = method.GetParameters();
-            if (args.Length != 2 ||
-                args[0].ParameterType != typeof(MiraiBot) ||
-                args[1].ParameterType != miraiEvent.EventType ||
-                method.IsStatic ||
-                method.ReturnType != typeof(Task))
-            {
-                Logger.Error(
-                    "Not a valid mirai event handler. Require:\n {RequireFunc}\nBut Get:\n {GetFunc}",
-                    $"{typeof(Task)} {method.Name}({typeof(MiraiBot)}, {miraiEvent.EventType});",
-                    method.ToString());
+            if (!CheckArgs(method, miraiEvent.EventType))
                 return;
-            }
 
             // 注册事件
             Application.BotManager.Subscript(

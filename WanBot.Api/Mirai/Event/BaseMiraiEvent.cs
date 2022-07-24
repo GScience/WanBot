@@ -13,7 +13,7 @@ namespace WanBot.Api.Mirai.Event
     /// 事件基类
     /// </summary>
     [JsonConverter(typeof(PolymorphicJsonConverter<BaseMiraiEvent>))]
-    public class BaseMiraiEvent : CancellableEventArgs, ISerializablePolymorphic
+    public class BaseMiraiEvent : BlockableEventArgs, ISerializablePolymorphic
     {
         public string Type => GetType().Name;
     }

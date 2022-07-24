@@ -11,7 +11,7 @@ namespace WanBot.Api.Event
     /// <summary>
     /// 命令事件参数
     /// </summary>
-    public class CommandEventArgs : CancellableEventArgs
+    public class CommandEventArgs : BlockableEventArgs
     {
         private MessageChainDivider _divider;
 

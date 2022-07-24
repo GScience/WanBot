@@ -52,7 +52,7 @@ namespace WanBot.Api.Message
         /// <param name="chain"></param>
         /// <param name="regex"></param>
         /// <returns></returns>
-        public static bool Contain(this MessageChain chain, Regex regex)
+        public static bool Match(this MessageChain chain, Regex regex)
         {
             foreach (var msg in chain)
             {
@@ -89,6 +89,23 @@ namespace WanBot.Api.Message
         }
 
         /// <summary>
+        /// 获取第一个消息链
+        /// </summary>
+        /// <param name="chain"></param>
+        /// <returns></returns>
+        public static BaseChain? FirstNotOf<T>(this MessageChain chain) where T : BaseChain
+        {
+            foreach (var msg in chain)
+            {
+                if (msg is T)
+                    continue;
+
+                return msg;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// 将消息链转换为纯文本类型，若无法转换则返回Null
         /// </summary>
         /// <param name="chain"></param>
@@ -116,6 +133,13 @@ namespace WanBot.Api.Message
             } while (true);
 
             return plain;
+        }
+
+        public static BaseChain[] ToArray(this MessageChain chain)
+        {
+            if (chain.Chain is BaseChain[] array)
+                return array;
+            return Enumerable.ToArray(chain);
         }
     }
 }

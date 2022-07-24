@@ -34,7 +34,7 @@ namespace WanBot.Api
         /// <param name="func"></param>
         /// <returns></returns>
         public WanBotEventHandler Subscripe<T>(int priority, Func<MiraiBot, T, Task> func)
-            where T : CancellableEventArgs
+            where T : BlockableEventArgs
             => Application.BotManager.Subscript<T>(priority, func);
 
         /// <summary>
@@ -68,6 +68,13 @@ namespace WanBot.Api
         /// 插件初始化，此阶段可进行事件注册
         /// </summary>
         public virtual void PostInit()
+        {
+        }
+
+        /// <summary>
+        /// 开始运行，此时所有插件均初始化完成
+        /// </summary>
+        public virtual void Start()
         {
         }
     }

@@ -29,5 +29,10 @@ namespace WanBot.Api.Mirai
         /// 备注
         /// </summary>
         public string Remark { get; set; } = string.Empty;
+
+        public string GetFormatedName()
+        {
+            return $"{Nickname}({Id})";
+        }
     }
 }

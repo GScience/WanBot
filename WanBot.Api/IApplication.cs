@@ -7,6 +7,8 @@
     {
         IBotManager BotManager { get; }
 
+        IPluginManager PluginManager { get; }
+
         /// <summary>
         /// 读取配置
         /// </summary>

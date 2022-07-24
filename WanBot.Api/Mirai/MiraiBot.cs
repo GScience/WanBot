@@ -25,6 +25,11 @@ namespace WanBot.Api.Mirai
 
         public bool IsConnected { get; private set; } = false;
 
+        /// <summary>
+        /// 机器人QQ Id
+        /// </summary>
+        public long Id { get; private set; }
+
         internal string SessionKey
         {
             get
@@ -62,6 +67,9 @@ namespace WanBot.Api.Mirai
             // 监听事件同步Id的消息
             wsAdapter.SetSyncListener(config.EventSyncId, OnWSMessage);
             IsConnected = true;
+
+            // 设置QQ Id
+            Id = config.QQ;
         }
 
         /// <summary>
@@ -71,7 +79,7 @@ namespace WanBot.Api.Mirai
         /// <param name="eventHandler"></param>
         /// <returns></returns>
         public WanBotEventHandler Subscripe<T>(MiraiEventHandler<T> eventHandler) 
-            where T : CancellableEventArgs
+            where T : BlockableEventArgs
         {
             if (_eventDict.TryGetValue(typeof(T).Name, out var e))
                 e.Add(eventHandler);
@@ -119,7 +127,7 @@ namespace WanBot.Api.Mirai
         /// </summary>
         /// <param name="type"></param>
         /// <param name="eventArgs"></param>
-        public async Task PublishAsync(Type type, CancellableEventArgs eventArgs)
+        public async Task PublishAsync(Type type, BlockableEventArgs eventArgs)
         {
             await PublishAsync(type.Name, eventArgs);
         }
@@ -129,7 +137,7 @@ namespace WanBot.Api.Mirai
         /// </summary>
         /// <param name="type"></param>
         /// <param name="eventArgs"></param>
-        public async Task PublishAsync(string eventType, CancellableEventArgs eventArgs)
+        public async Task PublishAsync(string eventType, BlockableEventArgs eventArgs)
         {
             if (!_eventDict.TryGetValue(eventType, out var e))
                 return;
@@ -173,17 +181,5 @@ namespace WanBot.Api.Mirai
                 return adapter as T;
             return null;
         }
-    }
-    public static class Priority
-    {
-        public const int BottomMost = int.MinValue;
-        public const int Lowest     = -10000;
-        public const int Lower      = -1000;
-        public const int Low        = -100;
-        public const int Default    = 0;
-        public const int High       = 100;
-        public const int Higher     = 1000;
-        public const int Highest    = 10000;
-        public const int TopMost    = int.MaxValue;
     }
 }

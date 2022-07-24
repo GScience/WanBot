@@ -18,7 +18,7 @@ namespace WanBot.Api
         /// <param name="func"></param>
         /// <returns></returns>
         WanBotEventHandler Subscript<T>(int priority, Func<MiraiBot, T, Task> func)
-            where T : CancellableEventArgs;
+            where T : BlockableEventArgs;
 
         /// <summary>
         /// 订阅事件
@@ -27,7 +27,7 @@ namespace WanBot.Api
         /// <param name="priority"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        WanBotEventHandler Subscript(Type type, int priority, Func<MiraiBot, CancellableEventArgs, Task> func);
+        WanBotEventHandler Subscript(Type type, int priority, Func<MiraiBot, BlockableEventArgs, Task> func);
 
         /// <summary>
         /// 订阅事件
@@ -36,6 +36,6 @@ namespace WanBot.Api
         /// <param name="priority"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        WanBotEventHandler Subscript(string eventName, int priority, Func<MiraiBot, CancellableEventArgs, Task> func);
+        WanBotEventHandler Subscript(string eventName, int priority, Func<MiraiBot, BlockableEventArgs, Task> func);
     }
 }

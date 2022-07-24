@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 namespace WanBot.Api.Event
 {
     /// <summary>
-    /// 可取消的事件
+    /// 可阻塞的事件
     /// </summary>
-    public class CancellableEventArgs
+    public class BlockableEventArgs
     {
         /// <summary>
         /// 是否取消事件的传递
         /// </summary>
         [JsonIgnore]
-        public bool Cancel { get; set; }
+        public bool Blocked { get; set; }
     }
 }

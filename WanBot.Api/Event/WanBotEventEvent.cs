@@ -35,12 +35,12 @@ namespace WanBot.Api.Event
             }
         }
 
-        public async Task InvokeAsync(MiraiBot sender, CancellableEventArgs e)
+        public async Task InvokeAsync(MiraiBot sender, BlockableEventArgs e)
         {
             foreach (var handler in _handlers)
             {
                 await handler.Handler.Invoke(sender, e);
-                if (e.Cancel)
+                if (e.Blocked)
                     break;
             }
         }

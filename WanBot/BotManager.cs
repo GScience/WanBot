@@ -58,7 +58,7 @@ namespace WanBot
         }
 
         public WanBotEventHandler Subscript<T>(int priority, Func<MiraiBot, T, Task> func)
-            where T : CancellableEventArgs
+            where T : BlockableEventArgs
         {
             var handler = new MiraiEventHandler<T>(priority, func);
             foreach (var bot in _bots)
@@ -67,7 +67,7 @@ namespace WanBot
             return handler;
         }
 
-        public WanBotEventHandler Subscript(Type type, int priority, Func<MiraiBot, CancellableEventArgs, Task> func)
+        public WanBotEventHandler Subscript(Type type, int priority, Func<MiraiBot, BlockableEventArgs, Task> func)
         {
             var handler = new WanBotEventHandler(priority, func);
             foreach (var bot in _bots)
@@ -76,7 +76,7 @@ namespace WanBot
             return handler;
         }
 
-        public WanBotEventHandler Subscript(string eventName, int priority, Func<MiraiBot, CancellableEventArgs, Task> func)
+        public WanBotEventHandler Subscript(string eventName, int priority, Func<MiraiBot, BlockableEventArgs, Task> func)
         {
             var handler = new WanBotEventHandler(priority, func);
             foreach (var bot in _bots)

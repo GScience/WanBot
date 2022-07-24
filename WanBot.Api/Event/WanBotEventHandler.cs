@@ -14,20 +14,20 @@ namespace WanBot.Api.Event
     {
         public int Priority { get; }
 
-        public WanBotEventHandler(int priority, Func<MiraiBot, CancellableEventArgs, Task> handler)
+        public WanBotEventHandler(int priority, Func<MiraiBot, BlockableEventArgs, Task> handler)
         {
             Priority = priority;
             Handler = handler;
         }
 
-        public Func<MiraiBot, CancellableEventArgs, Task> Handler { get; }
+        public Func<MiraiBot, BlockableEventArgs, Task> Handler { get; }
     }
 
     /// <summary>
     /// 泛形事件处理器
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class MiraiEventHandler<T> : WanBotEventHandler where T : CancellableEventArgs
+    public class MiraiEventHandler<T> : WanBotEventHandler where T : BlockableEventArgs
     {
         public MiraiEventHandler(int priority, Func<MiraiBot, T, Task> handler)
             : base(priority, (s, e) => handler(s, (T)e)) { }

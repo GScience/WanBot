@@ -24,10 +24,12 @@ namespace WanBot
         /// </summary>
         public IBotManager BotManager => _botManager;
 
+        private PluginManager _pluginManager { get; } = new();
+
         /// <summary>
         /// 插件管理器
         /// </summary>
-        public PluginManager PluginManager { get; } = new();
+        public IPluginManager PluginManager => _pluginManager;
 
         /// <summary>
         /// 日志
@@ -84,14 +86,15 @@ namespace WanBot
 
             // 初始化插件系统
             _logger.Info("Loading plugins");
-            PluginManager.LoadAssemblysFromDir(PluginPath);
-            PluginManager.EnumPlugins();
-            PluginManager.InitPlugins();
+            _pluginManager.LoadAssemblysFromDir(PluginPath);
+            _pluginManager.EnumPlugins();
+            _pluginManager.InitPlugins();
 
             // 等待账户绑定
             bindAccountTask.Wait();
 
-            PluginManager.PostInitPlugins();
+            _pluginManager.PostInitPlugins();
+            _pluginManager.StartPlugins();
             _logger.Info("All done");
 
             // 等待程序退出

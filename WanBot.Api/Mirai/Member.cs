@@ -54,5 +54,10 @@ namespace WanBot.Api.Mirai
         /// 所在群组
         /// </summary>
         public Group Group { get; set; } = new();
+
+        public string GetFormatedName()
+        {
+            return $"{Group.GetFormatedName()} {MemberName}({Id})";
+        }
     }
 }

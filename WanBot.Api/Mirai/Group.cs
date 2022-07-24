@@ -29,5 +29,10 @@ namespace WanBot.Api.Mirai
         /// Bot在群内的权限
         /// </summary>
         public string Permission { get; set; } = string.Empty;
+
+        public string GetFormatedName()
+        {
+            return $"[{Name}({Id})]";
+        }
     }
 }
