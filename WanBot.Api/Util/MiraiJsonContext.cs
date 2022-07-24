@@ -13,7 +13,7 @@ namespace WanBot.Api.Util
     [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
     [JsonSerializable(typeof(MessageChain))]
     [JsonSerializable(typeof(BaseChain))]
-    [JsonSerializable(typeof(BaseEvent))]
+    [JsonSerializable(typeof(BaseMiraiEvent))]
     public partial class MiraiJsonContext : JsonSerializerContext
     {
         

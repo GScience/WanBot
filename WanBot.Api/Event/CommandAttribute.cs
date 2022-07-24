@@ -14,9 +14,12 @@ namespace WanBot.Api.Event
     {
         public string Command { get; }
 
-        public CommandAttribute(string command)
+        public int Priority { get; }
+
+        public CommandAttribute(string command, int priority = 0)
         {
             Command = command;
+            Priority = priority;
         }
     }
 }

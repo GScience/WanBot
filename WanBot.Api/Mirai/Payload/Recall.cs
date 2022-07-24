@@ -12,9 +12,9 @@ namespace WanBot.Api.Mirai.Payload
     /// <summary>
     /// 发送群消息
     /// </summary>
-    [HttpApi("sendGroupMessage", HttpAdapterMethod.PostJson)]
-    [WsApi("sendGroupMessage")]
-    public class SendGroupMessageRequest
+    [HttpApi("recall", HttpAdapterMethod.PostJson)]
+    [WsApi("recall")]
+    public class RecallRequest
     {
         /// <summary>
         /// 已经激活的Session
@@ -22,20 +22,12 @@ namespace WanBot.Api.Mirai.Payload
         public string SessionKey { get; set; } = string.Empty;
 
         /// <summary>
-        /// 发送消息目标群的群号
+        /// 需要撤回的消息的messageId
         /// </summary>
-        public long Target { get; set; }
-
-        /// <summary>
-        /// 引用一条消息的messageId进行回复
-        /// </summary>
-        public int? Quote { get; set; }
-
-        public MessageChain? MessageChain { get; set; }
+        public int Target { get; set; }
     }
 
-    public class SendGroupMessageResponse : Response
+    public class RecallResponse : Response
     {
-        public int MessageId { get; set; }
     }
 }

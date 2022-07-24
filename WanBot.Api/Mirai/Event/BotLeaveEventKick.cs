@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// Bot被踢出一个群
     /// </summary>
-    public class BotLeaveEventKick : BaseEvent
+    public class BotLeaveEventKick : BaseMiraiEvent
     {
         /// <summary>
         /// Bot被踢出的群的信息

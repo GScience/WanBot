@@ -10,7 +10,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 同步陌生人消息
     /// </summary>
-    public class StrangerSyncMessage : BaseEvent
+    public class StrangerSyncMessage : BaseMiraiEvent
     {
         /// <summary>
         /// 发送者

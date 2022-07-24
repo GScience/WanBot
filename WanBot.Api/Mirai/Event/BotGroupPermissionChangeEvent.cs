@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// Bot在群里的权限被改变. 操作人一定是群主
     /// </summary>
-    public class BotGroupPermissionChangeEvent : BaseEvent
+    public class BotGroupPermissionChangeEvent : BaseMiraiEvent
     {
         /// <summary>
         /// Bot的原权限，OWNER、ADMINISTRATOR或MEMBER

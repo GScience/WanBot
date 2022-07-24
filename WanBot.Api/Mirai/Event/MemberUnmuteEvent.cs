@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 群成员被取消禁言事件（该成员不是Bot）
     /// </summary>
-    public class MemberUnmuteEvent : BaseEvent
+    public class MemberUnmuteEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 被取消禁言的群员的信息

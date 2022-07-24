@@ -30,7 +30,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotGroupPermissionChangeEvent>(json);
         }
 
@@ -58,7 +58,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotMuteEvent>(json);
         }
 
@@ -85,7 +85,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotUnmuteEvent>(json);
         }
 
@@ -104,7 +104,7 @@ namespace WanBot.Test
                   "invitor": null
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotJoinGroupEvent>(json);
         }
 
@@ -122,7 +122,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotLeaveEventActive>(json);
         }
 
@@ -141,7 +141,7 @@ namespace WanBot.Test
                   "operator": null
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotLeaveEventKick>(json);
         }
 
@@ -176,7 +176,7 @@ namespace WanBot.Test
                    }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<GroupRecallEvent>(json);
         }
 
@@ -193,7 +193,7 @@ namespace WanBot.Test
                     "operator": 123456
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<FriendRecallEvent>(json);
         }
 
@@ -214,7 +214,7 @@ namespace WanBot.Test
                     "target": 123456
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<NudgeEvent>(json);
         }
 
@@ -248,7 +248,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<GroupNameChangeEvent>(json);
         }
 
@@ -282,7 +282,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<GroupEntranceAnnouncementChangeEvent>(json);
         }
 
@@ -316,7 +316,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<GroupMuteAllEvent>(json);
         }
 
@@ -350,7 +350,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<GroupAllowAnonymousChatEvent>(json);
         }
 
@@ -371,7 +371,7 @@ namespace WanBot.Test
                   "isByBot": false
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<GroupAllowConfessTalkEvent>(json);
         }
 
@@ -405,7 +405,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<GroupAllowMemberInviteEvent>(json);
         }
 
@@ -433,7 +433,7 @@ namespace WanBot.Test
                   "invitor": null
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<MemberJoinEvent>(json);
         }
 
@@ -474,7 +474,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<MemberLeaveEventKick>(json);
         }
 
@@ -501,7 +501,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<MemberLeaveEventQuit>(json);
         }
 
@@ -530,7 +530,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<MemberCardChangeEvent>(json);
         }
 
@@ -559,7 +559,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<MemberSpecialTitleChangeEvent>(json);
         }
 
@@ -588,7 +588,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<MemberPermissionChangeEvent>(json);
         }
 
@@ -630,7 +630,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<MemberMuteEvent>(json);
         }
 
@@ -671,7 +671,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<MemberUnmuteEvent>(json);
         }
 
@@ -700,7 +700,7 @@ namespace WanBot.Test
                   "honor": "龙王"
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<MemberHonorChangeEvent>(json);
         }
     }

@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 添加好友申请
     /// </summary>
-    public class NewFriendRequestEvent : BaseEvent
+    public class NewFriendRequestEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 事件标识，响应该事件时的标识

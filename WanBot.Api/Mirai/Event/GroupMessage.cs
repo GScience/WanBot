@@ -10,7 +10,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 群消息
     /// </summary>
-    public class GroupMessage : BaseEvent
+    public class GroupMessage : BaseMiraiEvent
     {
         /// <summary>
         /// 发送者

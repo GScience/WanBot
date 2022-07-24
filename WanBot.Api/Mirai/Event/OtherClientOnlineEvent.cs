@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 其他客户端上线
     /// </summary>
-    public class OtherClientOnlineEvent : BaseEvent
+    public class OtherClientOnlineEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 其他客户端

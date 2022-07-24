@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 群消息撤回
     /// </summary>
-    public class GroupRecallEvent : BaseEvent
+    public class GroupRecallEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 原消息发送者的QQ号

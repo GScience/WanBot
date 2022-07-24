@@ -19,7 +19,7 @@ namespace WanBot.Api.Mirai.Payload
         public int Id { get; set; }
     }
 
-    public class MessageFromIdResponse : Response<BaseEvent>
+    public class MessageFromIdResponse : Response<BaseMiraiEvent>
     {
     }
 }

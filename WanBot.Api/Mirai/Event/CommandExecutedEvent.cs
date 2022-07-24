@@ -10,7 +10,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 命令被执行
     /// </summary>
-    public class CommandExecutedEvent : BaseEvent
+    public class CommandExecutedEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 其他客户端

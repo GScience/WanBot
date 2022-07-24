@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 群名片改动
     /// </summary>
-    public class MemberCardChangeEvent : BaseEvent
+    public class MemberCardChangeEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 原本名片

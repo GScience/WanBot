@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 成员权限改变的事件（该成员不是Bot）
     /// </summary>
-    public class MemberPermissionChangeEvent : BaseEvent
+    public class MemberPermissionChangeEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 原权限

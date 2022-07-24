@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// Bot被服务器断开或因网络问题而掉线
     /// </summary>
-    public class BotOfflineEventDropped : BaseEvent
+    public class BotOfflineEventDropped : BaseMiraiEvent
     {
         /// <summary>
         /// 被服务器断开或因网络问题而掉线的Bot的QQ号

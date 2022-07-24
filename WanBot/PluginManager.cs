@@ -29,14 +29,22 @@ namespace WanBot
                         continue;
 
                     _logger.Info("Find {PluginName}.", type.Name);
-                    var plugin = BasePlugin.CreatePluginInstance(type, Application.Current, new Logger(type.Name));
+                    var pluginLogger = new Logger(type.Name);
+                    var plugin = BasePlugin.CreatePluginInstance(type, Application.Current, pluginLogger);
+                    pluginLogger.SetCategory(plugin.PluginName);
+                    _logger.Info(
+                        "Plugin {PluginName} by {PluginAuthor} version {PluginVersion}", 
+                        plugin.PluginName,
+                        plugin.PluginAuthor, 
+                        plugin.PluginVersion);
+
                     try
                     {
                         plugin.PreInit();
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        _logger.Error("Failed while PreInit plugin {PluginName}. Plugin not load.", plugin.GetType().Name);
+                        _logger.Error("Failed while PreInit plugin {PluginName}. Plugin not load.\n{ex}", plugin.GetType().Name, e);
                         continue;
                     }
                     _plugins.Add(plugin);

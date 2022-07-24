@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 某群入群公告改变
     /// </summary>
-    public class GroupEntranceAnnouncementChangeEvent : BaseEvent
+    public class GroupEntranceAnnouncementChangeEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 原公告

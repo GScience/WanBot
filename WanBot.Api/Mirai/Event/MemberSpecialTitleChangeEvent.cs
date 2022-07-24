@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 群头衔改动（只有群主有操作限权）
     /// </summary>
-    public class MemberSpecialTitleChangeEvent : BaseEvent
+    public class MemberSpecialTitleChangeEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 原头衔

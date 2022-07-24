@@ -10,7 +10,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 同步群临时消息
     /// </summary>
-    public class TempSyncMessage : BaseEvent
+    public class TempSyncMessage : BaseMiraiEvent
     {
         /// <summary>
         /// 发送者

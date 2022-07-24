@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// Bot被挤下线
     /// </summary>
-    public class BotOfflineEventForce : BaseEvent
+    public class BotOfflineEventForce : BaseMiraiEvent
     {
         /// <summary>
         /// 被挤下线的Bot的QQ号

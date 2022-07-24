@@ -10,11 +10,11 @@ using WanBot.Api.Mirai.Network;
 namespace WanBot.Api.Mirai.Payload
 {
     /// <summary>
-    /// 发送群消息
+    /// 发送好友消息
     /// </summary>
-    [HttpApi("sendGroupMessage", HttpAdapterMethod.PostJson)]
-    [WsApi("sendGroupMessage")]
-    public class SendGroupMessageRequest
+    [HttpApi("sendTempMessage", HttpAdapterMethod.PostJson)]
+    [WsApi("sendTempMessage")]
+    public class SendTempMessageRequest
     {
         /// <summary>
         /// 已经激活的Session
@@ -22,9 +22,14 @@ namespace WanBot.Api.Mirai.Payload
         public string SessionKey { get; set; } = string.Empty;
 
         /// <summary>
-        /// 发送消息目标群的群号
+        /// 临时会话对象QQ号
         /// </summary>
-        public long Target { get; set; }
+        public long QQ { get; set; }
+
+        /// <summary>
+        /// 临时会话群号
+        /// </summary>
+        public long Group { get; set; }
 
         /// <summary>
         /// 引用一条消息的messageId进行回复
@@ -34,7 +39,7 @@ namespace WanBot.Api.Mirai.Payload
         public MessageChain? MessageChain { get; set; }
     }
 
-    public class SendGroupMessageResponse : Response
+    public class SendTempMessageResponse : Response
     {
         public int MessageId { get; set; }
     }

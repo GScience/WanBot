@@ -29,7 +29,7 @@ namespace WanBot.Test
                   "inputting": true
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<FriendInputStatusChangedEvent>(json);
         }
 
@@ -49,7 +49,7 @@ namespace WanBot.Test
                   "to": "new nickname"
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<FriendNickChangedEvent>(json);
         }
     }

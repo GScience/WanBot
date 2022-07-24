@@ -28,7 +28,7 @@ namespace WanBot.Test
                   "kind": 69899
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<OtherClientOnlineEvent>(json);
         }
 
@@ -45,7 +45,7 @@ namespace WanBot.Test
                   }
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<OtherClientOfflineEvent>(json);
         }
 
@@ -67,7 +67,7 @@ namespace WanBot.Test
                   ]
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<CommandExecutedEvent>(json);
         }
     }

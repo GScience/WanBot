@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// Bot主动重新登录
     /// </summary>
-    public class BotReloginEvent : BaseEvent
+    public class BotReloginEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 主动重新登录的Bot的QQ号

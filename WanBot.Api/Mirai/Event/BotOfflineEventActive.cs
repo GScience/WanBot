@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// Bot主动离线
     /// </summary>
-    public class BotOfflineEventActive : BaseEvent
+    public class BotOfflineEventActive : BaseMiraiEvent
     {
         /// <summary>
         /// 主动离线的Bot的QQ号

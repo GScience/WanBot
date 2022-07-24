@@ -8,7 +8,7 @@ namespace WanBot.Plugin.HelloWorld
     public class HelloWorldPlugin : BaseWanBotPlugin
     {
         [MiraiEvent<GroupMessage>]
-        public void OnGroupMessage(MiraiBot bot, MiraiEventArgs<GroupMessage> groupMessage)
+        public void OnGroupMessage(MiraiBot bot, CancellableEventArgs<GroupMessage> groupMessage)
         {
 
         }

@@ -10,7 +10,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 同步好友消息
     /// </summary>
-    public class FriendSyncMessage : BaseEvent
+    public class FriendSyncMessage : BaseMiraiEvent
     {
         /// <summary>
         /// 发送者

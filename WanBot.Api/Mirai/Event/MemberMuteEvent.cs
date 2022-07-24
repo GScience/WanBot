@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 群成员被禁言事件（该成员不是Bot）
     /// </summary>
-    public class MemberMuteEvent : BaseEvent
+    public class MemberMuteEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 禁言时长，单位为秒

@@ -38,6 +38,11 @@ namespace WanBot.Util
                 return JsonSerializer.Deserialize<T>(ifs)!;
             }
 
+            var fileInfo = new FileInfo(fullPath);
+
+            if (!fileInfo.Directory!.Exists)
+                Directory.CreateDirectory(fileInfo.DirectoryName!);
+
             var conf = new T();
             using var ofs = File.Create(fullPath);
             JsonSerializer.Serialize(ofs, conf, _options);

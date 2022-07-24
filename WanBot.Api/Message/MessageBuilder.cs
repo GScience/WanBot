@@ -15,7 +15,10 @@ namespace WanBot.Api.Message
 
         public MessageBuilder Text(string text)
         {
-            _chains.Add(new Plain { Text = text });
+            if (_chains.Count != 0 && _chains.Last() is Plain plain)
+                plain.Text += text;
+            else
+                _chains.Add(new Plain { Text = text });
             return this;
         }
 
@@ -28,6 +31,20 @@ namespace WanBot.Api.Message
         public MessageBuilder Image(MiraiImage image)
         {
             _chains.Add((ChainGenerator)((MessageType type) => new Image { ImageId = image.GetImageIdAsync(type).Result }));
+            return this;
+        }
+
+        public MessageBuilder Chains(IEnumerable<BaseChain> chains)
+        {
+            foreach (var chain in chains)
+            {
+                if (_chains.Count != 0 && 
+                    _chains.Last() is Plain lastPlain &&
+                    chain is Plain chainPlain)
+                    lastPlain.Text += chainPlain.Text;
+                else
+                    _chains.Add(chain);
+            }
             return this;
         }
 

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace WanBot.Api.Mirai.Event
 {
     /// <summary>
-    /// Mirai事件
+    /// 可取消的事件
     /// </summary>
-    public class MiraiEventArgs
+    public class CancellableEventArgs
     {
         /// <summary>
         /// 是否取消事件的传递

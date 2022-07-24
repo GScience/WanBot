@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 成员主动离群（该成员不是Bot）
     /// </summary>
-    public class MemberLeaveEventQuit : BaseEvent
+    public class MemberLeaveEventQuit : BaseMiraiEvent
     {
         /// <summary>
         /// 被踢者的信息

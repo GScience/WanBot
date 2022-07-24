@@ -22,6 +22,10 @@ namespace WanBot.Api
 
         public ILogger Logger { get; private set; } = null!;
 
+        public abstract string PluginName { get; }
+        public abstract string PluginAuthor { get; }
+        public abstract Version PluginVersion { get; }
+
         /// <summary>
         /// 订阅事件
         /// </summary>
@@ -30,7 +34,7 @@ namespace WanBot.Api
         /// <param name="func"></param>
         /// <returns></returns>
         public MiraiEventHandler Subscripe<T>(int priority, Func<MiraiBot, T, Task> func)
-            where T : MiraiEventArgs
+            where T : CancellableEventArgs
             => Application.BotManager.Subscript<T>(priority, func);
 
         /// <summary>

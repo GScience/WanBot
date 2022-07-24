@@ -16,60 +16,106 @@ namespace WanBot.Api.Event
     /// </summary>
     public class CommandEventPlugin : BaseWanBotPlugin
     {
-        [MiraiEvent<GroupMessage>(Priority.Highest)]
-        public async Task OnGroupMessage(MiraiBot sender, GroupMessage e)
+        public override string PluginName => "Command";
+        public override string PluginAuthor => "WanNeng";
+        public override Version PluginVersion => Version.Parse("1.0.0");
+
+        private CommandEventConfig _config = null!;
+
+        public override void PreInit()
         {
-            if (e.MessageChain.Compare("犊子开发机呢"))
-                await sender.SendGroupMessageAsync(e.Sender.Group.Id, null, new MessageChain(new[] { new Plain { Text = "在这呢！" } }));
+            base.PreInit();
+            _config = GetConfig<CommandEventConfig>();
+        }
 
-            var chain = e.MessageChain;
-
-            if (!chain.StartsWith("#"))
+        [MiraiEvent<TempMessage>(Priority.Highest)]
+        public async Task OnTempMessage(MiraiBot bot, TempMessage e)
+        {
+            if (!e.MessageChain.StartsWith(_config.CommandPrefix))
                 return;
 
-            var messageDivider = new MessageChainDivider(e.MessageChain);
-            if (messageDivider.ReadNext() is string str)
+            var sender = new StrangerSender(
+                bot,
+                $"{e.Sender.MemberName}({e.Sender.Id})",
+                e.Sender.Id,
+                e.Sender.Group.Id);
+
+            await OnMessage(bot, sender, e.MessageChain);
+        }
+
+        [MiraiEvent<FriendMessage>(Priority.Highest)]
+        public async Task OnFriendMessage(MiraiBot bot, FriendMessage e)
+        {
+            if (!e.MessageChain.StartsWith(_config.CommandPrefix))
+                return;
+
+            var sender = new FriendSender(
+                bot,
+                $"{e.Sender.Nickname}({e.Sender.Id})",
+                e.Sender.Id);
+
+            await OnMessage(bot, sender, e.MessageChain);
+        }
+        
+        [MiraiEvent<GroupMessage>(Priority.Highest)]
+        public async Task OnGroupMessage(MiraiBot bot, GroupMessage e)
+        {
+            if (!e.MessageChain.StartsWith(_config.CommandPrefix))
+                return;
+
+            var sender = new GroupSender(
+                bot,
+                $"[{e.Sender.Group.Name}({e.Sender.Group.Id})] {e.Sender.MemberName}({e.Sender.Id})",
+                e.Sender.Group.Id);
+
+            await OnMessage(bot, sender, e.MessageChain);
+        }
+
+
+        public async Task OnMessage(MiraiBot bot, ISender sender, MessageChain messageChain)
+        {
+            var divider = new MessageChainDivider(messageChain);
+            var firstChain = divider.ReadNext();
+            if (firstChain is not string firstStr)
+                throw new Exception("Failed to get first string of MessageChain.");
+
+            var cmd = firstStr[_config.CommandPrefix.Length..];
+            if (cmd.Length == 0)
+                return;
+
+            Logger.Info($"{sender.Name} do command #{{cmd}}", cmd);
+
+            var eventArgs = new CommandEventArgs(sender, divider, cmd);
+            try
             {
-                if (str == "#复读测试")
-                    await sender.SendGroupMessageAsync(e.Sender.Group.Id, null, new MessageChain(messageDivider.ReadAll()));
-                else if(str == "#图像测试")
-                {
-                    using var surface = SKSurface.Create(new SKImageInfo(250, 250));
-                    var random = new Random((int)((uint)e.Sender.Id - uint.MaxValue / 2));
-
-                    using var backColor = new SKPaint();
-                    backColor.Color = new SKColor(
-                        255,
-                        255,
-                        255);
-
-                    using var frontColor = new SKPaint();
-                    frontColor.Color = new SKColor(
-                        (byte)random.Next(0, 64),
-                        (byte)random.Next(0, 64),
-                        (byte)random.Next(0, 64));
-
-                    surface.Canvas.Clear(backColor.Color);
-                    for (var x = 0; x < 5; ++x)
-                        for (var y = 0; y < 10; ++y)
-                        {
-                            switch (random.Next(0, 5))
-                            {
-                                case 0:
-                                    surface.Canvas.DrawRect(x * 25, y * 25, 25, 25, frontColor);
-                                    surface.Canvas.DrawRect((9 - x) * 25, y * 25, 25, 25, frontColor);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    surface.Flush();
-                    var messageBuilder =
-                        new MessageBuilder().Text("这是你的NFT").Image(new MiraiImage(sender, surface.Snapshot()));
-                    await sender.SendGroupMessageAsync(e.Sender.Group.Id, null, messageBuilder);
-
-                }
+                await bot.PublishAsync(eventArgs.GetEventName(), eventArgs);
+            }
+            catch (Exception)
+            {
+                Logger.Warn("Error while deal with command #{cmd}", cmd);
+                throw;
             }
         }
+
+        [Command("命令测试")]
+        public async Task OnTestCommand(MiraiBot bot, CommandEventArgs commandEvent)
+        {
+            var messageBuilder = new MessageBuilder().Text("你好，命令系统");
+            if (commandEvent.EOF)
+                await commandEvent.Sender.ReplyAsync(messageBuilder);
+            else
+                await commandEvent.Sender.ReplyAsync(messageBuilder.Chains(commandEvent.GetRemain()!));
+        }
+    }
+
+    /// <summary>
+    /// 命令事件配置
+    /// </summary>
+    internal class CommandEventConfig
+    {
+        /// <summary>
+        /// 命令触发词
+        /// </summary>
+        public string CommandPrefix { get; set; } = "#";
     }
 }

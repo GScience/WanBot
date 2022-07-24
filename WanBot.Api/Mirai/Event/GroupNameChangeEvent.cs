@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 某个群名改变
     /// </summary>
-    public class GroupNameChangeEvent : BaseEvent
+    public class GroupNameChangeEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 原群名

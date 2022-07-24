@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 匿名聊天
     /// </summary>
-    public class GroupAllowAnonymousChatEvent : BaseEvent
+    public class GroupAllowAnonymousChatEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 原本匿名聊天是否开启

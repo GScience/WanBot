@@ -8,7 +8,7 @@ using WanBot.Api.Mirai.Event;
 namespace WanBot.Api.Event
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class MiraiEventAttribute<T> : MiraiEventAttribute where T : BaseEvent
+    public class MiraiEventAttribute<T> : MiraiEventAttribute where T : BaseMiraiEvent
     {
         public MiraiEventAttribute(int priority = 0) : base(priority, typeof(T)) { }
     }

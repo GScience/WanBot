@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// Bot登录成功
     /// </summary>
-    public class BotOnlineEvent : BaseEvent
+    public class BotOnlineEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 登录成功的Bot的QQ号

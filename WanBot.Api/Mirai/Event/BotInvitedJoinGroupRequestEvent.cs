@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// Bot被邀请入群申请
     /// </summary>
-    public class BotInvitedJoinGroupRequestEvent : BaseEvent
+    public class BotInvitedJoinGroupRequestEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 事件标识，响应该事件时的标识

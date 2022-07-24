@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// Bot被取消禁言
     /// </summary>
-    public class BotUnmuteEvent : BaseEvent
+    public class BotUnmuteEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 操作的管理员或群主信息

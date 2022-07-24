@@ -17,7 +17,7 @@ namespace WanBot.Api.Mirai
     /// </summary>
     public partial class MiraiBot : IDisposable
     {
-        private ConcurrentDictionary<Type, MiraiEvent> _eventDict = new();
+        private ConcurrentDictionary<string, MiraiEvent> _eventDict = new();
         internal ILogger _logger;
 
         private Dictionary<Type, IAdapter> _adapterDict = new();
@@ -70,15 +70,15 @@ namespace WanBot.Api.Mirai
         /// <param name="eventHandler"></param>
         /// <returns></returns>
         public MiraiEventHandler Subscripe<T>(MiraiEventHandler<T> eventHandler) 
-            where T : MiraiEventArgs
+            where T : CancellableEventArgs
         {
-            if (_eventDict.TryGetValue(typeof(T), out var e))
+            if (_eventDict.TryGetValue(typeof(T).Name, out var e))
                 e.Add(eventHandler);
             else
             {
                 e = new();
                 e.Add(eventHandler);
-                _eventDict[typeof(T)] = e;
+                _eventDict[typeof(T).Name] = e;
             }
             return eventHandler;
         }
@@ -91,33 +91,67 @@ namespace WanBot.Api.Mirai
         /// <returns></returns>
         public MiraiEventHandler Subscripe(Type type, MiraiEventHandler eventHandler)
         {
-            if (_eventDict.TryGetValue(type, out var e))
+            return Subscripe(type.Name, eventHandler);
+        }
+
+        /// <summary>
+        /// 订阅事件
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="eventHandler"></param>
+        /// <returns></returns>
+        public MiraiEventHandler Subscripe(string eventName, MiraiEventHandler eventHandler)
+        {
+            if (_eventDict.TryGetValue(eventName, out var e))
                 e.Add(eventHandler);
             else
             {
                 e = new();
                 e.Add(eventHandler);
-                _eventDict[type] = e;
+                _eventDict[eventName] = e;
             }
             return eventHandler;
         }
 
+        /// <summary>
+        /// 发布事件
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="eventArgs"></param>
+        public async Task PublishAsync(Type type, CancellableEventArgs eventArgs)
+        {
+            await PublishAsync(type.Name, eventArgs);
+        }
+
+        /// <summary>
+        /// 发布事件
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="eventArgs"></param>
+        public async Task PublishAsync(string eventType, CancellableEventArgs eventArgs)
+        {
+            if (!_eventDict.TryGetValue(eventType, out var e))
+                return;
+            
+            await e.InvokeAsync(this, eventArgs);
+        }
+
         private void OnWSMessage(string msg)
         {
-            var wsResponse = JsonSerializer.Deserialize<WsAdapterResponse<BaseEvent>>(msg, MiraiJsonContext.Default.Options);
+            var wsResponse = JsonSerializer.Deserialize<WsAdapterResponse<BaseMiraiEvent>>(msg, MiraiJsonContext.Default.Options);
             var baseEvent = wsResponse!.Data;
             var eventType = baseEvent!.GetType();
-            if (_eventDict.TryGetValue(eventType, out var e))
-            {
-                var task = e.InvokeAsync(this, baseEvent);
+            var task = PublishAsync(eventType, baseEvent);
 
-                task.GetAwaiter().OnCompleted(() =>
-                {
-                    var ex = task.Exception;
-                    if (ex != null)
-                        _logger.Error("Error while deal with event {EventType} because of:\n {ex}\nPayload: \n{msg}", eventType, ex, msg);
-                });
-            }
+            task.GetAwaiter().OnCompleted(() =>
+            {
+                if (task.Exception != null)
+                    _logger.Error(
+                        "Error while deal with event {EventType} because of:\n {ex}\nPayload: \n{msg}",
+                        eventType,
+                        task.Exception,
+                        msg);
+            });
         }
 
         public void Dispose()

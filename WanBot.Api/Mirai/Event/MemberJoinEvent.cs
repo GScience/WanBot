@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 新人入群的事件
     /// </summary>
-    public class MemberJoinEvent : BaseEvent
+    public class MemberJoinEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 新人信息

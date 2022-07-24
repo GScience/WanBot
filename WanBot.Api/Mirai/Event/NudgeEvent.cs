@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 戳一戳事件
     /// </summary>
-    public class NudgeEvent : BaseEvent
+    public class NudgeEvent : BaseMiraiEvent
     {
         public class Source
         {

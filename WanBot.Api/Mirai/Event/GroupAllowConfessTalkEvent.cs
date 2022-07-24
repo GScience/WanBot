@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 坦白说
     /// </summary>
-    public class GroupAllowConfessTalkEvent : BaseEvent
+    public class GroupAllowConfessTalkEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 原本坦白说是否开启

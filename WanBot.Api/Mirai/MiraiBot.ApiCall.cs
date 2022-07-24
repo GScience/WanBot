@@ -22,6 +22,95 @@ namespace WanBot.Api.Mirai
 
             return result!;
         }
+
+        public async Task<FriendListResponse> FriendListAsync()
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<FriendListResponse, FriendListRequest>(
+                new FriendListRequest()
+                {
+                    SessionKey = SessionKey
+                });
+
+            return result!;
+        }
+
+        public async Task<GroupListResponse> GroupListAsync()
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<GroupListResponse, GroupListRequest>(
+                new GroupListRequest()
+                {
+                    SessionKey = SessionKey
+                });
+
+            return result!;
+        }
+
+        public async Task<MemberListResponse> MemberListAsync(long target)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<MemberListResponse, MemberListRequest>(
+                new MemberListRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target
+                });
+
+            return result!;
+        }
+
+        public async Task<BotProfileResponse> BotProfileAsync()
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<BotProfileResponse, BotProfileRequest>(
+                new BotProfileRequest()
+                {
+                    SessionKey = SessionKey
+                });
+
+            return result!;
+        }
+
+        public async Task<FriendProfileResponse> FriendProfileAsync(long target)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<FriendProfileResponse, FriendProfileRequest>(
+                new FriendProfileRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target
+                });
+
+            return result!;
+        }
+
+        public async Task<MemberProfileResponse> MemberProfileAsync(long target, long memberId)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<MemberProfileResponse, MemberProfileRequest>(
+                new MemberProfileRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target,
+                    MemberId = memberId
+                });
+
+            return result!;
+        }
+
+        public async Task<UserProfileResponse> UserProfileAsync(long target)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<UserProfileResponse, UserProfileRequest>(
+                new UserProfileRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target
+                });
+
+            return result!;
+        }
         public async Task<SendGroupMessageResponse> SendGroupMessageAsync(long target, int? quote, MessageChain messageChain)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
@@ -67,90 +156,139 @@ namespace WanBot.Api.Mirai
             return result!;
         }
 
-        public async Task<FriendListResponse> FriendListAsync()
+        public async Task<SendFriendMessageResponse> SendFriendMessageAsync(long target, int? quote, MessageChain messageChain)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
-            var result = await adapter.SendAsync<FriendListResponse, FriendListRequest>(
-                new FriendListRequest()
-                {
-                    SessionKey = SessionKey
-                });
-
-            return result!;
-        }
-
-        public async Task<GroupListResponse> GroupListAsync()
-        {
-            var adapter = _adapterDict[typeof(HttpAdapter)];
-            var result = await adapter.SendAsync<GroupListResponse, GroupListRequest>(
-                new GroupListRequest()
-                {
-                    SessionKey = SessionKey
-                });
-
-            return result!;
-        }
-
-        public async Task<MemberListResponse> MemberListAsync(long target)
-        {
-            var adapter = _adapterDict[typeof(HttpAdapter)];
-            var result = await adapter.SendAsync<MemberListResponse, MemberListRequest>(
-                new MemberListRequest()
-                {
-                    SessionKey = SessionKey,
-                    Target = target
-                });
-
-            return result!;
-        }
-
-        public async Task<BotProfileResponse> BotProfileAsync()
-        {
-            var adapter = _adapterDict[typeof(HttpAdapter)];
-            var result = await adapter.SendAsync<BotProfileResponse, BotProfileRequest>(
-                new BotProfileRequest()
-                {
-                    SessionKey= SessionKey
-                });
-
-            return result!;
-        }
-
-        public async Task<FriendProfileResponse> FriendProfileAsync(long target)
-        {
-            var adapter = _adapterDict[typeof(HttpAdapter)];
-            var result = await adapter.SendAsync<FriendProfileResponse, FriendProfileRequest>(
-                new FriendProfileRequest()
-                {
-                    SessionKey = SessionKey,
-                    Target = target
-                });
-
-            return result!;
-        }
-
-        public async Task<MemberProfileResponse> MemberProfileAsync(long target, long memberId)
-        {
-            var adapter = _adapterDict[typeof(HttpAdapter)];
-            var result = await adapter.SendAsync<MemberProfileResponse, MemberProfileRequest>(
-                new MemberProfileRequest()
+            var result = await adapter.SendAsync<SendFriendMessageResponse, SendFriendMessageRequest>(
+                new SendFriendMessageRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target,
-                    MemberId = memberId
+                    Quote = quote,
+                    MessageChain = messageChain
                 });
 
             return result!;
         }
 
-        public async Task<UserProfileResponse> UserProfileAsync(long target)
+        public async Task<SendFriendMessageResponse> SendFriendMessageAsync(long target, int? quote, string message)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
-            var result = await adapter.SendAsync<UserProfileResponse, UserProfileRequest>(
-                new UserProfileRequest()
+            var result = await adapter.SendAsync<SendFriendMessageResponse, SendFriendMessageRequest>(
+                new SendFriendMessageRequest()
                 {
                     SessionKey = SessionKey,
-                    Target = target
+                    Target = target,
+                    Quote = quote,
+                    MessageChain = new MessageChain(new[] { new Plain { Text = message } })
+                });
+
+            return result!;
+        }
+
+        public async Task<SendFriendMessageResponse> SendFriendMessageAsync(long target, int? quote, MessageBuilder messageBuilder)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<SendFriendMessageResponse, SendFriendMessageRequest>(
+                new SendFriendMessageRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = target,
+                    Quote = quote,
+                    MessageChain = new MessageChain(messageBuilder.Build(MessageType.Group))
+                });
+
+            return result!;
+        }
+
+        public async Task<SendTempMessageResponse> SendTempMessageAsync(long qq, long group, int? quote, MessageChain messageChain)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<SendTempMessageResponse, SendTempMessageRequest>(
+                new SendTempMessageRequest()
+                {
+                    SessionKey = SessionKey,
+                    QQ = qq,
+                    Group = group,
+                    Quote = quote,
+                    MessageChain = messageChain
+                });
+
+            return result!;
+        }
+
+        public async Task<SendTempMessageResponse> SendTempMessageAsync(long qq, long group, int? quote, string message)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<SendTempMessageResponse, SendTempMessageRequest>(
+                new SendTempMessageRequest()
+                {
+                    SessionKey = SessionKey,
+                    QQ = qq,
+                    Group = group,
+                    Quote = quote,
+                    MessageChain = new MessageChain(new[] { new Plain { Text = message } })
+                });
+
+            return result!;
+        }
+
+        public async Task<SendTempMessageResponse> SendTempMessageAsync(long qq, long group, int? quote, MessageBuilder messageBuilder)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<SendTempMessageResponse, SendTempMessageRequest>(
+                new SendTempMessageRequest()
+                {
+                    SessionKey = SessionKey,
+                    QQ = qq,
+                    Group = group,
+                    Quote = quote,
+                    MessageChain = new MessageChain(messageBuilder.Build(MessageType.Group))
+                });
+
+            return result!;
+        }
+
+        public async Task<SendNudgeResponse> SendGroupNudge(long qq, long group)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<SendNudgeResponse, SendNudgeRequest>(
+                new SendNudgeRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = qq,
+                    Subject = group,
+                    Kind = "Group"
+                });
+
+            return result!;
+        }
+
+        public async Task<SendNudgeResponse> SendFriendNudge(long qq)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<SendNudgeResponse, SendNudgeRequest>(
+                new SendNudgeRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = qq,
+                    Subject = qq,
+                    Kind = "Friend"
+                });
+
+            return result!;
+        }
+
+        public async Task<SendNudgeResponse> SendStrangerNudge(long qq)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<SendNudgeResponse, SendNudgeRequest>(
+                new SendNudgeRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = qq,
+                    Subject = qq,
+                    Kind = "Stranger"
                 });
 
             return result!;

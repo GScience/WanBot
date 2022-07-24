@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 好友昵称改变
     /// </summary>
-    public class FriendNickChangedEvent : BaseEvent
+    public class FriendNickChangedEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 好友

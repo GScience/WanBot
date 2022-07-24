@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 用户入群申请（Bot需要有管理员权限）
     /// </summary>
-    public class MemberJoinRequestEvent : BaseEvent
+    public class MemberJoinRequestEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 事件标识，响应该事件时的标识

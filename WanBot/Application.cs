@@ -62,6 +62,11 @@ namespace WanBot
             return ConfigHelper.ReadConfigFromFile<T>(Path.Combine(ConfigPath, relvPath));
         }
 
+        public T ReadConfig<T>(string pluginName) where T : new()
+        {
+            return ReadConfigFromFile<T>(Path.Combine(pluginName, "Config.conf"));
+        }
+
         internal void CheckDir()
         {
             if (!Directory.Exists(ConfigPath))

@@ -29,7 +29,7 @@ namespace WanBot.Test
                     "messageChain": []
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<FriendMessage>(json);
         }
 
@@ -57,7 +57,7 @@ namespace WanBot.Test
                     "messageChain": []
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<GroupMessage>(json);
         }
 
@@ -85,7 +85,7 @@ namespace WanBot.Test
                     "messageChain": []
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<TempMessage>(json);
         }
 
@@ -104,7 +104,7 @@ namespace WanBot.Test
                     "messageChain": []
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<StrangerMessage>(json);
         }
 
@@ -122,7 +122,7 @@ namespace WanBot.Test
                     "messageChain": []
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<OtherClientMessage>(json);
         }
     }

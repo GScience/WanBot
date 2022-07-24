@@ -24,7 +24,7 @@ namespace WanBot.Test
                   "qq":123456
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotOnlineEvent>(json);
         }
 
@@ -38,7 +38,7 @@ namespace WanBot.Test
                   "qq":123456
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotOfflineEventActive>(json);
         }
 
@@ -52,7 +52,7 @@ namespace WanBot.Test
                   "qq":123456
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotOfflineEventForce>(json);
         }
 
@@ -66,7 +66,7 @@ namespace WanBot.Test
                   "qq":123456
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotOfflineEventDropped>(json);
         }
 
@@ -80,7 +80,7 @@ namespace WanBot.Test
                   "qq":123456
                 }
                 """;
-            JsonHelper.TestJsonSerialization<BaseEvent>(json);
+            JsonHelper.TestJsonSerialization<BaseMiraiEvent>(json);
             JsonHelper.TestJsonSerialization<BotReloginEvent>(json);
         }
     }

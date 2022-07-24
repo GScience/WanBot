@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 允许群员邀请好友加群
     /// </summary>
-    public class GroupAllowMemberInviteEvent : BaseEvent
+    public class GroupAllowMemberInviteEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 原本是否允许群员邀请好友加群

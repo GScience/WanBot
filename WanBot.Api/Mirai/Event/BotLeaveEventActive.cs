@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// Bot主动退出一个群
     /// </summary>
-    public class BotLeaveEventActive : BaseEvent
+    public class BotLeaveEventActive : BaseMiraiEvent
     {
         /// <summary>
         /// Bot退出的群的信息

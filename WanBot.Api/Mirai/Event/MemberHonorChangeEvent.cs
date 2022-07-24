@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 群员称号改变
     /// </summary>
-    public class MemberHonorChangeEvent : BaseEvent
+    public class MemberHonorChangeEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 称号发生变化的群员的信息

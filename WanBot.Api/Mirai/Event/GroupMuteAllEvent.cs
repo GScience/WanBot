@@ -9,7 +9,7 @@ namespace WanBot.Api.Mirai.Event
     /// <summary>
     /// 全员禁言
     /// </summary>
-    public class GroupMuteAllEvent : BaseEvent
+    public class GroupMuteAllEvent : BaseMiraiEvent
     {
         /// <summary>
         /// 原本是否处于全员禁言
