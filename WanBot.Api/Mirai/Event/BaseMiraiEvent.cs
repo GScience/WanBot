@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using WanBot.Api.Event;
 using WanBot.Api.Util;
 
 namespace WanBot.Api.Mirai.Event

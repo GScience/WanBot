@@ -85,7 +85,7 @@ namespace WanBot.Api.Message
 
                 if (_readAll)
                     yield return new Plain { Text = buffer };
-                else
+                else if (!string.IsNullOrWhiteSpace(buffer))
                     yield return buffer;
             }
         }

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api;
+using WanBot.Api.Event;
 using WanBot.Api.Mirai;
-using WanBot.Api.Mirai.Event;
 
 namespace WanBot
 {
@@ -57,7 +57,7 @@ namespace WanBot
             }
         }
 
-        public MiraiEventHandler Subscript<T>(int priority, Func<MiraiBot, T, Task> func)
+        public WanBotEventHandler Subscript<T>(int priority, Func<MiraiBot, T, Task> func)
             where T : CancellableEventArgs
         {
             var handler = new MiraiEventHandler<T>(priority, func);
@@ -67,18 +67,18 @@ namespace WanBot
             return handler;
         }
 
-        public MiraiEventHandler Subscript(Type type, int priority, Func<MiraiBot, CancellableEventArgs, Task> func)
+        public WanBotEventHandler Subscript(Type type, int priority, Func<MiraiBot, CancellableEventArgs, Task> func)
         {
-            var handler = new MiraiEventHandler(priority, func);
+            var handler = new WanBotEventHandler(priority, func);
             foreach (var bot in _bots)
                 bot.Subscripe(type, handler);
 
             return handler;
         }
 
-        public MiraiEventHandler Subscript(string eventName, int priority, Func<MiraiBot, CancellableEventArgs, Task> func)
+        public WanBotEventHandler Subscript(string eventName, int priority, Func<MiraiBot, CancellableEventArgs, Task> func)
         {
-            var handler = new MiraiEventHandler(priority, func);
+            var handler = new WanBotEventHandler(priority, func);
             foreach (var bot in _bots)
                 bot.Subscripe(eventName, handler);
 

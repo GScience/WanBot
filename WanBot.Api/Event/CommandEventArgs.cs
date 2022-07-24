@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api.Message;
-using WanBot.Api.Mirai.Event;
 using WanBot.Api.Mirai.Message;
 
 namespace WanBot.Api.Event
@@ -15,12 +14,6 @@ namespace WanBot.Api.Event
     public class CommandEventArgs : CancellableEventArgs
     {
         private MessageChainDivider _divider;
-        private object? _next;
-
-        /// <summary>
-        /// 读到结尾
-        /// </summary>
-        public bool EOF { get; private set; }
 
         /// <summary>
         /// 事件发送者
@@ -36,54 +29,17 @@ namespace WanBot.Api.Event
             Command = cmd;
         }
 
-        private bool TryMoveNextWhenReaded()
-        {
-            if (EOF)
-                return false;
-
-            if (_next == null)
-                _next = _divider.ReadNext();
-
-            if (_next == null)
-            {
-                EOF = true;
-                return false;
-            }
-            return true;
-        }
-
         /// <summary>
         /// 尝试获取下一个字符串
         /// </summary>
         /// <returns></returns>
-        public string? TryGetNextString()
+        /// <exception cref="InvalidOperationException"></exception>
+        public T GetNextArgs<T>()
         {
-            if (!TryMoveNextWhenReaded())
-                return null;
-
-            if (_next is string nextString)
-            {
-                _next = null;
-                return nextString;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// 尝试获取下一个消息链对象
-        /// </summary>
-        /// <returns></returns>
-        public BaseChain? TryGetNextChain()
-        {
-            if (!TryMoveNextWhenReaded())
-                return null;
-
-            if (_next is BaseChain nextChain)
-            {
-                _next = null;
-                return nextChain;
-            }
-            return null;
+            var next = _divider.ReadNext();
+            if (next is not T nextT)
+                throw new InvalidOperationException($"{next} is not {typeof(T)}");
+            return nextT;
         }
 
         /// <summary>
@@ -92,10 +48,20 @@ namespace WanBot.Api.Event
         /// <returns></returns>
         public IEnumerable<BaseChain>? GetRemain()
         {
-            if (EOF)
-                return null;
-            EOF = true;
-            return _divider.ReadAll();
+            var enumerator = _divider.ReadAll().GetEnumerator();
+
+            // 第一个字符串去除开始空格
+            if (!enumerator.MoveNext())
+                yield break;
+
+            var first = enumerator.Current;
+
+            if (first is Plain firstPlain)
+                firstPlain.Text = firstPlain.Text.TrimStart();
+            yield return first;
+
+            while (enumerator.MoveNext())
+                yield return enumerator.Current;
         }
 
         public string GetEventName()

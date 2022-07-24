@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace WanBot.Api.Mirai.Event
+namespace WanBot.Api.Event
 {
     /// <summary>
     /// 可取消的事件

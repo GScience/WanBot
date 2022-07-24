@@ -7,6 +7,9 @@ for (var i = 0; i < args.Length; i++)
 {
     if (args[i].ToLower() == "-config")
         application.ConfigPath = args[++i];
+
+    if (args[i].ToLower() == "-plugin")
+        application.PluginPath = args[++i];
 }
 
 try

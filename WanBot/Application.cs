@@ -67,12 +67,6 @@ namespace WanBot
             return ReadConfigFromFile<T>(Path.Combine(pluginName, "Config.conf"));
         }
 
-        internal void CheckDir()
-        {
-            if (!Directory.Exists(ConfigPath))
-                Directory.CreateDirectory(ConfigPath);
-        }
-
         /// <summary>
         /// 启动应用
         /// </summary>
@@ -86,14 +80,12 @@ namespace WanBot
                     OnConsoleExit();
             };
 
-            CheckDir();
-
             var bindAccountTask = BindAccountAsync();
 
             // 初始化插件系统
             _logger.Info("Loading plugins");
             PluginManager.LoadAssemblysFromDir(PluginPath);
-            PluginManager.FindPlugins();
+            PluginManager.EnumPlugins();
             PluginManager.InitPlugins();
 
             // 等待账户绑定

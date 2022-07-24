@@ -14,7 +14,7 @@ namespace WanBot.Api.Event
     /// <summary>
     /// 命令支持插件
     /// </summary>
-    public class CommandEventPlugin : BaseWanBotPlugin
+    public class CommandEventPlugin : WanBotPlugin
     {
         public override string PluginName => "Command";
         public override string PluginAuthor => "WanNeng";
@@ -95,16 +95,6 @@ namespace WanBot.Api.Event
                 Logger.Warn("Error while deal with command #{cmd}", cmd);
                 throw;
             }
-        }
-
-        [Command("命令测试")]
-        public async Task OnTestCommand(MiraiBot bot, CommandEventArgs commandEvent)
-        {
-            var messageBuilder = new MessageBuilder().Text("你好，命令系统");
-            if (commandEvent.EOF)
-                await commandEvent.Sender.ReplyAsync(messageBuilder);
-            else
-                await commandEvent.Sender.ReplyAsync(messageBuilder.Chains(commandEvent.GetRemain()!));
         }
     }
 

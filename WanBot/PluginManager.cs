@@ -16,39 +16,76 @@ namespace WanBot
 
         public void LoadAssemblysFromDir(string dir)
         {
-
+            foreach (var file in Directory.EnumerateFiles(dir, "*.dll"))
+            {
+                _logger.Info("Loading {file}", file);
+                try
+                {
+                    Assembly.LoadFile(file);
+                }
+                catch (Exception e)
+                {
+                    _logger.Info("Failed to load {file} because: \n{e}", file, e);
+                }
+            }
         }
 
-        public void FindPlugins()
+        public void EnumPlugins()
         {
             foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
-                foreach (var type in asm.GetTypes())
+            {
+                try
                 {
-                    if (!typeof(BasePlugin).IsAssignableFrom(type) ||
-                        type.IsAbstract)
-                        continue;
-
-                    _logger.Info("Find {PluginName}.", type.Name);
-                    var pluginLogger = new Logger(type.Name);
-                    var plugin = BasePlugin.CreatePluginInstance(type, Application.Current, pluginLogger);
-                    pluginLogger.SetCategory(plugin.PluginName);
-                    _logger.Info(
-                        "Plugin {PluginName} by {PluginAuthor} version {PluginVersion}", 
-                        plugin.PluginName,
-                        plugin.PluginAuthor, 
-                        plugin.PluginVersion);
-
-                    try
-                    {
-                        plugin.PreInit();
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.Error("Failed while PreInit plugin {PluginName}. Plugin not load.\n{ex}", plugin.GetType().Name, e);
-                        continue;
-                    }
-                    _plugins.Add(plugin);
+                    EnumPluginInAssembly(asm);
                 }
+                catch (Exception e)
+                {
+                    _logger.Error("Failed to enum plugin type in assembly {asm} because:\n{e}", asm, e);
+                }
+            }
+        }
+
+        public void EnumPluginInAssembly(Assembly asm)
+        {
+            foreach (var type in asm.GetTypes())
+            {
+                if (!typeof(BasePlugin).IsAssignableFrom(type) ||
+                    type.IsAbstract)
+                    continue;
+
+                try
+                {
+                    LoadPluginFromType(type);
+                }
+                catch (Exception e)
+                {
+                    _logger.Error($"Failed to load plugin from type {type.Name}", e);
+                }
+            }
+        }
+
+        private void LoadPluginFromType(Type type)
+        {
+            _logger.Info("Find {PluginName}.", type.Name);
+            var pluginLogger = new Logger(type.Name);
+            var plugin = BasePlugin.CreatePluginInstance(type, Application.Current, pluginLogger);
+            pluginLogger.SetCategory(plugin.PluginName);
+            _logger.Info(
+                "Plugin {PluginName} by {PluginAuthor} version {PluginVersion}",
+                plugin.PluginName,
+                plugin.PluginAuthor,
+                plugin.PluginVersion);
+
+            try
+            {
+                plugin.PreInit();
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Failed while PreInit plugin {plugin.GetType().Name}. Plugin not load.", e);
+            }
+
+            _plugins.Add(plugin);
         }
 
         public void InitPlugins()

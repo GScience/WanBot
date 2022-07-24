@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WanBot.Api.Mirai;
 
-namespace WanBot.Api.Mirai.Event
+namespace WanBot.Api.Event
 {
     /// <summary>
     /// 事件处理器
     /// </summary>
-    public class MiraiEventHandler
+    public class WanBotEventHandler
     {
         public int Priority { get; }
 
-        public MiraiEventHandler(int priority, Func<MiraiBot, CancellableEventArgs, Task> handler)
+        public WanBotEventHandler(int priority, Func<MiraiBot, CancellableEventArgs, Task> handler)
         {
             Priority = priority;
             Handler = handler;
@@ -26,7 +27,7 @@ namespace WanBot.Api.Mirai.Event
     /// 泛形事件处理器
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class MiraiEventHandler<T> : MiraiEventHandler where T : CancellableEventArgs
+    public class MiraiEventHandler<T> : WanBotEventHandler where T : CancellableEventArgs
     {
         public MiraiEventHandler(int priority, Func<MiraiBot, T, Task> handler)
             : base(priority, (s, e) => handler(s, (T)e)) { }

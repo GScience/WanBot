@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WanBot.Api.Event;
 using WanBot.Api.Mirai;
-using WanBot.Api.Mirai.Event;
 
 namespace WanBot.Api
 {
@@ -17,7 +17,7 @@ namespace WanBot.Api
         /// <param name="priority"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        MiraiEventHandler Subscript<T>(int priority, Func<MiraiBot, T, Task> func)
+        WanBotEventHandler Subscript<T>(int priority, Func<MiraiBot, T, Task> func)
             where T : CancellableEventArgs;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace WanBot.Api
         /// <param name="priority"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        MiraiEventHandler Subscript(Type type, int priority, Func<MiraiBot, CancellableEventArgs, Task> func);
+        WanBotEventHandler Subscript(Type type, int priority, Func<MiraiBot, CancellableEventArgs, Task> func);
 
         /// <summary>
         /// 订阅事件
@@ -36,6 +36,6 @@ namespace WanBot.Api
         /// <param name="priority"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        MiraiEventHandler Subscript(string eventName, int priority, Func<MiraiBot, CancellableEventArgs, Task> func);
+        WanBotEventHandler Subscript(string eventName, int priority, Func<MiraiBot, CancellableEventArgs, Task> func);
     }
 }

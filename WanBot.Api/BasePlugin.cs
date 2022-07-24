@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WanBot.Api.Event;
 using WanBot.Api.Mirai;
-using WanBot.Api.Mirai.Event;
 
 namespace WanBot.Api
 {
@@ -33,7 +33,7 @@ namespace WanBot.Api
         /// <param name="priority"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        public MiraiEventHandler Subscripe<T>(int priority, Func<MiraiBot, T, Task> func)
+        public WanBotEventHandler Subscripe<T>(int priority, Func<MiraiBot, T, Task> func)
             where T : CancellableEventArgs
             => Application.BotManager.Subscript<T>(priority, func);
 

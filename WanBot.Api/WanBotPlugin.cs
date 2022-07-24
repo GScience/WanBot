@@ -6,14 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api.Event;
 using WanBot.Api.Mirai;
-using WanBot.Api.Mirai.Event;
 
 namespace WanBot.Api
 {
     /// <summary>
     /// WanBot插件基类，对BasePlugin进行更简单的封装
     /// </summary>
-    public abstract class BaseWanBotPlugin : BasePlugin
+    public abstract class WanBotPlugin : BasePlugin
     {
         public sealed override void PostInit()
         {

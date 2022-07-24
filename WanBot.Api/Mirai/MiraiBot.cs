@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using WanBot.Api.Event;
 using WanBot.Api.Mirai.Adapter;
 using WanBot.Api.Mirai.Event;
 using WanBot.Api.Mirai.Network;
@@ -17,7 +18,7 @@ namespace WanBot.Api.Mirai
     /// </summary>
     public partial class MiraiBot : IDisposable
     {
-        private ConcurrentDictionary<string, MiraiEvent> _eventDict = new();
+        private ConcurrentDictionary<string, WanBotEventEvent> _eventDict = new();
         internal ILogger _logger;
 
         private Dictionary<Type, IAdapter> _adapterDict = new();
@@ -69,7 +70,7 @@ namespace WanBot.Api.Mirai
         /// <typeparam name="T"></typeparam>
         /// <param name="eventHandler"></param>
         /// <returns></returns>
-        public MiraiEventHandler Subscripe<T>(MiraiEventHandler<T> eventHandler) 
+        public WanBotEventHandler Subscripe<T>(MiraiEventHandler<T> eventHandler) 
             where T : CancellableEventArgs
         {
             if (_eventDict.TryGetValue(typeof(T).Name, out var e))
@@ -89,7 +90,7 @@ namespace WanBot.Api.Mirai
         /// <param name="type"></param>
         /// <param name="eventHandler"></param>
         /// <returns></returns>
-        public MiraiEventHandler Subscripe(Type type, MiraiEventHandler eventHandler)
+        public WanBotEventHandler Subscripe(Type type, WanBotEventHandler eventHandler)
         {
             return Subscripe(type.Name, eventHandler);
         }
@@ -100,7 +101,7 @@ namespace WanBot.Api.Mirai
         /// <param name="type"></param>
         /// <param name="eventHandler"></param>
         /// <returns></returns>
-        public MiraiEventHandler Subscripe(string eventName, MiraiEventHandler eventHandler)
+        public WanBotEventHandler Subscripe(string eventName, WanBotEventHandler eventHandler)
         {
             if (_eventDict.TryGetValue(eventName, out var e))
                 e.Add(eventHandler);
