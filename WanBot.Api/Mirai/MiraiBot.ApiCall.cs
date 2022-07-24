@@ -249,7 +249,7 @@ namespace WanBot.Api.Mirai
             return result!;
         }
 
-        public async Task<SendNudgeResponse> SendGroupNudge(long qq, long group)
+        public async Task<SendNudgeResponse> SendGroupNudgeAsync(long qq, long group)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendNudgeResponse, SendNudgeRequest>(
@@ -264,7 +264,7 @@ namespace WanBot.Api.Mirai
             return result!;
         }
 
-        public async Task<SendNudgeResponse> SendFriendNudge(long qq)
+        public async Task<SendNudgeResponse> SendFriendNudgeAsync(long qq)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendNudgeResponse, SendNudgeRequest>(
@@ -279,7 +279,7 @@ namespace WanBot.Api.Mirai
             return result!;
         }
 
-        public async Task<SendNudgeResponse> SendStrangerNudge(long qq)
+        public async Task<SendNudgeResponse> SendStrangerNudgeAsync(long qq)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendNudgeResponse, SendNudgeRequest>(

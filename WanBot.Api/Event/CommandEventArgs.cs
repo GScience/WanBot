@@ -57,8 +57,14 @@ namespace WanBot.Api.Event
             var first = enumerator.Current;
 
             if (first is Plain firstPlain)
+            {
                 firstPlain.Text = firstPlain.Text.TrimStart();
-            yield return first;
+
+                if (!string.IsNullOrEmpty(firstPlain.Text))
+                    yield return first;
+            }
+            else
+                yield return first;
 
             while (enumerator.MoveNext())
                 yield return enumerator.Current;

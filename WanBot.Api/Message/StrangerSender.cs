@@ -38,5 +38,10 @@ namespace WanBot.Api.Message
         {
             await _bot.SendTempMessageAsync(_qqId, _groupId, null, messageBuilder);
         }
+
+        public async Task Nudge()
+        {
+            await _bot.SendStrangerNudgeAsync(_qqId);
+        }
     }
 }

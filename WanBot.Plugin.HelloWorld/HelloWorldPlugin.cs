@@ -20,8 +20,8 @@ namespace WanBot.Plugin.HelloWorld
         public async Task OnTestCommand(MiraiBot bot, CommandEventArgs commandEvent)
         {
             var messageBuilder = new MessageBuilder().Text("在这呢");
-            var remain = commandEvent.GetRemain();
-            if (remain == null)
+            var remain = commandEvent.GetRemain()!.ToArray();
+            if (remain == null || remain.Length == 0)
                 await commandEvent.Sender.ReplyAsync(messageBuilder);
             else
                 await commandEvent.Sender.ReplyAsync(messageBuilder.Text("，你刚才说").Chains(remain).Text("干啥"));
@@ -34,25 +34,18 @@ namespace WanBot.Plugin.HelloWorld
 
             await atEvent.Sender.ReplyAsync("干啥？");
         }
-        [Regex("完犊子呢", 11)]
+
+        [Nudge]
+        public async Task OnNudge(MiraiBot bot, NudgeEventArgs nudgeEvent)
+        {
+            await nudgeEvent.Sender.Nudge();
+        }
+
+        [Regex("完犊子呢")]
         public async Task OnHello1(MiraiBot bot, RegexEventArgs atEvent)
         {
             var list = atEvent.Chain.ToArray();
             await atEvent.Sender.ReplyAsync("在这呢");
-            atEvent.Blocked = true;
-        }
-        [Regex("完犊子呢")]
-        public async Task OnHello2(MiraiBot bot, RegexEventArgs atEvent)
-        {
-            var list = atEvent.Chain.ToArray();
-            await atEvent.Sender.ReplyAsync("在这");
-            atEvent.Blocked = true;
-        }
-        [Regex("完犊子呢", 10)]
-        public async Task OnHello3(MiraiBot bot, RegexEventArgs atEvent)
-        {
-            var list = atEvent.Chain.ToArray();
-            await atEvent.Sender.ReplyAsync("在");
             atEvent.Blocked = true;
         }
     }

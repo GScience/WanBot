@@ -32,5 +32,11 @@ namespace WanBot.Api
         /// </summary>
         /// <param name="messageBuilder"></param>
         Task ReplyAsync(MessageBuilder messageBuilder);
+
+        /// <summary>
+        /// 戳一戳对方
+        /// </summary>
+        /// <returns></returns>
+        Task Nudge();
     }
 }

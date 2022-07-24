@@ -36,6 +36,9 @@ namespace WanBot.Api
                         case RegexAttribute keywordEvent:
                             AddRegexEvent(method, keywordEvent);
                             break;
+                        case NudgeAttribute nudgeEvent:
+                            AddNudgeEvent(method, nudgeEvent);
+                            break;
                     }
                 }
             }
@@ -53,6 +56,19 @@ namespace WanBot.Api
         private bool CheckArgs<T>(MethodInfo method) where T : BlockableEventArgs
         {
             return CheckArgs(method, typeof(T));
+        }
+
+        private void AddNudgeEvent(MethodInfo method, NudgeAttribute commandEvent)
+        {
+            if (!CheckArgs<NudgeEventArgs>(method))
+                return;
+
+            // 注册事件
+            Application.BotManager.Subscript(
+                typeof(NudgeEventArgs),
+                commandEvent.Priority,
+                (bot, e) => (Task)method.Invoke(this, new object?[] { bot, e })!
+                );
         }
 
         private bool CheckArgs(MethodInfo method, Type type)

@@ -131,7 +131,8 @@ namespace WanBot.Api.Event
                 var sender = new GroupSender(
                     bot,
                     "[Group]" + e.Sender.GetFormatedName(),
-                    e.Sender.Group.Id);
+                    e.Sender.Group.Id,
+                    e.Sender.Id);
 
                 await OnCommandMessage(bot, sender, e.MessageChain);
                 e.Blocked = true;
@@ -149,7 +150,8 @@ namespace WanBot.Api.Event
                         new GroupSender(
                             bot,
                             "[Group]" + e.Sender.GetFormatedName(),
-                            e.Sender.Group.Id),
+                            e.Sender.Group.Id,
+                            e.Sender.Id),
                     e.MessageChain));
                 e.Blocked = true;
                 return;
@@ -163,7 +165,8 @@ namespace WanBot.Api.Event
                         new GroupSender(
                             bot,
                             "[Group]" + e.Sender.GetFormatedName(),
-                            e.Sender.Group.Id),
+                            e.Sender.Group.Id,
+                            e.Sender.Id),
                     e.MessageChain,
                     matchRegex);
                 await bot.PublishAsync(
@@ -174,6 +177,38 @@ namespace WanBot.Api.Event
             }
         }
 
+        [MiraiEvent<NudgeEvent>]
+        public async Task OnNudge(MiraiBot bot, NudgeEvent e)
+        {
+            if (e.Target != bot.Id)
+                return;
+
+            ISender sender;
+
+            switch (e.Subject.Kind)
+            {
+                case "Friend":
+                    sender = new FriendSender(bot, "", e.Subject.Id);
+                    break;
+
+                case "Group":
+                    sender = new GroupSender(bot, "", e.Subject.Id, e.FromId);
+                    break;
+
+                case "Stranger":
+                    sender = new StrangerSender(bot, "", e.Subject.Id, e.FromId);
+                    break;
+
+                default:
+                    return;
+            }
+
+            var eventArgs = new NudgeEventArgs(sender);
+            await bot.PublishAsync(
+                typeof(NudgeEventArgs),
+                eventArgs
+                );
+        }
 
         public async Task OnCommandMessage(MiraiBot bot, ISender sender, MessageChain messageChain)
         {
