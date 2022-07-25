@@ -18,6 +18,8 @@ namespace WanBot.Api.Mirai.Adapter
     /// </summary>
     public class WebSocketAdapter : IAdapter
     {
+        private readonly ILogger _logger;
+
         public delegate void SessionKeyChangedEvent(string sesionKey);
 
         /// <summary>
@@ -45,8 +47,9 @@ namespace WanBot.Api.Mirai.Adapter
         /// </summary>
         public string SessionId { get; private set; } = string.Empty;
 
-        public WebSocketAdapter(string baseUrl, string verifyKey, long qq)
+        public WebSocketAdapter(ILogger logger, string baseUrl, string verifyKey, long qq)
         {
+            _logger = logger;
             BaseUrl = baseUrl;
             VerifyKey = verifyKey;
             QQ = qq;
@@ -96,18 +99,32 @@ namespace WanBot.Api.Mirai.Adapter
         /// <param name="msg"></param>
         private void OnWebSocketClose(SimpleWebSocketClient socket, WebSocketCloseStatus? status, string? desc)
         {
+            _logger.Warn("Socket closed because {reason}({status})", desc, status);
+
             var connected = false;
 
             while (!connected && IsConnected)
             {
                 try
                 {
+                    _logger.Info("Try to reconnect to mirai");
                     ConnectAsync().Wait();
                     connected = true;
+                    _logger.Info("Connected");
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    
+                    _logger.Error("Failed to reconnect to mirai because: \n{e}", e);
+                    _logger.Info("Retry after 5 secons...");
+                    Thread.Sleep(5000);
+
+                    try
+                    {
+                        socket.Close(null);
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
             }
         }

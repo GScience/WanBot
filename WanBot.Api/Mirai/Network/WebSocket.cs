@@ -31,7 +31,7 @@ namespace WanBot.Api.Mirai.Network
         /// </summary>
         public bool IsConnected { get; private set; }
 
-        public ClientWebSocket _wsClient = new();
+        public ClientWebSocket? _wsClient;
 
         private CancellationTokenSource _cts = new();
 
@@ -46,7 +46,10 @@ namespace WanBot.Api.Mirai.Network
         /// <returns></returns>
         public async Task ConnectAsync(string url)
         {
-            _wsClient.Options.Cookies = new CookieContainer();
+            if (_wsClient == null)
+                _wsClient = new ClientWebSocket();
+            if (_wsClient.Options.Cookies == null)
+                _wsClient.Options.Cookies = new CookieContainer();
             await _wsClient.ConnectAsync(new Uri(url), CancellationToken.None);
             _recvTask = Task.Run(RecvThread);
             IsConnected = true;
@@ -64,8 +67,8 @@ namespace WanBot.Api.Mirai.Network
             {
                 _cts.Cancel();
 
-                if (_wsClient.State == WebSocketState.Open)
-                    _wsClient.CloseAsync(status ?? WebSocketCloseStatus.NormalClosure, desc, CancellationToken.None).Wait();
+                if (_wsClient!.State == WebSocketState.Open)
+                    _wsClient!.CloseAsync(status ?? WebSocketCloseStatus.NormalClosure, desc, CancellationToken.None).Wait();
 
                 if (_recvTask != null)
                 {
@@ -85,6 +88,8 @@ namespace WanBot.Api.Mirai.Network
                 _cts.Dispose();
                 _cts = new CancellationTokenSource();
                 IsConnected = false;
+                _wsClient.Dispose();
+                _wsClient = null;
             }
         }
 
@@ -101,7 +106,7 @@ namespace WanBot.Api.Mirai.Network
 
             try
             {
-                await _wsClient.SendAsync(Encoding.UTF8.GetBytes(msg), WebSocketMessageType.Text, true, CancellationToken.None);
+                await _wsClient!.SendAsync(Encoding.UTF8.GetBytes(msg), WebSocketMessageType.Text, true, CancellationToken.None);
             }
             catch (Exception e)
             {
@@ -134,11 +139,11 @@ namespace WanBot.Api.Mirai.Network
                 WebSocketReceiveResult result;
                 try
                 {
-                    result = await _wsClient.ReceiveAsync(_buffer, _cts.Token);
+                    result = await _wsClient!.ReceiveAsync(_buffer, _cts.Token);
                 }
                 catch (WebSocketException)
                 {
-                    HandleExceptedClose(_wsClient.CloseStatus, _wsClient.CloseStatusDescription);
+                    HandleExceptedClose(_wsClient!.CloseStatus, _wsClient.CloseStatusDescription);
                     break;
                 }
                 
@@ -165,7 +170,6 @@ namespace WanBot.Api.Mirai.Network
             Close(WebSocketCloseStatus.NormalClosure, "Disposed");
 
             _cts.Dispose();
-            _wsClient.Dispose();
 
             GC.SuppressFinalize(this);
         }

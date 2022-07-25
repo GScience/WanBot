@@ -16,6 +16,7 @@ namespace WanBot.Api.Mirai.Adapter
     /// </summary>
     public class HttpAdapter : IAdapter
     {
+        private readonly ILogger _logger;
         public string BaseUrl { get; protected set; }
         public string VerifyKey { get; protected set; }
         public long QQ { get; protected set; }
@@ -23,8 +24,9 @@ namespace WanBot.Api.Mirai.Adapter
 
         private HttpClient _httpClient;
 
-        public HttpAdapter(string baseUrl, string verifyKey, long qq)
+        public HttpAdapter(ILogger logger, string baseUrl, string verifyKey, long qq)
         {
+            _logger = logger;
             BaseUrl = baseUrl;
             VerifyKey = verifyKey;
             QQ = qq;

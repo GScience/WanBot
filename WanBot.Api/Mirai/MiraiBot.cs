@@ -55,12 +55,12 @@ namespace WanBot.Api.Mirai
             var url = $"{config.Host}:{config.Port}";
 
             _logger.Info("Init Http adapter");
-            var httpAdapter = new HttpAdapter($"http://{url}", config.VerifyKey, config.QQ);
+            var httpAdapter = new HttpAdapter(_logger, $"http://{url}", config.VerifyKey, config.QQ);
             _adapterDict[typeof(HttpAdapter)] = httpAdapter;
             await httpAdapter.ConnectAsync();
 
             _logger.Info("Init Websocket adapter");
-            var wsAdapter = new WebSocketAdapter($"ws://{url}", config.VerifyKey, config.QQ);
+            var wsAdapter = new WebSocketAdapter(_logger, $"ws://{url}", config.VerifyKey, config.QQ);
             _adapterDict[typeof(WebSocketAdapter)] = wsAdapter;
             await wsAdapter.ConnectAsync();
 
