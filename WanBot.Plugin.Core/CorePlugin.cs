@@ -57,7 +57,7 @@ namespace WanBot.Plugin.Core
             commandEvent.Sender.RequireCommandPermission(this, "core.admin.reload");
             Logger.Info("Reload");
             await commandEvent.Sender.ReplyAsync("重新加载机器人");
-            (Application as Application)?.Reload(false);
+            (Application as Application)?.Reload(false, false);
             return true;
         }
 
@@ -140,9 +140,16 @@ namespace WanBot.Plugin.Core
             }
 
             Logger.Info("Move {a} to {b}", pluginPath, $"{pluginPath}.disabled");
+
+            if (File.Exists($"{pluginPath}.disabled"))
+            {
+                await commandEvent.Sender.ReplyAsync($"{pluginPath}.disabled 已存在，禁用插件失败");
+                return true;
+            }
+
             File.Move(pluginPath, $"{pluginPath}.disabled");
 
-            (Application as Application)?.Reload(false);
+            (Application as Application)?.Reload(false, false);
 
             await commandEvent.Sender.ReplyAsync($"已卸载插件");
             return true;
@@ -179,7 +186,7 @@ namespace WanBot.Plugin.Core
             Logger.Info("Move {a} to {b}", fullPathDisabled, fullPath);
             File.Move(fullPathDisabled, fullPath);
 
-            (Application as Application)?.Reload(false);
+            (Application as Application)?.Reload(false, false);
 
             await commandEvent.Sender.ReplyAsync($"已加载插件");
             return true;

@@ -110,7 +110,7 @@ namespace WanBot
         /// <summary>
         /// 重新加载
         /// </summary>
-        public void Reload(bool disconnectFromMirai)
+        public void Reload(bool disconnectFromMirai, bool unloadContext)
         {
             if (IsReloading)
                 return;
@@ -122,7 +122,7 @@ namespace WanBot
             {
                 _logger.Info("Reloading");
                 _botManager.Reload(disconnectFromMirai);
-                _pluginManager.Reload();
+                _pluginManager.Reload(unloadContext);
 
                 Init(disconnectFromMirai);
             }

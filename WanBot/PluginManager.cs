@@ -46,14 +46,18 @@ namespace WanBot
             _domain = domain;
         }
 
-        public void Reload()
+        public void Reload(bool unloadContext)
         {
-            _logger.Warn("Reload of PluginManager can cause memory problem");
-
             Plugins.Clear();
             AsmList.Clear();
-            _pluginLoadContext.Unload();
-            _pluginLoadContext = new PluginLoadContext();
+
+            if (unloadContext)
+            {
+                _logger.Warn("Unload plugin context can cause memory problem");
+
+                _pluginLoadContext.Unload();
+                _pluginLoadContext = new PluginLoadContext();
+            }
         }
 
         public void LoadAssemblysFromDir(string dir)
@@ -64,7 +68,7 @@ namespace WanBot
             if (_domain.CurrentApplication.Config.EnableAutoReload)
             {
                 _pluginChangeListener = new PluginChangeListener(dir);
-                _pluginChangeListener.OnPluginChange += s => _domain.CurrentApplication.Reload(false);
+                _pluginChangeListener.OnPluginChange += s => _domain.CurrentApplication.Reload(false, true);
             }
             else
             {
