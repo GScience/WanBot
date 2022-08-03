@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.EssentialPerm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.HotSpot", "WanBot.Plugin.HotSpot\WanBot.Plugin.HotSpot.csproj", "{0B98A2C9-5372-4DB6-BC33-23699CB5AE76}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.Core", "WanBot.Plugin.Core\WanBot.Plugin.Core.csproj", "{2484A63E-6280-4C08-8CD8-35D673E86313}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{0B98A2C9-5372-4DB6-BC33-23699CB5AE76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B98A2C9-5372-4DB6-BC33-23699CB5AE76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B98A2C9-5372-4DB6-BC33-23699CB5AE76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2484A63E-6280-4C08-8CD8-35D673E86313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2484A63E-6280-4C08-8CD8-35D673E86313}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2484A63E-6280-4C08-8CD8-35D673E86313}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2484A63E-6280-4C08-8CD8-35D673E86313}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

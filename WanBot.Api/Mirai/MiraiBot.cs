@@ -145,6 +145,14 @@ namespace WanBot.Api.Mirai
             await e.InvokeAsync(this, eventArgs);
         }
 
+        /// <summary>
+        /// 清空所有事件监听
+        /// </summary>
+        public void ClearEventHandle()
+        {
+            _eventDict.Clear();
+        }
+
         private void OnWSMessage(string msg)
         {
             var wsResponse = JsonSerializer.Deserialize<WsAdapterResponse<BaseMiraiEvent>>(msg, MiraiJsonContext.Default.Options);

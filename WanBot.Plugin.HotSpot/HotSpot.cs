@@ -22,13 +22,14 @@ namespace WanBot.Plugin.HotSpot
         private DateTime _cacheTime = DateTime.MinValue;
 
         [Command("今日热点")]
-        public async Task OnDogCommand(MiraiBot bot, CommandEventArgs commandEvent)
+        public async Task OnHotSpotCommand(MiraiBot bot, CommandEventArgs commandEvent)
         {
             if (!commandEvent.Sender.HasCommandPermission(this, "今日热点"))
                 return;
 
             var topic = await GetHotSpotAsync();
-            await commandEvent.Sender.ReplyAsync(topic);
+            await commandEvent.Sender.ReplyAsync(topic); 
+            commandEvent.Blocked = true;
         }
 
         public async Task<string> SearchAndGetTop(string keyword)

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <BaseOutputPath>$(SolutionDir)Bin/Plugin/</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WanBot.Api\WanBot.Api.csproj" />
+    <ProjectReference Include="..\WanBot.Plugin.EssentialPermission\WanBot.Plugin.EssentialPermission.csproj" />
+    <ProjectReference Include="..\WanBot\WanBot.csproj" />
+  </ItemGroup>
+
+</Project>

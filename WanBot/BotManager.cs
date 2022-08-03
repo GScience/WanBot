@@ -18,6 +18,19 @@ namespace WanBot
         /// Bot列表
         /// </summary>
         private List<MiraiBot> _bots = new();
+        public void Reload(bool disconnect)
+        {
+            foreach (var bot in _bots)
+            {
+                if (disconnect)
+                    bot.Dispose();
+                else
+                    bot.ClearEventHandle();
+            }
+
+            if (disconnect)
+                _bots.Clear();
+        }
 
         /// <summary>
         /// 添加账户

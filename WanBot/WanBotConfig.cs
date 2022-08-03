@@ -10,11 +10,13 @@ namespace WanBot
     /// <summary>
     /// 完犊子Bot配置
     /// </summary>
-    internal class WanBotConfig
+    public class WanBotConfig
     {
         public List<MiraiConfig> MiraiConfigs { get; set; } = new()
         {
             new MiraiConfig()
         };
+
+        public bool EnableAutoReload { get; set; } = false;
     }
 }

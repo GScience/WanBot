@@ -2,37 +2,102 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api;
 
 namespace WanBot
 {
-    public class PluginManager : IPluginManager
+    public class PluginLoadContext : AssemblyLoadContext
     {
+        public PluginLoadContext() : base(true)
+        {
+        }
+
+        protected override Assembly? Load(AssemblyName assemblyName)
+        {
+            if (assemblyName.Name == "WanBot.Api" || assemblyName.Name == "WanBot")
+                return null;
+            return base.Load(assemblyName);
+        }
+    }
+
+    public class PluginManager : IPluginManager, IDisposable
+    {
+        private BotDomain _domain;
+        private PluginLoadContext _pluginLoadContext = new();
         private ILogger _logger = new Logger("PluginManager");
 
-        private List<BasePlugin> _plugins = new();
+        private PluginChangeListener? _pluginChangeListener;
+
+        /// <summary>
+        /// 插件列表
+        /// </summary>
+        public List<BasePlugin> Plugins { get; } = new();
+
+        /// <summary>
+        /// 加载的程序集列表
+        /// </summary>
+        public List<(Assembly asm, string path)> AsmList { get; } = new();
+
+        public PluginManager(BotDomain domain)
+        {
+            _domain = domain;
+        }
+
+        public void Reload()
+        {
+            _logger.Warn("Reload of PluginManager can cause memory problem");
+
+            Plugins.Clear();
+            AsmList.Clear();
+            _pluginLoadContext.Unload();
+            _pluginLoadContext = new PluginLoadContext();
+        }
 
         public void LoadAssemblysFromDir(string dir)
         {
+            AsmList.Add((typeof(WanBotPlugin).Assembly, string.Empty));
+            AsmList.Add((typeof(PluginManager).Assembly, string.Empty));
+
+            if (_domain.CurrentApplication.Config.EnableAutoReload)
+            {
+                _pluginChangeListener = new PluginChangeListener(dir);
+                _pluginChangeListener.OnPluginChange += s => _domain.CurrentApplication.Reload(false);
+            }
+            else
+            {
+                _pluginChangeListener?.Dispose();
+                _pluginChangeListener = null;
+            }
+
             foreach (var file in Directory.EnumerateFiles(dir, "*.dll"))
             {
                 _logger.Info("Loading {file}", file);
                 try
                 {
-                    Assembly.LoadFrom(file);
+                    var fileInfo = new FileInfo(file);
+
+                    if (fileInfo.Name.ToLower() == "wanbot.api.dll")
+                        throw new Exception("WanBot.Api.dll has already loaded");
+                    else if (fileInfo.Name.ToLower() == "wanbot.dll")
+                        throw new Exception("WanBot.dll has already loaded");
+
+                    using var stream = File.OpenRead(file);
+                    var asm = _pluginLoadContext.LoadFromStream(stream);
+                    AsmList.Add((asm, file));
                 }
                 catch (Exception e)
                 {
-                    _logger.Info("Failed to load {file} because: \n{e}", file, e);
+                    _logger.Error("Failed to load {file} because: \n{e}", file, e);
                 }
             }
         }
 
         public void EnumPlugins()
         {
-            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var (asm, _) in AsmList)
             {
                 try
                 {
@@ -68,7 +133,7 @@ namespace WanBot
         {
             _logger.Info("Find {PluginName}.", type.Name);
             var pluginLogger = new Logger(type.Name);
-            var plugin = BasePlugin.CreatePluginInstance(type, Application.Current, pluginLogger);
+            var plugin = BasePlugin.CreatePluginInstance(type, _domain.CurrentApplication, pluginLogger);
             pluginLogger.SetCategory(plugin.PluginName);
             _logger.Info(
                 "Plugin {PluginName} by {PluginAuthor} version {PluginVersion}",
@@ -85,13 +150,13 @@ namespace WanBot
                 throw new Exception($"Failed while PreInit plugin {plugin.GetType().Name}. Plugin not load.", e);
             }
 
-            _plugins.Add(plugin);
+            Plugins.Add(plugin);
         }
 
         public void InitPlugins()
         {
             _logger.Info("Init Stage");
-            foreach (var plugin in _plugins)
+            foreach (var plugin in Plugins)
             {
                 try
                 {
@@ -108,7 +173,7 @@ namespace WanBot
         public void PostInitPlugins()
         {
             _logger.Info("PostInit Stage");
-            foreach (var plugin in _plugins)
+            foreach (var plugin in Plugins)
             {
                 try
                 {
@@ -124,7 +189,7 @@ namespace WanBot
         public void StartPlugins()
         {
             _logger.Info("Start Stage");
-            foreach (var plugin in _plugins)
+            foreach (var plugin in Plugins)
             {
                 try
                 {
@@ -140,10 +205,24 @@ namespace WanBot
         
         public T? GetPlugin<T>() where T : BasePlugin
         {
-            foreach (var plugin in _plugins)
+            foreach (var plugin in Plugins)
                 if (plugin is T result)
                     return result;
             return null;
+        }
+
+        public string GetPluginPath(BasePlugin plugin)
+        {
+            var pluginAsm = plugin.GetType().Assembly;
+
+            var pluginPath = AsmList.Where((pair)=>pair.asm == pluginAsm).FirstOrDefault();
+            return pluginPath.path;
+        }
+
+        public void Dispose()
+        {
+            Plugins.Clear();
+            _pluginChangeListener?.Dispose();
         }
     }
 }

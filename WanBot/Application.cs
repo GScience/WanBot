@@ -15,16 +15,21 @@ namespace WanBot
 {
     public class Application : IApplication, IDisposable
     {
-        public static Application Current = null!;
+        public BotDomain BotDomain { get; }
 
-        private BotManager _botManager = new();
+        internal BotManager _botManager = new();
+
+        /// <summary>
+        /// 是否正在重启
+        /// </summary>
+        internal bool IsReloading { get; private set; }
 
         /// <summary>
         /// 账户管理器
         /// </summary>
         public IBotManager BotManager => _botManager;
 
-        private PluginManager _pluginManager { get; } = new();
+        internal PluginManager _pluginManager { get; }
 
         /// <summary>
         /// 插件管理器
@@ -39,19 +44,47 @@ namespace WanBot
         /// <summary>
         /// 配置路径
         /// </summary>
-        internal string ConfigPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "Config");
+        public string ConfigPath { get; } = Path.Combine(Environment.CurrentDirectory, "Config");
 
         /// <summary>
         /// 插件路径
         /// </summary>
-        internal string PluginPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "Plugin");
+        public string PluginPath { get; } = Path.Combine(Environment.CurrentDirectory, "Plugin");
+
+        /// <summary>
+        /// 配置
+        /// </summary>
+        public WanBotConfig Config { get; private set; }
 
         private Semaphore _consoleCloseSemaphore = new(0, 1);
         private bool _isClosing = false;
 
-        public Application()
+        public Application(BotDomain domain, string[] args)
         {
-            Current = this;
+            BotDomain = domain;
+
+            // 注册取消事件
+            Console.CancelKeyPress += (sender, e) =>
+            {
+                e.Cancel = true;
+                _logger.Info("Get console cancel requirement");
+                if (!_isClosing)
+                    HandleApplicationExit();
+            };
+
+            // 获取参数
+            for (var i = 0; i < args.Length; i++)
+            {
+                if (args[i].ToLower() == "-config")
+                    ConfigPath = args[++i];
+
+                if (args[i].ToLower() == "-plugin")
+                    PluginPath = args[++i];
+            }
+
+            // 创建插件管理器
+            _pluginManager = new(domain);
+            Config = ReadConfigFromFile<WanBotConfig>("WanBot.conf");
         }
 
         /// <summary>
@@ -75,32 +108,63 @@ namespace WanBot
         }
 
         /// <summary>
-        /// 启动应用
+        /// 重新加载
         /// </summary>
-        internal void Start()
+        public void Reload(bool disconnectFromMirai)
         {
-            Console.CancelKeyPress += (sender, e) =>
+            if (IsReloading)
+                return;
+
+            IsReloading = true;
+            Config = ReadConfigFromFile<WanBotConfig>("WanBot.conf");
+
+            try
             {
-                e.Cancel = true;
-                _logger.Info("Get console cancel requirement");
-                if (!_isClosing)
-                    HandleApplicationExit();
-            };
+                _logger.Info("Reloading");
+                _botManager.Reload(disconnectFromMirai);
+                _pluginManager.Reload();
 
-            var bindAccountTask = BindAccountAsync();
+                Init(disconnectFromMirai);
+            }
+            catch (Exception e)
+            {
+                _logger.Fatal("Failed to reload application because {e}", e);
+            }
+            finally
+            {
+                IsReloading = false;
+            }
+        }
 
-            // 初始化插件系统
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="connectMirai"></param>
+        internal void Init(bool reconnectToMirai)
+        {
+            var bindAccountTask
+                = reconnectToMirai ? BindAccountAsync() : null;
+
+            // 加载插件
             _logger.Info("Loading plugins");
             _pluginManager.LoadAssemblysFromDir(PluginPath);
             _pluginManager.EnumPlugins();
             _pluginManager.InitPlugins();
 
             // 等待账户绑定
-            bindAccountTask.Wait();
-
+            bindAccountTask?.Wait();
             _pluginManager.PostInitPlugins();
             _pluginManager.StartPlugins();
             _logger.Info("All done");
+        }
+
+        /// <summary>
+        /// 启动应用
+        /// </summary>
+        internal void Run()
+        {
+            // 初始化
+            Init(true);
 
             // 等待程序退出
             _consoleCloseSemaphore.WaitOne();
@@ -115,9 +179,8 @@ namespace WanBot
             // 创建Bot
             _logger.Info("Loading WanBot config and connecting to mirai");
 
-            var config = ReadConfigFromFile<WanBotConfig>("WanBot.conf");
             var tasks = new List<Task>();
-            foreach (var miraiConfig in config.MiraiConfigs)
+            foreach (var miraiConfig in Config.MiraiConfigs)
             {
                 try
                 {
@@ -137,7 +200,7 @@ namespace WanBot
         /// <summary>
         /// 处理应用程序退出事件
         /// </summary>
-        internal void HandleApplicationExit()
+        public void HandleApplicationExit()
         {
             _isClosing = true;
             _logger.Info("pending close");
@@ -150,6 +213,7 @@ namespace WanBot
 
             _consoleCloseSemaphore.Dispose();
             _botManager.Dispose();
+            _pluginManager.Dispose();
 
             GC.SuppressFinalize(this);
         }
