@@ -21,7 +21,7 @@ namespace WanBot
                 _logger.Info("Loading {file}", file);
                 try
                 {
-                    Assembly.LoadFile(file);
+                    Assembly.LoadFrom(file);
                 }
                 catch (Exception e)
                 {
@@ -59,7 +59,7 @@ namespace WanBot
                 }
                 catch (Exception e)
                 {
-                    _logger.Error($"Failed to load plugin from type {type.Name}", e);
+                    _logger.Error($"Failed to load plugin from type {type.Name}\n{e}", e);
                 }
             }
         }

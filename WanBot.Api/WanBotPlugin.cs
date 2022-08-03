@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api.Event;
 using WanBot.Api.Mirai;
+using WanBot.Api.Util;
 
 namespace WanBot.Api
 {
@@ -50,7 +51,12 @@ namespace WanBot.Api
         /// <typeparam name="T"></typeparam>
         public T GetConfig<T>() where T : new()
         {
-            return Application.ReadConfig<T>(GetType().Name);
+            return Application.ReadConfig<T>(PluginName);
+        }
+
+        public string GetConfigPath()
+        {
+            return Application.GetConfigPath(PluginName);
         }
 
         private bool CheckArgs<T>(MethodInfo method) where T : BlockableEventArgs

@@ -15,5 +15,12 @@
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T ReadConfig<T>(string pluginName) where T : new();
+
+        /// <summary>
+        /// 获取配置目录
+        /// </summary>
+        /// <param name="pluginName"></param>
+        /// <returns></returns>
+        string GetConfigPath(string pluginName);
     }
 }

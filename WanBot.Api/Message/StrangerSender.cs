@@ -10,8 +10,8 @@ namespace WanBot.Api.Message
 {
     public class StrangerSender : ISender
     {
-        private long _qqId;
-        private long _groupId;
+        public long GroupId { get; }
+        public long Id { get; }
         private MiraiBot _bot;
 
         public string Name { get; }
@@ -19,29 +19,29 @@ namespace WanBot.Api.Message
         public StrangerSender(MiraiBot bot, string name, long qqId, long groupId)
         {
             Name = name;
-            _qqId = qqId;
+            Id = qqId;
             _bot = bot;
-            _groupId = groupId;
+            GroupId = groupId;
         }
 
         public async Task ReplyAsync(MessageChain messageChain)
         {
-            await _bot.SendTempMessageAsync(_qqId, _groupId, null, messageChain);
+            await _bot.SendTempMessageAsync(Id, GroupId, null, messageChain);
         }
 
         public async Task ReplyAsync(string message)
         {
-            await _bot.SendTempMessageAsync(_qqId, _groupId, null, message);
+            await _bot.SendTempMessageAsync(Id, GroupId, null, message);
         }
 
         public async Task ReplyAsync(MessageBuilder messageBuilder)
         {
-            await _bot.SendTempMessageAsync(_qqId, _groupId, null, messageBuilder);
+            await _bot.SendTempMessageAsync(Id, GroupId, null, messageBuilder);
         }
 
         public async Task Nudge()
         {
-            await _bot.SendStrangerNudgeAsync(_qqId);
+            await _bot.SendStrangerNudgeAsync(Id);
         }
     }
 }

@@ -4,12 +4,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot", "WanBot\WanBot.csproj", "{CFA7AD21-03FC-4FF5-94B2-082B7F7FC5D2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0B98A2C9-5372-4DB6-BC33-23699CB5AE76} = {0B98A2C9-5372-4DB6-BC33-23699CB5AE76}
+		{1B835950-4AA9-408B-921D-B5E7275B8CA1} = {1B835950-4AA9-408B-921D-B5E7275B8CA1}
+		{9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9} = {9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Api", "WanBot.Api\WanBot.Api.csproj", "{8362D4AF-1295-4AE4-A3B7-17E11429940E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Test", "WanBot.Test\WanBot.Test.csproj", "{EEC3CCCF-2400-44C1-AD11-345950FAF6FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.HelloWorld", "WanBot.Plugin.HelloWorld\WanBot.Plugin.HelloWorld.csproj", "{9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.HelloWorld", "WanBot.Plugin.HelloWorld\WanBot.Plugin.HelloWorld.csproj", "{9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.EssentialPermission", "WanBot.Plugin.EssentialPermission\WanBot.Plugin.EssentialPermission.csproj", "{1B835950-4AA9-408B-921D-B5E7275B8CA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.HotSpot", "WanBot.Plugin.HotSpot\WanBot.Plugin.HotSpot.csproj", "{0B98A2C9-5372-4DB6-BC33-23699CB5AE76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +42,14 @@ Global
 		{9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B835950-4AA9-408B-921D-B5E7275B8CA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B835950-4AA9-408B-921D-B5E7275B8CA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B835950-4AA9-408B-921D-B5E7275B8CA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B835950-4AA9-408B-921D-B5E7275B8CA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B98A2C9-5372-4DB6-BC33-23699CB5AE76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B98A2C9-5372-4DB6-BC33-23699CB5AE76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B98A2C9-5372-4DB6-BC33-23699CB5AE76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B98A2C9-5372-4DB6-BC33-23699CB5AE76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

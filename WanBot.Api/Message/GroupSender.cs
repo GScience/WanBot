@@ -13,8 +13,8 @@ namespace WanBot.Api.Message
     /// </summary>
     public class GroupSender : ISender
     {
-        private long _groupId;
-        private long _qqId;
+        public long GroupId { get; }
+        public long Id { get; }
         private MiraiBot _bot;
 
         public string Name { get; }
@@ -22,29 +22,29 @@ namespace WanBot.Api.Message
         public GroupSender(MiraiBot bot, string name, long groupId, long qqId)
         {
             Name = name;
-            _groupId = groupId;
+            GroupId = groupId;
             _bot = bot;
-            _qqId = qqId;
+            Id = qqId;
         }
 
         public async Task ReplyAsync(MessageChain messageChain)
         {
-            await _bot.SendGroupMessageAsync(_groupId, null, messageChain);
+            await _bot.SendGroupMessageAsync(GroupId, null, messageChain);
         }
 
         public async Task ReplyAsync(string message)
         {
-            await _bot.SendGroupMessageAsync(_groupId, null, message);
+            await _bot.SendGroupMessageAsync(GroupId, null, message);
         }
 
         public async Task ReplyAsync(MessageBuilder messageBuilder)
         {
-            await _bot.SendGroupMessageAsync(_groupId, null, messageBuilder);
+            await _bot.SendGroupMessageAsync(GroupId, null, messageBuilder);
         }
 
         public async Task Nudge()
         {
-            await _bot.SendGroupNudgeAsync(_qqId, _groupId);
+            await _bot.SendGroupNudgeAsync(Id, GroupId);
         }
     }
 }

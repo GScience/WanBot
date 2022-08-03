@@ -69,6 +69,11 @@ namespace WanBot
             return ReadConfigFromFile<T>(Path.Combine(pluginName, "Config.conf"));
         }
 
+        public string GetConfigPath(string pluginName)
+        {
+            return Path.Combine(ConfigPath, pluginName);
+        }
+
         /// <summary>
         /// 启动应用
         /// </summary>
@@ -77,9 +82,9 @@ namespace WanBot
             Console.CancelKeyPress += (sender, e) =>
             {
                 e.Cancel = true;
-                _logger.Info("Get user cancel requirement");
+                _logger.Info("Get console cancel requirement");
                 if (!_isClosing)
-                    OnConsoleExit();
+                    HandleApplicationExit();
             };
 
             var bindAccountTask = BindAccountAsync();
@@ -129,10 +134,13 @@ namespace WanBot
             _logger.Info("Mirai init finished");
         }
 
-        internal void OnConsoleExit()
+        /// <summary>
+        /// 处理应用程序退出事件
+        /// </summary>
+        internal void HandleApplicationExit()
         {
             _isClosing = true;
-            _logger.Info("Sending close signal");
+            _logger.Info("pending close");
             _consoleCloseSemaphore.Release(1);
         }
 
