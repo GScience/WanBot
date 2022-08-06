@@ -66,6 +66,11 @@ namespace WanBot.Plugin.EssentialPermission
             }
         }
 
+        public static async Task ReplyNoPermissionAsync(this ISender sender, string fullPermission)
+        {
+            await sender.ReplyAsync($"权限不足，需要 {fullPermission} 权限以执行命令");
+        }
+
         private static void LogPermissionRequirement(this ISender sender, string fullPermission)
         {
             Permission.logger.Warn("Sender {sender} do not have permission {permission}", sender.Name, fullPermission);

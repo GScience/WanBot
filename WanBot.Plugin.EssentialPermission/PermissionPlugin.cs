@@ -50,8 +50,9 @@ namespace WanBot.Plugin.EssentialPermission
                     return;
                 await args.Sender.ReplyAsync($"参数错误");
             }
-            catch (PermissionException)
-            { 
+            catch (PermissionException e)
+            {
+                await args.Sender.ReplyNoPermissionAsync(e.RequirePermission);
             }
             catch (Exception)
             {

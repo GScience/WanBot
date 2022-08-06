@@ -43,7 +43,7 @@ namespace WanBot.Plugin.Core
             }
             catch (PermissionException e)
             {
-                await commandEvent.Sender.ReplyAsync($"权限不足，需要 {e.RequirePermission} 权限以执行命令");
+                await commandEvent.Sender.ReplyNoPermissionAsync(e.RequirePermission);
             }
             catch (InvalidOperationException)
             {
