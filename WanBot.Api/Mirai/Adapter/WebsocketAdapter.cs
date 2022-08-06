@@ -86,10 +86,17 @@ namespace WanBot.Api.Mirai.Adapter
         /// <param name="json"></param>
         private void OnWebSocketRecv(SimpleWebSocketClient socket, string json)
         {
-            var syncId = GetJsonSyncId(json);
+            try
+            {
+                var syncId = GetJsonSyncId(json);
 
-            if (_syncListener.TryGetValue(syncId, out var listener))
-                listener(json);
+                if (_syncListener.TryGetValue(syncId, out var listener))
+                    listener(json);
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Error while deal with websocket message {ex}\nPayload: {payload}", e, json);
+            }
         }
 
         /// <summary>

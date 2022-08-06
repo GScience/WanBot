@@ -159,7 +159,15 @@ namespace WanBot.Api.Mirai.Network
 
                 if (result.EndOfMessage)
                 {
-                    OnMessage?.Invoke(this, strBuffer);
+                    try
+                    {
+                        OnMessage?.Invoke(this, strBuffer);
+                    }
+                    catch (Exception e)
+                    {
+                        // 强制重连
+                        HandleExceptedClose(null, e.ToString());
+                    }
                     strBuffer = "";
                 }
             }
