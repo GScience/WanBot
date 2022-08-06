@@ -62,6 +62,10 @@ namespace WanBot.Plugin.EssentialPermission
         internal static bool CheckGroup(long group, string permission)
         {
             var entry = database.GetGroupPermission(group);
+
+            if (string.IsNullOrEmpty(entry.PermissionGroup))
+                return false;
+
             var permissionGroup
                 = config.GroupPermissionGroups.Where((group) => group.Name == entry.PermissionGroup).FirstOrDefault();
 

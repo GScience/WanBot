@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using WanBot.Api;
 
 namespace WanBot
 {
@@ -25,14 +27,17 @@ namespace WanBot
         {
             // 显示日志
             _logger = new Logger($"Launcher");
-            _logger.Info("WanBot By GScience Studio Ver {WanBotVersion}",
-                typeof(Application).Assembly.GetName().Version);
+            _logger.Info("WanBot By GScience Studio Ver {WanBotVersion} (Api: {ApiVersion})",
+                typeof(Application).Assembly.GetName().Version,
+                typeof(BasePlugin).Assembly.GetName().Version);
             _logger.Info(
                 "System info: \n" +
                 "\t.net version: {netVersion}\n" +
-                "\tOS version: {osVersion}",
+                "\tOS version: {osVersion}\n" +
+                "\tEF Version: {efVersion}",
                 Environment.Version,
-                Environment.OSVersion);
+                Environment.OSVersion,
+                typeof(DbContext).Assembly.GetName().Version);
 
             _args = args;
             CurrentApplication = new(this, _args);

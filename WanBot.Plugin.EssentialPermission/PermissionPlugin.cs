@@ -19,20 +19,25 @@ namespace WanBot.Plugin.EssentialPermission
 
         public override Version PluginVersion => Version.Parse("1.0.0");
 
+        internal string DatabasePath => Path.Combine(GetConfigPath(), "database.json");
+
         private CommandDispatcher _mainDispatcher = new();
         private CommandDispatcher<long> _groupDispatcher = new();
 
         public override void PreInit()
         {
+            Permission.logger = Logger;
             Permission.config = GetConfig<PermissionConfig>();
             Permission.database = new(Permission.config);
-            Permission.logger = Logger;
+            Permission.database.Load(DatabasePath);
 
             _mainDispatcher["group"].Handle = OnGroupPermissionCommand;
+            _mainDispatcher["reload"].Handle = OnReloadCommand;
 
             _groupDispatcher["add"].Handle = (b, a, groupId) => OnGroupPermissionAddCommand(b, a, groupId);
             _groupDispatcher["remove"].Handle = (b, a, groupId) => OnGroupPermissionRemoveCommand(b, a, groupId);
             _groupDispatcher["list"].Handle = (b, a, groupId) => OnGroupPermissionListCommand(b, a, groupId);
+            _groupDispatcher["move"].Handle = (b, a, groupId) => OnGroupMoveCommand(b, a, groupId);
             _groupDispatcher["check"].Handle = (b, a, groupId) => OnGroupPermissionCheckCommand(b, a, groupId);
         }
 
@@ -61,6 +66,14 @@ namespace WanBot.Plugin.EssentialPermission
 
             return await _groupDispatcher.HandleCommandAsync(bot, args, groupId);
         }
+        public async Task<bool> OnReloadCommand(MiraiBot bot, CommandEventArgs args)
+        {
+            args.Sender.RequirePermission(this, "Admin");
+            Permission.database.Load(DatabasePath);
+            await args.Sender.ReplyAsync($"已加载 {Permission.database.GroupPermission?.Count ?? 0} 个群的权限配置");
+            Logger.Info("Reload {count} group(s) permission data", Permission.database.GroupPermission?.Count ?? 0);
+            return true;
+        }
 
         public long GetGroupIdArg(CommandEventArgs args)
         {
@@ -82,6 +95,7 @@ namespace WanBot.Plugin.EssentialPermission
             Permission.database.AddGroupPermission(groupId, permission);
             await args.Sender.ReplyAsync($"成功将权限 {permission} 添加到群 {groupId}");
             Logger.Info("Add permission {permission} to group {group}", permission, groupId);
+            Permission.database.Save(DatabasePath);
             return true;
         }
 
@@ -93,6 +107,23 @@ namespace WanBot.Plugin.EssentialPermission
             Permission.database.RemoveGroupPermission(groupId, permission);
             await args.Sender.ReplyAsync($"成功将权限 {permission} 从群 {groupId} 中移除");
             Logger.Info("Remove permission {permission} from group {group}", permission, groupId);
+            Permission.database.Save(DatabasePath);
+            return true;
+        }
+        public async Task<bool> OnGroupMoveCommand(MiraiBot bot, CommandEventArgs args, long groupId)
+        {
+            args.Sender.RequirePermission(this, "Admin");
+
+            var newGroup = args.GetNextArgs<string>();
+            var oldGroup = Permission.database.GetGroupPermission(groupId).PermissionGroup;
+            if (!Permission.database.TryMoveGroup(groupId, newGroup))
+            {
+                await args.Sender.ReplyAsync($"权限组 {newGroup} 未找到");
+                return true;
+            }
+            await args.Sender.ReplyAsync($"成功群 {groupId} 从权限组 {oldGroup} 移动到 {newGroup}");
+            Logger.Info("Move group {group} from permission group {old} to {new}", groupId, oldGroup, newGroup);
+            Permission.database.Save(DatabasePath);
             return true;
         }
 
