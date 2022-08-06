@@ -9,39 +9,39 @@ namespace WanBot.Plugin.HotSpot
     public class WeiboSearchResult
     {
         public int ok { get; set; }
-        public WeiboSearchData data { get; set; }
+        public WeiboSearchData data { get; set; } = null!;
     }
 
     public class WeiboSearchData
     {
-        public WeiboCardListInfo cardlistInfo { get; set; }
-        public WeiboCard[] cards { get; set; }
+        public WeiboCardListInfo cardlistInfo { get; set; } = null!;
+        public WeiboCard[] cards { get; set; } = Array.Empty<WeiboCard>();
     }
 
     public class WeiboCardListInfo
     {
-        public string cardlist_title { get; set; }
+        public string cardlist_title { get; set; } = string.Empty;
 
-        public string desc { get; set; }
+        public string desc { get; set; } = string.Empty;
     }
 
     public class WeiboCard
     {
         public int card_type { get; set; }
 
-        public WeiboBlog mblog { get; set; }
+        public WeiboBlog mblog { get; set; } = null!;
 
     }
 
     public class WeiboBlog
     {
-        public string text { get; set; }
+        public string text { get; set; } = null!;
 
-        public WeiboUser user { get; set; }
+        public WeiboUser user { get; set; } = null!;
     }
 
     public class WeiboUser
     {
-        public string screen_name { get; set; }
+        public string screen_name { get; set; } = string.Empty;
     }
 }

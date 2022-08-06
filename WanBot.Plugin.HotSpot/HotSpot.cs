@@ -18,7 +18,7 @@ namespace WanBot.Plugin.HotSpot
         public override Version PluginVersion => Version.Parse("1.0.0");
 
         private List<string> _searchCache = new();
-        private string _hotspotCache;
+        private string _hotspotCache = string.Empty;
         private DateTime _cacheTime = DateTime.MinValue;
 
         [Command("今日热点")]
@@ -41,11 +41,11 @@ namespace WanBot.Plugin.HotSpot
             var text = hotHtmlDoc.DocumentNode.InnerText;
             var searchResult = JsonSerializer.Deserialize<WeiboSearchResult>(text);
 
-            var blog = searchResult.data.cards.Where((card) => card.card_type == 9).FirstOrDefault();
+            var blog = searchResult!.data.cards.Where((card) => card.card_type == 9).FirstOrDefault();
 
             return
                 $"【{searchResult.data.cardlistInfo.cardlist_title}】{searchResult.data.cardlistInfo.desc}\n\n" +
-                $"{blog.mblog.user.screen_name} 表示：{blog.mblog.text}";
+                $"{blog!.mblog.user.screen_name} 表示：{blog.mblog.text}";
         }
 
         public async Task<string> GetHotSpotAsync()

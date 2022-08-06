@@ -56,7 +56,10 @@ namespace WanBot.Api
 
         public string GetConfigPath()
         {
-            return Application.GetConfigPath(PluginName);
+            var configPath = Application.GetConfigPath(PluginName);
+            if (!Directory.Exists(configPath))
+                Directory.CreateDirectory(configPath);
+            return configPath;
         }
 
         private bool CheckArgs<T>(MethodInfo method) where T : BlockableEventArgs

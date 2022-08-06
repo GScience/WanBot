@@ -46,10 +46,24 @@ namespace WanBot
             _domain = domain;
         }
 
-        public void Reload(bool unloadContext)
+        /// <summary>
+        /// 卸载插件
+        /// </summary>
+        private void UnloadPlugins()
         {
+            foreach (var plugin in Plugins)
+                if (plugin is IDisposable disposable)
+                    disposable.Dispose();
+                else if (plugin is IAsyncDisposable asyncDisposable)
+                    asyncDisposable.DisposeAsync().AsTask().Wait();
+
             Plugins.Clear();
             AsmList.Clear();
+        }
+
+        public void Reload(bool unloadContext)
+        {
+            UnloadPlugins();
 
             if (unloadContext)
             {
@@ -225,7 +239,7 @@ namespace WanBot
 
         public void Dispose()
         {
-            Plugins.Clear();
+            UnloadPlugins();
             _pluginChangeListener?.Dispose();
         }
     }

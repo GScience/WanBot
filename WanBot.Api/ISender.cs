@@ -16,6 +16,11 @@ namespace WanBot.Api
         public string Name { get; }
 
         /// <summary>
+        /// 消息发送源的QQ号
+        /// </summary>
+        public long Id { get; }
+
+        /// <summary>
         /// 回复消息
         /// </summary>
         /// <param name="messageChain"></param>
