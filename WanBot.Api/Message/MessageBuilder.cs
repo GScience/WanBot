@@ -7,7 +7,7 @@ using WanBot.Api.Mirai.Message;
 
 namespace WanBot.Api.Message
 {
-    public class MessageBuilder
+    public class MessageBuilder : IMessageBuilder
     {
         private delegate BaseChain ChainGenerator(MessageType type);
 
@@ -19,6 +19,11 @@ namespace WanBot.Api.Message
                 plain.Text += text;
             else
                 _chains.Add(new Plain { Text = text });
+            return this;
+        }
+        public MessageBuilder ImageByUrl(string url)
+        {
+            _chains.Add(new Image { Url = url });
             return this;
         }
 
@@ -53,7 +58,7 @@ namespace WanBot.Api.Message
         /// </summary>
         /// <param name="messageType"></param>
         /// <returns></returns>
-        internal IEnumerable<BaseChain> Build(MessageType messageType)
+        public IEnumerable<BaseChain> Build(MessageType messageType)
         {
             foreach (var obj in _chains)
             {

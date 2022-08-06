@@ -141,7 +141,7 @@ namespace WanBot.Api.Mirai
             return result!;
         }
 
-        public async Task<SendGroupMessageResponse> SendGroupMessageAsync(long target, int? quote, MessageBuilder messageBuilder)
+        public async Task<SendGroupMessageResponse> SendGroupMessageAsync(long target, int? quote, IMessageBuilder messageBuilder)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendGroupMessageResponse, SendGroupMessageRequest>(
@@ -186,7 +186,7 @@ namespace WanBot.Api.Mirai
             return result!;
         }
 
-        public async Task<SendFriendMessageResponse> SendFriendMessageAsync(long target, int? quote, MessageBuilder messageBuilder)
+        public async Task<SendFriendMessageResponse> SendFriendMessageAsync(long target, int? quote, IMessageBuilder messageBuilder)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendFriendMessageResponse, SendFriendMessageRequest>(
@@ -233,7 +233,7 @@ namespace WanBot.Api.Mirai
             return result!;
         }
 
-        public async Task<SendTempMessageResponse> SendTempMessageAsync(long qq, long group, int? quote, MessageBuilder messageBuilder)
+        public async Task<SendTempMessageResponse> SendTempMessageAsync(long qq, long group, int? quote, IMessageBuilder messageBuilder)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendTempMessageResponse, SendTempMessageRequest>(

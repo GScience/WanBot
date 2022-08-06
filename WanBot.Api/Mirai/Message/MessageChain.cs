@@ -15,6 +15,11 @@ namespace WanBot.Api.Mirai.Message
     [JsonConverter(typeof(MessageChainJsonConverter))]
     public class MessageChain : IEnumerable<BaseChain>
     {
+        /// <summary>
+        /// 消息Id
+        /// </summary>
+        public int? messageId;
+
         internal IEnumerable<BaseChain> Chain { get; }
 
         public MessageChain(IEnumerable<BaseChain> chain)

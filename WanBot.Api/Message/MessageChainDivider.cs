@@ -22,6 +22,17 @@ namespace WanBot.Api.Message
         /// </summary>
         private bool _readAll;
 
+        /// <summary>
+        /// 获取消息Id，如果无法获取则返回Null
+        /// </summary>
+        /// <returns></returns>
+        public int? GetMessageId()
+        {
+            if (_baseChain.FirstOrDefault() is not Source source)
+                return null;
+            return source.Id;
+        }
+
         public MessageChainDivider(MessageChain chain)
         {
             _baseChain = chain;

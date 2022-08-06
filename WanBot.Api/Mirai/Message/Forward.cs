@@ -39,7 +39,7 @@ namespace WanBot.Api.Mirai.Message
             /// <summary>
             /// 可以只使用消息messageId，从缓存中读取一条消息作为节点
             /// </summary>
-            public int MessageId { get; set; }
+            public int? MessageId { get; set; }
         }
 
         /// <summary>

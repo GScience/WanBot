@@ -70,6 +70,11 @@ namespace WanBot.Api.Event
                 yield return enumerator.Current;
         }
 
+        public int? GetMessageId()
+        {
+            return _divider.GetMessageId();
+        }
+
         public string GetEventName()
         {
             return GetEventName(Command);

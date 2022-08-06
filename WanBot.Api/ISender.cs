@@ -30,13 +30,13 @@ namespace WanBot.Api
         /// 回复消息
         /// </summary>
         /// <param name="message"></param>
-        Task ReplyAsync(string message);
+        Task ReplyAsync(string message, int? replyId = null);
 
         /// <summary>
         /// 回复消息
         /// </summary>
         /// <param name="messageBuilder"></param>
-        Task ReplyAsync(MessageBuilder messageBuilder);
+        Task ReplyAsync(IMessageBuilder messageBuilder, int? replyId = null);
 
         /// <summary>
         /// 戳一戳对方

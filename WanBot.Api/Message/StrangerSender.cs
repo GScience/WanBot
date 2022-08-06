@@ -29,14 +29,14 @@ namespace WanBot.Api.Message
             await _bot.SendTempMessageAsync(Id, GroupId, null, messageChain);
         }
 
-        public async Task ReplyAsync(string message)
+        public async Task ReplyAsync(string message, int? replyId = null)
         {
-            await _bot.SendTempMessageAsync(Id, GroupId, null, message);
+            await _bot.SendTempMessageAsync(Id, GroupId, replyId, message);
         }
 
-        public async Task ReplyAsync(MessageBuilder messageBuilder)
+        public async Task ReplyAsync(IMessageBuilder messageBuilder, int? replyId = null)
         {
-            await _bot.SendTempMessageAsync(Id, GroupId, null, messageBuilder);
+            await _bot.SendTempMessageAsync(Id, GroupId, replyId, messageBuilder);
         }
 
         public async Task Nudge()
