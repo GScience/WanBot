@@ -24,7 +24,7 @@ namespace WanBot.Plugin.EssentialPermission
                 if (permissionArray[i] == "*")
                     return true;
 
-                if (permissionArray[i] != targetArray[i])
+                if (permissionArray[i].ToLower() != targetArray[i].ToLower())
                     return false;
             }
 

@@ -70,6 +70,7 @@ namespace WanBot.Plugin.EssentialPermission
         public async Task<bool> OnReloadCommand(MiraiBot bot, CommandEventArgs args)
         {
             args.Sender.RequirePermission(this, "Admin");
+            Permission.config = GetConfig<PermissionConfig>();
             Permission.database.Load(DatabasePath);
             await args.Sender.ReplyAsync($"已加载 {Permission.database.GroupPermission?.Count ?? 0} 个群的权限配置");
             Logger.Info("Reload {count} group(s) permission data", Permission.database.GroupPermission?.Count ?? 0);
