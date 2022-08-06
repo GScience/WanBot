@@ -7,16 +7,28 @@ using WanBot.Api;
 
 namespace WanBot.Plugin.EssentialPermission
 {
-    public static class WanPluginExtension
+    public static class ISenderExtension
     {
         public static bool HasCommandPermission(this ISender sender, BasePlugin plugin, string cmdName, params string[] args)
         {
-            return Permission.CheckCommand(sender, plugin, cmdName, args);
+            var commandPermission = Permission.GetCommandPermission(plugin, cmdName, args);
+            if (!Permission.CheckSender(sender, commandPermission))
+            {
+                LogPermissionRequirement(sender, commandPermission);
+                return false;
+            }
+            return true;
         }
 
         public static bool HasPermission(this ISender sender, BasePlugin plugin, string permission)
         {
-            return Permission.Check(sender, plugin, permission);
+            var pluginPermission = Permission.GetPluginPermission(plugin, permission);
+            if (!Permission.CheckSender(sender, pluginPermission))
+            {
+                LogPermissionRequirement(sender, pluginPermission);
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -31,7 +43,10 @@ namespace WanBot.Plugin.EssentialPermission
         {
             var commandPermission = Permission.GetCommandPermission(plugin, cmdName, args);
             if (!Permission.CheckSender(sender, commandPermission))
+            {
+                LogPermissionRequirement(sender, commandPermission);
                 throw new PermissionException(commandPermission);
+            }
         }
 
         /// <summary>
@@ -45,7 +60,15 @@ namespace WanBot.Plugin.EssentialPermission
         {
             var pluginPermission = Permission.GetPluginPermission(plugin, permission);
             if (!Permission.CheckSender(sender, pluginPermission))
+            {
+                LogPermissionRequirement(sender, pluginPermission);
                 throw new PermissionException(pluginPermission);
+            }
+        }
+
+        private static void LogPermissionRequirement(this ISender sender, string fullPermission)
+        {
+            Permission.logger.Warn("Sender {sender} do not have permission {permission}", sender.Name, fullPermission);
         }
     }
 }

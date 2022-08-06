@@ -10,6 +10,7 @@ namespace WanBot.Plugin.EssentialPermission
 {
     public static class Permission
     {
+        internal static ILogger logger = null!;
         internal static PermissionConfig config = null!;
         internal static PermissionDatabase database = null!;
 
@@ -30,7 +31,7 @@ namespace WanBot.Plugin.EssentialPermission
             return permissionArray.Length == targetArray.Length;
         }
 
-        private static bool CheckPermission(List<string> permissionGroupPermission, List<string> addition, List<string> removed, string target)
+        internal static bool CheckPermission(List<string> permissionGroupPermission, List<string> addition, List<string> removed, string target)
         {
             foreach (var permission in removed)
             {
@@ -95,17 +96,7 @@ namespace WanBot.Plugin.EssentialPermission
             }
         }
 
-        public static bool CheckCommand(ISender sender, BasePlugin plugin, string cmdName, params string[] args)
-        {
-            return CheckSender(sender, GetCommandPermission(plugin, cmdName, args));
-        }
-
-        public static bool Check(ISender sender, BasePlugin plugin, string permission)
-        {
-            return CheckSender(sender, GetPluginPermission(plugin, permission));
-        }
-
-        public static string GetCommandPermission(BasePlugin plugin, string cmdName, params string[] args)
+        internal static string GetCommandPermission(BasePlugin plugin, string cmdName, params string[] args)
         {
             var permission = $"{GetPluginPermission(plugin, "Command")}.{cmdName}";
 
@@ -114,7 +105,7 @@ namespace WanBot.Plugin.EssentialPermission
             return permission;
         }
 
-        public static string GetPluginPermission(BasePlugin plugin, string permission)
+        internal static string GetPluginPermission(BasePlugin plugin, string permission)
         {
             return $"{plugin.PluginName}.{permission}";
         }

@@ -51,4 +51,44 @@ namespace WanBot.Api.Util
             }
         }
     }
+
+    public class CommandDispatcher<T>
+    {
+        private ConcurrentDictionary<string, CommandDispatcher<T>> _dispatcherDict = new();
+
+        public Func<MiraiBot, CommandEventArgs, T, Task<bool>>? Handle { get; set; }
+
+        public async Task<bool> HandleCommandAsync(MiraiBot bot, CommandEventArgs commandEvent, T obj)
+        {
+            string subCmd;
+            try
+            {
+                subCmd = commandEvent.GetNextArgs<string>();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            if (_dispatcherDict.TryGetValue(subCmd, out var dispatcher))
+            {
+                if (dispatcher.Handle != null)
+                    return await dispatcher.Handle.Invoke(bot, commandEvent, obj);
+                return await dispatcher.HandleCommandAsync(bot, commandEvent, obj);
+            }
+            return false;
+        }
+
+        public CommandDispatcher<T> this[string cmd]
+        {
+            get
+            {
+                return _dispatcherDict.GetOrAdd(cmd, static (str) => new CommandDispatcher<T>());
+            }
+            set
+            {
+                _dispatcherDict[cmd] = value;
+            }
+        }
+    }
 }

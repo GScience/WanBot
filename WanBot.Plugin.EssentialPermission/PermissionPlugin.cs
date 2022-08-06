@@ -19,14 +19,21 @@ namespace WanBot.Plugin.EssentialPermission
 
         public override Version PluginVersion => Version.Parse("1.0.0");
 
-        private CommandDispatcher _mainDispatcher = new CommandDispatcher();
+        private CommandDispatcher _mainDispatcher = new();
+        private CommandDispatcher<long> _groupDispatcher = new();
 
         public override void PreInit()
         {
             Permission.config = GetConfig<PermissionConfig>();
             Permission.database = new(Permission.config);
+            Permission.logger = Logger;
 
             _mainDispatcher["group"].Handle = OnGroupPermissionCommand;
+
+            _groupDispatcher["add"].Handle = (b, a, groupId) => OnGroupPermissionAddCommand(b, a, groupId);
+            _groupDispatcher["remove"].Handle = (b, a, groupId) => OnGroupPermissionRemoveCommand(b, a, groupId);
+            _groupDispatcher["list"].Handle = (b, a, groupId) => OnGroupPermissionListCommand(b, a, groupId);
+            _groupDispatcher["check"].Handle = (b, a, groupId) => OnGroupPermissionCheckCommand(b, a, groupId);
         }
 
         [Command("permission")]
@@ -50,6 +57,13 @@ namespace WanBot.Plugin.EssentialPermission
 
         public async Task<bool> OnGroupPermissionCommand(MiraiBot bot, CommandEventArgs args)
         {
+            var groupId = GetGroupIdArg(args);
+
+            return await _groupDispatcher.HandleCommandAsync(bot, args, groupId);
+        }
+
+        public long GetGroupIdArg(CommandEventArgs args)
+        {
             var groupIdStr = args.GetNextArgs<string>();
             long groupId;
             if (groupIdStr == "this" && args.Sender is GroupSender groupSender)
@@ -57,12 +71,7 @@ namespace WanBot.Plugin.EssentialPermission
             else
                 groupId = long.Parse(groupIdStr);
 
-            var groupDispatcher = new CommandDispatcher();
-            groupDispatcher["add"].Handle = (b, a) => OnGroupPermissionAddCommand(b, a, groupId);
-            groupDispatcher["remove"].Handle = (b, a) => OnGroupPermissionRemoveCommand(b, a, groupId);
-            groupDispatcher["list"].Handle = (b, a) => OnGroupPermissionListCommand(b, a, groupId);
-            groupDispatcher["check"].Handle = (b, a) => OnGroupPermissionCheckCommand(b, a, groupId);
-            return await groupDispatcher.HandleCommandAsync(bot, args);
+            return groupId;
         }
 
         public async Task<bool> OnGroupPermissionAddCommand(MiraiBot bot, CommandEventArgs args, long groupId)
