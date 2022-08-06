@@ -147,8 +147,16 @@ namespace WanBot.Plugin.EssentialPermission
                 if (GroupPermission == null)
                     Permission.logger.Error("Failed to load permission database");
                 else
+                {
                     foreach (var entry in GroupPermission)
+                    {
                         entry.Value.Id = entry.Key;
+                        var permissionGroup = entry.Value.PermissionGroup;
+
+                        if (!permissionConfig.GroupPermissionGroups.Where(group => group.Name == permissionGroup).Any())
+                            Permission.logger.Error("Permission group {group} not found. Group {groupId} has no permission", permissionGroup, entry.Key);
+                    }
+                }
             }
         }
     }

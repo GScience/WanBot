@@ -70,7 +70,10 @@ namespace WanBot.Plugin.EssentialPermission
                 = config.GroupPermissionGroups.Where((group) => group.Name == entry.PermissionGroup).FirstOrDefault();
 
             if (permissionGroup == null)
-                throw new Exception($"Permission group {entry.PermissionGroup} not found");
+            {
+                logger.Error("Permission group {group} not found", entry.PermissionGroup);
+                return false;
+            }
 
             return CheckPermission(permissionGroup.Permissions, entry.AdditionPermissions, entry.RemovedPermissions, permission);
         }
