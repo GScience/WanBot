@@ -15,6 +15,11 @@ namespace WanBot.Plugin.EssentialPermission
 
         public ConcurrentDictionary<long, PermissionEntry> GroupPermission { get; set; } = new();
 
+        public PermissionDatabase(PermissionConfig config)
+        {
+            permissionConfig = config;
+        }
+
         public PermissionEntry GetGroupPermission(long groupId)
         {
             return GroupPermission.GetOrAdd(groupId, (id) => new PermissionEntry
@@ -32,7 +37,10 @@ namespace WanBot.Plugin.EssentialPermission
                 PermissionGroup = permissionConfig.DefaultGroupGroup
             });
 
-            group.AdditionPermissions = string.Join(';', group.AdditionPermissions, permission);
+            group.RemovedPermissions.Remove(permission);
+
+            if (!group.AdditionPermissions.Contains(permission))
+                group.AdditionPermissions.Add(permission);
         }
 
         public void RemoveGroupPermission(long groupId, string permission)
@@ -43,8 +51,10 @@ namespace WanBot.Plugin.EssentialPermission
                 PermissionGroup = permissionConfig.DefaultGroupGroup
             });
 
-            var permissions = group.AdditionPermissions.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            group.AdditionPermissions = string.Join(';', permissions.Where(str => str != permission));
+            group.AdditionPermissions.Remove(permission);
+
+            if (!group.RemovedPermissions.Contains(permission))
+                group.RemovedPermissions.Add(permission);
         }
     }
 
@@ -61,8 +71,13 @@ namespace WanBot.Plugin.EssentialPermission
         public string PermissionGroup { get; set; } = string.Empty;
 
         /// <summary>
-        /// 覆盖权限
+        /// 额外权限
         /// </summary>
-        public string AdditionPermissions = string.Empty;
+        public List<string> AdditionPermissions = new();
+
+        /// <summary>
+        /// 移除权限
+        /// </summary>
+        public List<string> RemovedPermissions = new();
     }
 }

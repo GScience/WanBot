@@ -24,10 +24,7 @@ namespace WanBot.Plugin.EssentialPermission
         public override void PreInit()
         {
             Permission.config = GetConfig<PermissionConfig>();
-            Permission.database = new()
-            {
-                permissionConfig = Permission.config
-            };
+            Permission.database = new(Permission.config);
 
             _mainDispatcher["group"].Handle = OnGroupPermissionCommand;
         }
@@ -97,9 +94,14 @@ namespace WanBot.Plugin.EssentialPermission
             var entry = Permission.database.GetGroupPermission(groupId);
             var group = Permission.config.GroupPermissionGroups.Where((group) => group.Name == entry.PermissionGroup).FirstOrDefault();
             var permissions = string.Join('\n', group!.Permissions);
-            var additionPermission = entry.AdditionPermissions.Replace(';', '\n');
+            var additionPermission = string.Join('\n', entry.AdditionPermissions);
+            var removedPermission = string.Join('\n', entry.RemovedPermissions);
 
-            await args.Sender.ReplyAsync($"权限组：{entry.PermissionGroup}\n默认权限：\n{permissions}\n额外权限：\n{additionPermission}");
+            await args.Sender.ReplyAsync(
+                $"权限组：{entry.PermissionGroup}\n" +
+                $"默认权限：\n{permissions}\n" +
+                $"额外权限：\n{additionPermission}\n" +
+                $"禁止权限：\n{removedPermission}");
 
             return true;
         }

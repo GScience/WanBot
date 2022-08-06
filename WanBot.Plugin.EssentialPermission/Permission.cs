@@ -13,7 +13,7 @@ namespace WanBot.Plugin.EssentialPermission
         internal static PermissionConfig config = null!;
         internal static PermissionDatabase database = null!;
 
-        private static bool IsContainPermission(string permission, string target)
+        internal static bool IsContainTarget(string permission, string target)
         {
             var permissionArray = permission.Split('.');
             var targetArray = target.Split('.');
@@ -30,19 +30,23 @@ namespace WanBot.Plugin.EssentialPermission
             return permissionArray.Length == targetArray.Length;
         }
 
-        private static bool CheckPermission(List<string> permissions, string addition, string target)
+        private static bool CheckPermission(List<string> permissionGroupPermission, List<string> addition, List<string> removed, string target)
         {
-            foreach (var permission in permissions)
+            foreach (var permission in removed)
             {
-                if (IsContainPermission(permission, target))
+                if (IsContainTarget(permission, target))
+                    return false;
+            }
+
+            foreach (var permission in addition)
+            {
+                if (IsContainTarget(permission, target))
                     return true;
             }
 
-            var additionPermissions = addition.Split(';', StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var permission in additionPermissions)
+            foreach (var permission in permissionGroupPermission)
             {
-                if (IsContainPermission(permission, target))
+                if (IsContainTarget(permission, target))
                     return true;
             }
 
@@ -63,7 +67,7 @@ namespace WanBot.Plugin.EssentialPermission
             if (permissionGroup == null)
                 throw new Exception($"Permission group {entry.PermissionGroup} not found");
 
-            return CheckPermission(permissionGroup.Permissions, entry.AdditionPermissions, permission);
+            return CheckPermission(permissionGroup.Permissions, entry.AdditionPermissions, entry.RemovedPermissions, permission);
         }
 
         /// <summary>
