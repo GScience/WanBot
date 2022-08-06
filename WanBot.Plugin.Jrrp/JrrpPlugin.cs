@@ -2,6 +2,7 @@
 using WanBot.Api;
 using WanBot.Api.Event;
 using WanBot.Api.Mirai;
+using WanBot.Plugin.EssentialPermission;
 
 namespace WanBot.Plugin.Jrrp
 {
@@ -27,6 +28,10 @@ namespace WanBot.Plugin.Jrrp
         [Command("jrrp")]
         public async Task OnJrrp(MiraiBot bot, CommandEventArgs args)
         {
+            if (!args.Sender.HasCommandPermission(this, "jrrp"))
+                return;
+
+            args.Blocked = true;
             var jrrpUser = await GetJrrpUserAsync(args.Sender.Id);
             await args.Sender.ReplyAsync($"今日运势：{jrrpUser.Jrrp}");
         }

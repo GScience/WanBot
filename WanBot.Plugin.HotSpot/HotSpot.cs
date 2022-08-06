@@ -27,6 +27,7 @@ namespace WanBot.Plugin.HotSpot
             if (!commandEvent.Sender.HasCommandPermission(this, "今日热点"))
                 return;
 
+            commandEvent.Blocked = true;
             var topic = await GetHotSpotAsync();
             await commandEvent.Sender.ReplyAsync(topic); 
             commandEvent.Blocked = true;

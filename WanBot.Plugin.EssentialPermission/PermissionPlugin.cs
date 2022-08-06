@@ -44,6 +44,8 @@ namespace WanBot.Plugin.EssentialPermission
         [Command("permission")]
         public async Task OnPermissionCommand(MiraiBot bot, CommandEventArgs args)
         {
+            args.Blocked = true;
+
             try
             {
                 if (await _mainDispatcher.HandleCommandAsync(bot, args))
