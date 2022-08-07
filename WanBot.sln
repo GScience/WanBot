@@ -24,9 +24,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.HotSpot", "Wa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.Core", "WanBot.Plugin.Core\WanBot.Plugin.Core.csproj", "{2484A63E-6280-4C08-8CD8-35D673E86313}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.Jrrp", "WanBot.Plugin.Jrrp\WanBot.Plugin.Jrrp.csproj", "{5D6F9BDB-7C20-427B-8CE2-CC30EB550BD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.Jrrp", "WanBot.Plugin.Jrrp\WanBot.Plugin.Jrrp.csproj", "{5D6F9BDB-7C20-427B-8CE2-CC30EB550BD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.YGO", "WanBot.Plugin.YGO\WanBot.Plugin.YGO.csproj", "{2A826954-87B8-4D34-B86E-18273D0AE940}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.YGO", "WanBot.Plugin.YGO\WanBot.Plugin.YGO.csproj", "{2A826954-87B8-4D34-B86E-18273D0AE940}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Graphic", "WanBot.Graphic\WanBot.Graphic.csproj", "{9A80B4D0-2162-4DAC-B235-8E1FEE51D1A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Graphic.Example", "WanBot.Graphic.Example\WanBot.Graphic.Example.csproj", "{39786B9E-443D-498D-9997-BC416D2A58B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +74,14 @@ Global
 		{2A826954-87B8-4D34-B86E-18273D0AE940}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A826954-87B8-4D34-B86E-18273D0AE940}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A826954-87B8-4D34-B86E-18273D0AE940}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A80B4D0-2162-4DAC-B235-8E1FEE51D1A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A80B4D0-2162-4DAC-B235-8E1FEE51D1A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A80B4D0-2162-4DAC-B235-8E1FEE51D1A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A80B4D0-2162-4DAC-B235-8E1FEE51D1A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39786B9E-443D-498D-9997-BC416D2A58B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39786B9E-443D-498D-9997-BC416D2A58B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39786B9E-443D-498D-9997-BC416D2A58B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39786B9E-443D-498D-9997-BC416D2A58B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
