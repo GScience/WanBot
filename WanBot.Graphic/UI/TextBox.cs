@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WanBot.Graphic.UI.Layout;
 
 namespace WanBot.Graphic.UI
 {
     public class TextBox : UIElement
     {
+        public TextVerticalAlignment TextVerticalAlignment { get; set; } = TextVerticalAlignment.Center;
+
         public string Text { get; set; } = string.Empty;
 
         private List<string> _lines = new();
@@ -38,7 +41,7 @@ namespace WanBot.Graphic.UI
         {
             base.UpdateLayout(inputRect);
 
-            if (inputRect.Width == 0)
+            if (inputRect.Width <= 0)
                 return ContentRect;
 
             _lines.Clear();
@@ -53,9 +56,6 @@ namespace WanBot.Graphic.UI
                 var line = text[0..(int)linePos];
                 text = text[(int)linePos..^0];
                 _lines.Add(line);
-                var lineRect = new SKRect();
-                FontPaint.MeasureText(line, ref lineRect);
-                var lineHeight = lineRect.Size.Height;
 
                 float lineX;
                 if (FontPaint.TextAlign == SKTextAlign.Left)
@@ -65,11 +65,32 @@ namespace WanBot.Graphic.UI
                 else
                     lineX = RenderRect.Left + RenderRect.Width;
 
-                _pos.Add(new SKPoint(lineX, currentY + lineHeight));
+                _pos.Add(new SKPoint(lineX, currentY + FontPaint.FontSpacing));
 
-                currentY += lineHeight;
+                currentY += FontPaint.FontSpacing;
             }
-            Height = currentY - RenderRect.Top;
+            var newHeight = currentY - RenderRect.Top + FontPaint.FontSpacing / 2;
+
+            if (Height != null && newHeight < Height)
+            {
+                var offset = Height.Value - newHeight;
+
+                switch (TextVerticalAlignment)
+                {
+                    case TextVerticalAlignment.Top:
+                        break;
+                    case TextVerticalAlignment.Center:
+                        for (var i = 0; i < _pos.Count; ++i)
+                            _pos[i] = new SKPoint(_pos[i].X, _pos[i].Y + offset / 2);
+                        break;
+                    case TextVerticalAlignment.Bottom:
+                        for (var i = 0; i < _pos.Count; ++i)
+                            _pos[i] = new SKPoint(_pos[i].X, _pos[i].Y + offset);
+                        break;
+                }
+            }
+            else
+                Height = newHeight;
 
             var finalResult = base.UpdateLayout(inputRect);
             return finalResult;

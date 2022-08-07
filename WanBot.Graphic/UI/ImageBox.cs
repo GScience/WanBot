@@ -13,5 +13,10 @@ namespace WanBot.Graphic.UI
         {
             
         }
+
+        public override SKRect UpdateLayout(SKRect rect)
+        {
+            return base.UpdateLayout(rect);
+        }
     }
 }
