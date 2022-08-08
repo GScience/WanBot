@@ -4,11 +4,15 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SharpVk" Version="0.4.2" />
     <PackageReference Include="SkiaSharp" Version="2.88.0" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.0" />
+    <PackageReference Include="SkiaSharp.Vulkan.SharpVk" Version="2.88.0" />
   </ItemGroup>
 
 </Project>
