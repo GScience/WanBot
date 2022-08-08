@@ -71,6 +71,8 @@ namespace WanBot.Graphic.UI
             }
             var newHeight = currentY - RenderRect.Top + FontPaint.FontSpacing / 2;
 
+            var oldHeight = Height;
+
             if (Height != null && newHeight < Height)
             {
                 var offset = Height.Value - newHeight;
@@ -93,6 +95,7 @@ namespace WanBot.Graphic.UI
                 Height = newHeight;
 
             var finalResult = base.UpdateLayout(inputRect);
+            Height = oldHeight;
             return finalResult;
         }
 
