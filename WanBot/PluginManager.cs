@@ -17,7 +17,8 @@ namespace WanBot
 
         protected override Assembly? Load(AssemblyName assemblyName)
         {
-            if (assemblyName.Name == "WanBot.Api" || assemblyName.Name == "WanBot")
+            if (Default.Assemblies.Where(
+                asm => assemblyName.Name == asm.GetName().Name).Any())
                 return null;
             return base.Load(assemblyName);
         }
@@ -92,15 +93,16 @@ namespace WanBot
 
             foreach (var file in Directory.EnumerateFiles(dir, "*.dll"))
             {
-                _logger.Info("Loading {file}", file);
+                var fileInfo = new FileInfo(file);
+
+                _logger.Info("Loading {file}", fileInfo.Name);
                 try
                 {
-                    var fileInfo = new FileInfo(file);
+                    var assemblyName = AssemblyName.GetAssemblyName(file);
 
-                    if (fileInfo.Name.ToLower() == "wanbot.api.dll")
-                        throw new Exception("WanBot.Api.dll has already loaded");
-                    else if (fileInfo.Name.ToLower() == "wanbot.dll")
-                        throw new Exception("WanBot.dll has already loaded");
+                    if (AssemblyLoadContext.Default.Assemblies.Where(
+                        asm => assemblyName.Name == asm.GetName().Name).Any())
+                        throw new Exception($"{assemblyName.Name} has already loaded");
 
                     using var stream = File.OpenRead(file);
                     var asm = _pluginLoadContext.LoadFromStream(stream);
@@ -108,7 +110,7 @@ namespace WanBot
                 }
                 catch (Exception e)
                 {
-                    _logger.Error("Failed to load {file} because: \n{e}", file, e);
+                    _logger.Error("Failed to load {file} because: \n{e}", fileInfo.Name, e);
                 }
             }
         }
@@ -149,7 +151,7 @@ namespace WanBot
 
         private void LoadPluginFromType(Type type)
         {
-            _logger.Info("Find {PluginName}.", type.Name);
+            _logger.Info("Find {PluginName} in {AsmName}", type.Name, type.Assembly.GetName().Name);
             var pluginLogger = new Logger(type.Name);
             var plugin = BasePlugin.CreatePluginInstance(type, _domain.CurrentApplication, pluginLogger);
             pluginLogger.SetCategory(plugin.PluginName);
