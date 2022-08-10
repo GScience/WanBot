@@ -6,14 +6,23 @@ using WanBot.Graphic;
 using WanBot.Graphic.UI;
 using WanBot.Graphic.UI.Layout;
 
-void Draw(bool useVk, string savePath = "test.png")
+void Draw(bool useVk, string savePath = "test.png", bool isDebug = true)
 {
+    var grid = new Grid();
+
+    var gridBg = new Rectangle();
+    gridBg.Margin = new Margin(0, 0, 0, 0);
+    gridBg.Radius = new SKSize(35, 35);
+    gridBg.Paint.Color = SKColors.Gray;
+    grid.Children.Add(gridBg);
+
     var content = new VerticalLayout();
     for (var k = 0; k < 3; ++k)
     {
         var bgGrid = new Grid();
 
         var bg = new Rectangle();
+        bg.Radius = new SKSize(25, 25);
         bg.Margin = new Margin(25, 25, 25, 25);
         bgGrid.Children.Add(bg);
 
@@ -48,11 +57,20 @@ void Draw(bool useVk, string savePath = "test.png")
 
                 verticalLayout.Children.Add(image);
 
+                var imageGrid = new Grid();
+
                 var imageText = new TextBox();
                 imageText.Text = $"Image({i}.{j})";
                 imageText.FontPaint.TextSize = 16;
                 imageText.Margin = new Margin(10, 10, 10, 10);
-                verticalLayout.Children.Add(imageText);
+
+                var imageGridBg = new Rectangle();
+                imageGridBg.Margin = new Margin(0, 0, 0, 0);
+                imageGridBg.Paint.Color = SKColors.Yellow;
+                imageGrid.Children.Add(imageGridBg);
+                imageGrid.Children.Add(imageText);
+
+                verticalLayout.Children.Add(imageGrid);
             }
             horizontalLayout.Children.Add(verticalLayout);
         }
@@ -97,14 +115,19 @@ void Draw(bool useVk, string savePath = "test.png")
         content.Children.Add(textWithImage);
     }
 
-    var rect = content.UpdateLayout(new SKRect(0, 0, 2000, 300));
+    grid.Children.Add(content);
 
+    var rect = grid.UpdateLayout(new SKRect(0, 0, 2000, 300));
     var imageInfo = new SKImageInfo((int)rect.Width, (int)rect.Height);
 
     if (useVk)
     {
         using var surface = SKSurface.Create(VkContext.Current.GrContext, false, imageInfo);
-        content.DrawDebug(surface.Canvas);
+
+        if (isDebug)
+            grid.DrawDebug(surface.Canvas);
+        else
+            grid.Draw(surface.Canvas);
 
         if (!string.IsNullOrEmpty(savePath))
         {
@@ -115,7 +138,11 @@ void Draw(bool useVk, string savePath = "test.png")
     else
     {
         using var surface = SKSurface.Create(imageInfo);
-        content.DrawDebug(surface.Canvas);
+
+        if (isDebug)
+            grid.DrawDebug(surface.Canvas);
+        else
+            grid.Draw(surface.Canvas);
 
         if (!string.IsNullOrEmpty(savePath))
         {
@@ -125,8 +152,11 @@ void Draw(bool useVk, string savePath = "test.png")
     }
 }
 
-Draw(true, "vulkan.png");
-Draw(false, "test.png");
+Draw(true, "vulkan_debug.png");
+Draw(false, "test_debug.png");
+
+Draw(true, "vulkan.png", false);
+Draw(false, "test.png", false);
 
 for (var i = 0; i < 10; ++i)
 {
