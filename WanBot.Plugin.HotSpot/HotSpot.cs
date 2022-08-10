@@ -27,9 +27,8 @@ namespace WanBot.Plugin.HotSpot
         public override Version PluginVersion => Version.Parse("1.0.0");
 
         private List<string> _searchCache = new();
-        private string _hotspotCache = string.Empty;
-        private DateTime _cacheTime = DateTime.MinValue;
 
+        private HtmlWeb _web = new HtmlWeb();
         private UIRenderer _renderer = null!;
         public override void Start()
         {
@@ -56,8 +55,7 @@ namespace WanBot.Plugin.HotSpot
 
         public async Task<SKImage> GetHotSpotAsync()
         {
-            var web = new HtmlWeb();
-            var topicHtmlDoc = await web.LoadFromWebAsync("https://weibo.cn/pub/");
+            var topicHtmlDoc = await _web.LoadFromWebAsync("https://weibo.cn/pub/");
             var topics = topicHtmlDoc.DocumentNode.SelectNodes("/html/body//div[@class=\"c\"]");
 
             _searchCache.Clear();
@@ -66,7 +64,7 @@ namespace WanBot.Plugin.HotSpot
 
             var containerId = HttpUtility.UrlEncode($"100103type=1&t=10&q={_searchCache[0]}", Encoding.UTF8);
             var url = $"https://m.weibo.cn/api/container/getIndex?containerid={containerId}&page_type=searchall";
-            var hotHtmlDoc = await web.LoadFromWebAsync(url);
+            var hotHtmlDoc = await _web.LoadFromWebAsync(url);
             var text = hotHtmlDoc.DocumentNode.InnerText;
             var searchResult = JsonSerializer.Deserialize<WeiboSearchResult>(text);
 
@@ -92,21 +90,21 @@ namespace WanBot.Plugin.HotSpot
                 .Width(800)
                 .Space(10);
 
-            SKImage? thumbnailPic = null;
+            SKImage? bmiddlePic = null;
 
             try
             {
-                if (blog.mblog.thumbnail_pic != null)
+                if (blog.mblog.bmiddle_pic != null)
                 {
                     using var httpClient = new HttpClient();
-                    using var imgStream = await httpClient.GetStreamAsync(blog.mblog.thumbnail_pic);
+                    using var imgStream = await httpClient.GetStreamAsync(blog.mblog.bmiddle_pic);
                     using var data = SKData.Create(imgStream);
-                    thumbnailPic = SKImage.FromEncodedData(data);
+                    bmiddlePic = SKImage.FromEncodedData(data);
                     verticalHelper.Add(new ImageBox
                     {
-                        Image = thumbnailPic,
-                        Width = thumbnailPic.Width,
-                        Height = thumbnailPic.Height
+                        Image = bmiddlePic,
+                        Width = bmiddlePic.Width,
+                        Height = bmiddlePic.Height
                     });
                 }
                 verticalHelper.VerticalLayout.Margin = new Margin(0, 0, 0, 0);
@@ -118,7 +116,7 @@ namespace WanBot.Plugin.HotSpot
             }
             finally
             {
-                thumbnailPic?.Dispose();
+                bmiddlePic?.Dispose();
             }
         }
     }

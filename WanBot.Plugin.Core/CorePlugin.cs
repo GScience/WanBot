@@ -72,7 +72,7 @@ namespace WanBot.Plugin.Core
             {
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
-                GC.WaitForFullGCComplete();
+                GC.Collect();
             }
             return true;
         }

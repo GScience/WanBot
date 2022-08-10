@@ -15,6 +15,8 @@ namespace WanBot.Graphic
         {
             _vkContext = new();
             _grContext = _vkContext.GrContext;
+
+            _vkContext.GrContext?.SetResourceCacheLimit(1024 * 50);
         }
 
         /// <summary>
@@ -40,6 +42,7 @@ namespace WanBot.Graphic
                 {
                     using var surface = SKSurface.Create(_grContext, false, imageInfo);
                     uiElement.Draw(surface.Canvas);
+                    _grContext.Flush();
                     return surface.Snapshot();
                 }
             }

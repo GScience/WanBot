@@ -29,11 +29,12 @@ namespace WanBot.Plugin.Essential.Graphic
         /// <summary>
         /// 渲染器
         /// </summary>
-        public UIRenderer Renderer { get; set; } = new();
+        public UIRenderer Renderer { get; set; } = null!;
 
         public override void PreInit()
         {
             base.PreInit();
+            Renderer = new();
             _config = GetConfig<GraphicConfig>();
             LoadFontAsync().Wait();
         }

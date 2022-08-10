@@ -10,7 +10,7 @@ var vkContext = new VkContext();
 
 void Draw(bool useVk, string savePath = "test.png", bool isDebug = true)
 {
-    var grid = new Grid();
+    using var grid = new Grid();
 
     var gridBg = new Rectangle();
     gridBg.Margin = new Margin(0, 0, 0, 0);
@@ -133,10 +133,15 @@ void Draw(bool useVk, string savePath = "test.png", bool isDebug = true)
         else
             grid.Draw(surface.Canvas);
 
+        vkContext.GrContext?.Flush();
+
         if (!string.IsNullOrEmpty(savePath))
         {
             using (var output = File.Create(savePath))
-                surface.Snapshot().Encode().SaveTo(output);
+            {
+                using var img = surface.Snapshot();
+                img.Encode().SaveTo(output);
+            }
         }
     }
     else
@@ -151,7 +156,10 @@ void Draw(bool useVk, string savePath = "test.png", bool isDebug = true)
         if (!string.IsNullOrEmpty(savePath))
         {
             using (var output = File.Create(savePath))
-                surface.Snapshot().Encode().SaveTo(output);
+            {
+                using var img = surface.Snapshot();
+                img.Encode().SaveTo(output);
+            }
         }
     }
 }
@@ -169,16 +177,13 @@ for (var i = 0; i < 10; ++i)
     var sw1 = new Stopwatch();
     sw1.Start();
 
-    for (var j = 0; j < 250; ++j)
+    for (var j = 0; j < 1; ++j)
     {
         Draw(false, "");
     }
 
     sw1.Stop();
-    Console.WriteLine("CPU draw 250 times use {0}s", sw1.Elapsed);
-
-    GC.Collect();
-    GC.WaitForPendingFinalizers();
+    Console.WriteLine("CPU draw 500 times use {0}s", sw1.Elapsed);
 
     if (vkContext.GrContext != null)
     {
@@ -187,15 +192,12 @@ for (var i = 0; i < 10; ++i)
         var sw2 = new Stopwatch();
         sw2.Start();
 
-        for (var j = 0; j < 250; ++j)
+        for (var j = 0; j < 10000; ++j)
         {
             Draw(true, "");
         }
 
         sw2.Stop();
-        Console.WriteLine("GPU draw 250 times use {0}s", sw2.Elapsed);
-
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
+        Console.WriteLine("GPU draw 500 times use {0}s", sw2.Elapsed);
     }
 }
