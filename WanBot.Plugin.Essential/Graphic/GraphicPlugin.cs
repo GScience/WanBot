@@ -10,6 +10,7 @@ using WanBot.Api.Message;
 using WanBot.Api.Mirai;
 using WanBot.Graphic;
 using WanBot.Graphic.UI.Layout;
+using WanBot.Plugin.Essential.Permission;
 
 namespace WanBot.Plugin.Essential.Graphic
 {
@@ -67,6 +68,9 @@ namespace WanBot.Plugin.Essential.Graphic
         [Command("渲染测试")]
         public async Task OnExampleCommand(MiraiBot bot, CommandEventArgs e)
         {
+            if (!e.Sender.HasPermission(this, "test"))
+                return;
+
             var builder = new MessageBuilder();
             using var avatar = await Avatar.FromQQAsync(e.Sender.Id);
             using var ui = GetExample(e.Sender.DisplayName, avatar.Image);
