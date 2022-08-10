@@ -195,7 +195,7 @@ namespace WanBot
                 {
                     _logger.Warn("Failed to connect to bot because {ex}", e.ToString());
                     _logger.Warn("Skip checking bot connection");
-                    _ = Task.Run(async () =>
+                    await Task.Run(async () =>
                     {
                         while (true)
                         {
