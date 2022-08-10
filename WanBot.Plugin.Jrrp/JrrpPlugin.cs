@@ -14,6 +14,8 @@ namespace WanBot.Plugin.Jrrp
 
         public override string PluginAuthor => "WanNeng";
 
+        public override string PluginDescription => "算命，但是不准，仅供娱乐";
+
         public override Version PluginVersion => Version.Parse("1.0.0");
         private JrrpDatabaseContext _jrrpDb = null!;
 

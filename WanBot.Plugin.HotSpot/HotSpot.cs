@@ -15,6 +15,8 @@ namespace WanBot.Plugin.HotSpot
 
         public override string PluginAuthor => "WanNeng";
 
+        public override string PluginDescription => "热点插件，可获取当前的微博热搜";
+
         public override Version PluginVersion => Version.Parse("1.0.0");
 
         private List<string> _searchCache = new();

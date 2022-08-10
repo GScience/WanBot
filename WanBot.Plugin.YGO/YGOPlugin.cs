@@ -13,6 +13,7 @@ namespace WanBot.Plugin.YGO
 
         public override string PluginAuthor => "WanNeng";
 
+        public override string PluginDescription => "提供卡片的查询功能，后续会加入更多复杂的功能";
         public override Version PluginVersion => Version.Parse("1.0.0");
 
         private YgoDatabase _ygoDatabase = null!;

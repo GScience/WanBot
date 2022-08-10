@@ -14,7 +14,9 @@ namespace WanBot.Plugin.HelloWorld
     {
         public override string PluginName => "HelloWorld";
 
-        public override string PluginAuthor => "WanNeng";
+        public override string PluginAuthor => "WanNeng"; 
+        
+        public override string PluginDescription => "你好，完犊子，这是第一个完犊子Bot的插件";
 
         public override Version PluginVersion => Version.Parse("1.0.0");
 

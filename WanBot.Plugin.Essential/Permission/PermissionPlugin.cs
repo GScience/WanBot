@@ -17,6 +17,8 @@ namespace WanBot.Plugin.Essential.Permission
 
         public override string PluginAuthor => "WanNeng";
 
+        public override string PluginDescription => "权限插件，以群为单位对用户的权限进行管理";
+
         public override Version PluginVersion => Version.Parse("1.0.0");
 
         internal string DatabasePath => Path.Combine(GetConfigPath(), "database.json");

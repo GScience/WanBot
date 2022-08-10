@@ -23,6 +23,7 @@ namespace WanBot.Api
         public ILogger Logger { get; private set; } = null!;
 
         public abstract string PluginName { get; }
+        public abstract string PluginDescription { get; }
         public abstract string PluginAuthor { get; }
         public abstract Version PluginVersion { get; }
 

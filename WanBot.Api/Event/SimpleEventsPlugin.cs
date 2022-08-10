@@ -23,8 +23,13 @@ namespace WanBot.Api.Event
         internal List<RegexAttribute> RegexTable { get; } = new();
 
         public override string PluginName => "SimpleEvents";
+
         public override string PluginAuthor => "WanNeng";
+
+        public override string PluginDescription => "提供对命令、关键词、At事件的支持";
+
         public override Version PluginVersion => Version.Parse("1.0.0");
+
 
         private CommandEventConfig _config = null!;
 

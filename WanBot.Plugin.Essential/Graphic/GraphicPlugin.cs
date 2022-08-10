@@ -14,7 +14,9 @@ namespace WanBot.Plugin.Essential.Graphic
     {
         public override string PluginName => "Graphic";
 
-        public override string PluginAuthor => "WanNeng";
+        public override string PluginAuthor => "WanNeng"; 
+        
+        public override string PluginDescription => "渲染插件，提供对WanBot.Graphic库的支持";
 
         public override Version PluginVersion => Version.Parse("1.0.0");
 

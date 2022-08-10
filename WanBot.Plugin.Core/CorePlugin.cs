@@ -13,9 +13,11 @@ namespace WanBot.Plugin.Core
     /// </summary>
     public class CorePlugin : WanBotPlugin
     {
-        public override string PluginName => "WanBot";
+        public override string PluginName => "WanBot.Core";
 
         public override string PluginAuthor => "WanNeng";
+
+        public override string PluginDescription => "完犊子核心管理插件，通过命令实现插件的动态加载以及机器人的重启";
 
         public override Version PluginVersion => Version.Parse("1.0.0");
 
@@ -65,10 +67,14 @@ namespace WanBot.Plugin.Core
         {
             commandEvent.Sender.RequireCommandPermission(this, "core.admin.listplugin");
 
-            var pluginList = "当前插件列表：";
+            var pluginList = "当前插件列表：\n";
 
+            var pluginNameList = new List<string>();
             foreach (var plugin in (Application.PluginManager as PluginManager)!.Plugins)
-                pluginList += plugin.PluginName + ", ";
+                pluginNameList.Add(plugin.PluginName);
+
+            pluginNameList.Sort();
+            pluginList += string.Join(", \n", pluginNameList);
 
             pluginList += "\n输入 #core plugin <pluginName> 查看插件状态";
 
@@ -96,11 +102,21 @@ namespace WanBot.Plugin.Core
             if (plugin == null)
                 await commandEvent.Sender.ReplyAsync("插件未找到");
             else
+            {
+                var pluginPath = pluginManager?.GetPluginPath(plugin);
+                string asmPath;
+                if (string.IsNullOrEmpty(pluginPath))
+                    asmPath = "核心插件";
+                else
+                    asmPath = new FileInfo(pluginPath).Name;
+
                 await commandEvent.Sender.ReplyAsync(
                     $"插件名称：{plugin.PluginName}\n" +
                     $"插件作者：{plugin.PluginAuthor}\n" +
                     $"插件版本：{plugin.PluginVersion}\n" +
-                    $"所在程序集：{new FileInfo(pluginManager?.GetPluginPath(plugin) ?? "").Name}");
+                    $"插件说明：{plugin.PluginDescription}\n" +
+                    $"所在程序集：{asmPath}");
+            }
 
             return true;
         }
