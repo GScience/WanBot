@@ -153,6 +153,7 @@ namespace WanBot
 
             // 等待账户绑定
             bindAccountTask?.Wait();
+
             _pluginManager.PostInitPlugins();
             _pluginManager.StartPlugins();
             _logger.Info("All done");
@@ -179,21 +180,41 @@ namespace WanBot
             // 创建Bot
             _logger.Info("Loading WanBot config and connecting to mirai");
 
-            var tasks = new List<Task>();
+            var tasks = new List<(Task task, MiraiConfig config)>();
             foreach (var miraiConfig in Config.MiraiConfigs)
+                tasks.Add((_botManager.AddAccountAsync(miraiConfig), miraiConfig));
+
+            _logger.Info("Waiting mirai connection");
+            foreach (var (task, config) in tasks)
             {
                 try
                 {
-                    tasks.Add(_botManager.AddAccountAsync(miraiConfig));
+                    await task;
                 }
                 catch (Exception e)
                 {
-                    _logger.Error(e.ToString());
+                    _logger.Warn("Failed to connect to bot because {ex}", e.ToString());
+                    _logger.Warn("Skip checking bot connection");
+                    _ = Task.Run(async () =>
+                    {
+                        while (true)
+                        {
+                            try
+                            {
+                                _logger.Info("Trying to connect to bot ({qq})", config.QQ);
+                                await _botManager.AddAccountAsync(config);
+                                break;
+                            }
+                            catch(Exception ex)
+                            {
+                                _logger.Warn("Failed to connect to bot because {ex}", e.ToString());
+                                _logger.Error("Retry after 5 seconds...");
+                                Thread.Sleep(5000);
+                            }
+                        }
+                    });
                 }
             }
-            _logger.Info("Waiting mirai connection");
-            foreach (var task in tasks)
-                await task;
             _logger.Info("Mirai init finished");
         }
 
