@@ -11,10 +11,18 @@ void Draw(bool useVk, string savePath = "test.png")
     var content = new VerticalLayout();
     for (var k = 0; k < 3; ++k)
     {
+        var bgGrid = new Grid();
+
+        var bg = new Rectangle();
+        bg.Margin = new Margin(25, 25, 25, 25);
+        bgGrid.Children.Add(bg);
+
         var text = new TextBox();
         text.Text = "Test For Text Rendering";
-        text.Margin = new Margin(10, 10, 10, 10);
-        content.Children.Add(text);
+        text.Margin = new Margin(50, 50, 50, 50);
+        bgGrid.Children.Add(text);
+
+        content.Children.Add(bgGrid);
 
         var horizontalLayout = new HorizontalLayout();
 
