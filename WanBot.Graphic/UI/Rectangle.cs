@@ -25,7 +25,8 @@ namespace WanBot.Graphic.UI
 
         public SKPaint Paint { get; set; } = new()
         {
-            Color = SKColors.White
+            Color = SKColors.White,
+            IsAntialias = true
         };
 
         public override void Draw(SKCanvas canvas)

@@ -3,6 +3,8 @@ using WanBot.Api.Event;
 using WanBot.Api.Message;
 using WanBot.Api.Mirai;
 using WanBot.Api.Mirai.Message;
+using WanBot.Graphic;
+using WanBot.Plugin.Essential.Graphic;
 using WanBot.Plugin.Essential.Permission;
 
 namespace WanBot.Plugin.YGO
@@ -18,14 +20,27 @@ namespace WanBot.Plugin.YGO
 
         private YgoDatabase _ygoDatabase = null!;
 
+        private UIRenderer _renderer;
+
         public override void PreInit()
         {
+            YgoCardImage.CachePath = Path.Combine(GetConfigPath(), "cardPicCache");
+
             _ygoDatabase = new(Logger);
             _ygoDatabase.LoadAsync(Path.Combine(GetConfigPath(), "cards.cdb")).Wait();
             base.PreInit();
         }
 
-        private async Task DisplayCardAsync(MiraiBot bot, ISender sender, List<YgoCard> cards, int? reply = null, int max = 5)
+        public override void Start()
+        {
+            base.Start();
+
+            _renderer = 
+                Application.PluginManager.GetPlugin<GraphicPlugin>()?.Renderer 
+                ?? throw new Exception("Failed to get renderer");
+        }
+
+        private async Task DisplayCardAsync(MiraiBot bot, ISender sender, List<YgoCard> cards, string search, int? reply = null, int max = 5)
         {
             if (cards.Count == 0)
             {
@@ -33,17 +48,10 @@ namespace WanBot.Plugin.YGO
                 return;
             }
 
-            var forwardBuilder = new ForwardMessageBuilder();
-            for (var i = 0; i < Math.Min(max, cards.Count); ++i)
-            {
-                var builder = new MessageBuilder();
-                builder
-                    .Text($"{cards[i].Name}  {new string('⭐', cards[i].Level)}")
-                    .ImageByUrl(GetCardImageUrl(cards[i].Id))
-                    .Text(cards[i].Desc);
-                forwardBuilder.Forward(bot.Id, "", builder);
-            }
-            await sender.ReplyAsync(forwardBuilder, reply);
+            var outputImage = await CardRenderer.GenCardsImageAsync(_renderer, search, cards);
+            var builder = new MessageBuilder();
+            builder.Image(new MiraiImage(bot, outputImage));
+            await sender.ReplyAsync(builder);
         }
 
         [Command("查卡")]
@@ -65,7 +73,7 @@ namespace WanBot.Plugin.YGO
             try
             {
                 var searchResult = _ygoDatabase.SearchByKeyword(keyword);
-                await DisplayCardAsync(bot, args.Sender, searchResult, args.GetMessageId());
+                await DisplayCardAsync(bot, args.Sender, searchResult, keyword, args.GetMessageId());
             }
             catch (ArgumentException)
             {
@@ -105,7 +113,7 @@ namespace WanBot.Plugin.YGO
             try
             {
                 var searchResult = _ygoDatabase.SearchByCode(code);
-                await DisplayCardAsync(bot, args.Sender, searchResult, args.GetMessageId());
+                await DisplayCardAsync(bot, args.Sender, searchResult, code, args.GetMessageId());
             }
             catch (ArgumentException ex)
             {
@@ -114,16 +122,6 @@ namespace WanBot.Plugin.YGO
             }
 
             return;
-        }
-
-        /// <summary>
-        /// 获取图像下载链接
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        private static string GetCardImageUrl(int id)
-        {
-            return $"https://cdn02.moecube.com:444/ygomobile-images/{id}.png";
         }
     }
 }

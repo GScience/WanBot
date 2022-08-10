@@ -11,7 +11,7 @@ namespace WanBot.Plugin.Essential.Graphic
 {
     public partial class GraphicPlugin
     {
-        public Grid GetExample(string title, SKImage icon)
+        public Grid GetExample(string title, SKImage? icon)
         {
             var grid = new Grid();
             grid.Width = 500;

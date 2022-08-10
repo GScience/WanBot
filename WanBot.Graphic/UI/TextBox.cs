@@ -17,7 +17,7 @@ namespace WanBot.Graphic.UI
         private List<string> _lines = new();
         private List<SKPoint> _pos = new();
 
-        public SKPaint FontPaint = new()
+        public SKPaint FontPaint { get; set; } = new()
         {
             TextSize = 62.0f,
             IsAntialias = true,
@@ -49,17 +49,40 @@ namespace WanBot.Graphic.UI
             _pos.Clear();
 
             var text = Text;
+            text = text.Replace("\r\n", "\n").Replace("\r", "\n");
+
             var currentY = RenderRect.Top;
 
             while (text.Length != 0)
             {
-                var linePos = FontPaint.BreakText(text, RenderRect.Width, out var mesuredWidth);
+                var splitePos = FontPaint.BreakText(text, RenderRect.Width, out var mesuredWidth);
 
-                if (linePos == 0)
+                if (splitePos == 0)
                     return ContentRect;
 
-                var line = text[0..(int)linePos];
-                text = text[(int)linePos..^0];
+                // 处理换行
+                var newLineIndex = text.IndexOf('\n', 0, (int)splitePos);
+                string line;
+
+                if (newLineIndex != -1)
+                {
+                    if (newLineIndex == 0)
+                    {
+                        // 第一个字符是换行符，则跳过换行符重新循环
+                        text = text[1..^0];
+                        continue;
+                    }
+                    else
+                    {
+                        // 最后一个字符是换行符
+                        splitePos = newLineIndex;
+                        line = text[0..(int)splitePos];
+                    }
+                }
+                else
+                    line = text[0..(int)splitePos];
+                
+                text = text[(int)splitePos..^0];
                 _lines.Add(line);
 
                 float lineX;

@@ -9,7 +9,7 @@ namespace WanBot.Plugin.Essential.Graphic
 {
     public class Avatar : IDisposable
     {
-        public SKImage Image { get; }
+        public SKImage? Image { get; }
 
         private Avatar(SKImage? image)
         {

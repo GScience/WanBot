@@ -24,7 +24,7 @@ namespace WanBot.Plugin.Essential.Graphic
 
         public override Version PluginVersion => Version.Parse("1.0.0");
 
-        private GraphicConfig _config;
+        private GraphicConfig _config = null!;
 
         /// <summary>
         /// 渲染器

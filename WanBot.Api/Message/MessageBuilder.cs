@@ -27,7 +27,7 @@ namespace WanBot.Api.Message
             return this;
         }
 
-        public MessageBuilder Image(string path)
+        public MessageBuilder ImageByPath(string path)
         {
             _chains.Add(new Image { Path = path });
             return this;
