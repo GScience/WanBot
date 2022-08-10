@@ -45,6 +45,15 @@ namespace WanBot
         public PluginManager(BotDomain domain)
         {
             _domain = domain;
+
+            try
+            {
+                LoadInternalDeps();
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to load internal deps because {e}", e);
+            }
         }
 
         /// <summary>
@@ -60,6 +69,21 @@ namespace WanBot
 
             Plugins.Clear();
             AsmList.Clear();
+        }
+
+        /// <summary>
+        /// 加载内部依赖
+        /// </summary>
+        public void LoadInternalDeps()
+        {
+            foreach (var file in Directory.EnumerateFiles(Environment.CurrentDirectory, "*.dll"))
+            {
+                var assemblyName = AssemblyName.GetAssemblyName(file);
+
+                if (!AssemblyLoadContext.Default.Assemblies.Where(
+                    asm => assemblyName.Name == asm.GetName().Name).Any())
+                        Assembly.LoadFrom(file);
+            }
         }
 
         public void Reload(bool unloadContext)

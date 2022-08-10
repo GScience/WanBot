@@ -73,7 +73,7 @@ namespace WanBot.Plugin.Essential.Permission
 
         private static void LogPermissionRequirement(this ISender sender, string fullPermission)
         {
-            Permission.logger.Warn("Sender {sender} do not have permission {permission}", sender.Name, fullPermission);
+            Permission.logger.Warn("Sender {sender} do not have permission {permission}", sender.InternalName, fullPermission);
         }
     }
 }

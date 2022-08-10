@@ -6,6 +6,8 @@ using WanBot.Graphic;
 using WanBot.Graphic.UI;
 using WanBot.Graphic.UI.Layout;
 
+var vkContext = new VkContext();
+
 void Draw(bool useVk, string savePath = "test.png", bool isDebug = true)
 {
     var grid = new Grid();
@@ -124,7 +126,7 @@ void Draw(bool useVk, string savePath = "test.png", bool isDebug = true)
 
     if (useVk)
     {
-        using var surface = SKSurface.Create(VkContext.Current.GrContext, false, imageInfo);
+        using var surface = SKSurface.Create(vkContext.GrContext, false, imageInfo);
 
         if (isDebug)
             grid.DrawDebug(surface.Canvas);
@@ -178,7 +180,7 @@ for (var i = 0; i < 10; ++i)
     GC.Collect();
     GC.WaitForPendingFinalizers();
 
-    if (VkContext.Current.GrContext != null)
+    if (vkContext.GrContext != null)
     {
         Console.WriteLine($"Start {i}");
 

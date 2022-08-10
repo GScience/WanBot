@@ -17,11 +17,13 @@ namespace WanBot.Api.Message
         public long Id { get; }
         private MiraiBot _bot;
 
-        public string Name { get; }
+        public string InternalName { get; }
+        public string DisplayName { get; }
 
-        public GroupSender(MiraiBot bot, string name, long groupId, long qqId)
+        public GroupSender(MiraiBot bot, string internalName, string displayName, long groupId, long qqId)
         {
-            Name = name;
+            InternalName = internalName;
+            DisplayName = displayName;
             GroupId = groupId;
             _bot = bot;
             Id = qqId;
@@ -42,9 +44,14 @@ namespace WanBot.Api.Message
             await _bot.SendGroupMessageAsync(GroupId, replyId, messageBuilder);
         }
 
-        public async Task Nudge()
+        public async Task NudgeAsync()
         {
             await _bot.SendGroupNudgeAsync(Id, GroupId);
+        }
+
+        public async Task<Profile> GetProfileAsync()
+        {
+            return await _bot.MemberProfileAsync(GroupId, Id);
         }
     }
 }

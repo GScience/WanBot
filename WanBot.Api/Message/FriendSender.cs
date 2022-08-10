@@ -13,11 +13,13 @@ namespace WanBot.Api.Message
         public long Id { get; }
         private MiraiBot _bot;
 
-        public string Name { get; }
+        public string InternalName { get; }
+        public string DisplayName { get; }
 
-        public FriendSender(MiraiBot bot, string name, long qqId)
+        public FriendSender(MiraiBot bot, string internalName, string displayName, long qqId)
         {
-            Name = name;
+            InternalName = internalName;
+            DisplayName = displayName;
             Id = qqId;
             _bot = bot;
         }
@@ -37,9 +39,14 @@ namespace WanBot.Api.Message
             await _bot.SendFriendMessageAsync(Id, replyId, messageBuilder);
         }
 
-        public async Task Nudge()
+        public async Task NudgeAsync()
         {
             await _bot.SendFriendNudgeAsync(Id);
+        }
+
+        public async Task<Profile> GetProfileAsync()
+        {
+            return await _bot.FriendProfileAsync(Id);
         }
     }
 }

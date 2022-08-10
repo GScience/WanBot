@@ -23,7 +23,8 @@ namespace WanBot.Graphic.UI
             IsAntialias = true,
             Color = new SKColor(0x42, 0x81, 0xA4),
             IsStroke = false,
-            TextAlign = SKTextAlign.Center
+            TextAlign = SKTextAlign.Center,
+            Typeface = Fonts.Default
         };
 
         public override void Draw(SKCanvas canvas)

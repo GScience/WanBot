@@ -44,7 +44,7 @@ namespace WanBot.Plugin.HelloWorld
             if (!nudgeEvent.Sender.HasPermission(this, "nudge"))
                 return;
 
-            await nudgeEvent.Sender.Nudge();
+            await nudgeEvent.Sender.NudgeAsync();
         }
 
         [Regex("完犊子呢")]

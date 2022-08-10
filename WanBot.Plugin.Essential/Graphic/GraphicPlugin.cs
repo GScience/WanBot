@@ -5,12 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api;
+using WanBot.Api.Event;
+using WanBot.Api.Message;
+using WanBot.Api.Mirai;
 using WanBot.Graphic;
 using WanBot.Graphic.UI.Layout;
 
 namespace WanBot.Plugin.Essential.Graphic
 {
-    public class GraphicPlugin : WanBotPlugin
+    public partial class GraphicPlugin : WanBotPlugin, IDisposable
     {
         public override string PluginName => "Graphic";
 
@@ -20,15 +23,62 @@ namespace WanBot.Plugin.Essential.Graphic
 
         public override Version PluginVersion => Version.Parse("1.0.0");
 
+        private GraphicConfig _config;
+
+        /// <summary>
+        /// 渲染器
+        /// </summary>
+        public UIRenderer Renderer { get; set; } = new();
+
         public override void PreInit()
         {
             base.PreInit();
+            _config = GetConfig<GraphicConfig>();
+            LoadFontAsync().Wait();
+        }
 
-            var grid = new Grid(); 
-            var rect = grid.UpdateLayout(new SKRect(0, 0, 2000, 300));
-            var imageInfo = new SKImageInfo((int)rect.Width, (int)rect.Height);
-            using var surface = SKSurface.Create(VkContext.Current.GrContext, false, imageInfo);
-            grid.Draw(surface.Canvas);
+        public async Task LoadFontAsync()
+        {
+            var fontPath = Path.Combine(GetConfigPath(), "default.ttf");
+
+            if (!File.Exists(fontPath))
+                await DownloadFont(_config.DefaultFontUrl, fontPath);
+
+            Fonts.LoadDefault(fontPath);
+        }
+
+        public async Task DownloadFont(string url, string saveTo)
+        {
+            Logger.Info("Download font from {url}", url);
+
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                Logger.Error("Failed to download font");
+
+            var stream = await response.Content.ReadAsStreamAsync();
+            using var fontFile = File.Create(saveTo);
+            stream.CopyTo(fontFile);
+
+            Logger.Info("Downloaded");
+        }
+
+
+        [Command("渲染测试")]
+        public async Task OnExampleCommand(MiraiBot bot, CommandEventArgs e)
+        {
+            var builder = new MessageBuilder();
+            using var avatar = await Avatar.FromQQAsync(e.Sender.Id);
+            using var ui = GetExample(e.Sender.DisplayName, avatar.Image);
+            using var img = Renderer.Draw(ui);
+            builder.Image(new MiraiImage(bot, img));
+            await e.Sender.ReplyAsync(builder);
+        }
+
+        public void Dispose()
+        {
+            Renderer.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

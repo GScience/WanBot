@@ -63,6 +63,7 @@ namespace WanBot.Api.Event
                 var sender = new StrangerSender(
                     bot,
                     "[Temp]" + e.Sender.GetFormatedName(),
+                    e.Sender.MemberName,
                     e.Sender.Id,
                     e.Sender.Group.Id);
 
@@ -78,6 +79,7 @@ namespace WanBot.Api.Event
                         new StrangerSender(
                             bot,
                             "[Temp]" + e.Sender.GetFormatedName(),
+                            e.Sender.MemberName,
                             e.Sender.Id,
                             e.Sender.Group.Id),
                     e.MessageChain,
@@ -100,6 +102,7 @@ namespace WanBot.Api.Event
                 var sender = new FriendSender(
                     bot,
                     "[Friend]" + e.Sender.GetFormatedName(),
+                    e.Sender.Nickname,
                     e.Sender.Id);
 
                 await OnCommandMessage(bot, sender, e.MessageChain);
@@ -115,6 +118,7 @@ namespace WanBot.Api.Event
                         new FriendSender(
                             bot,
                             "[Friend]" + e.Sender.GetFormatedName(),
+                            e.Sender.Nickname,
                             e.Sender.Id),
                     e.MessageChain,
                     matchRegex);
@@ -136,6 +140,7 @@ namespace WanBot.Api.Event
                 var sender = new GroupSender(
                     bot,
                     "[Group]" + e.Sender.GetFormatedName(),
+                    e.Sender.MemberName,
                     e.Sender.Group.Id,
                     e.Sender.Id);
 
@@ -155,6 +160,7 @@ namespace WanBot.Api.Event
                         new GroupSender(
                             bot,
                             "[Group]" + e.Sender.GetFormatedName(),
+                            e.Sender.MemberName,
                             e.Sender.Group.Id,
                             e.Sender.Id),
                     e.MessageChain));
@@ -170,6 +176,7 @@ namespace WanBot.Api.Event
                         new GroupSender(
                             bot,
                             "[Group]" + e.Sender.GetFormatedName(),
+                            e.Sender.MemberName,
                             e.Sender.Group.Id,
                             e.Sender.Id),
                     e.MessageChain,
@@ -193,15 +200,15 @@ namespace WanBot.Api.Event
             switch (e.Subject.Kind)
             {
                 case "Friend":
-                    sender = new FriendSender(bot, "", e.Subject.Id);
+                    sender = new FriendSender(bot, "", "", e.Subject.Id);
                     break;
 
                 case "Group":
-                    sender = new GroupSender(bot, "", e.Subject.Id, e.FromId);
+                    sender = new GroupSender(bot, "", "", e.Subject.Id, e.FromId);
                     break;
 
                 case "Stranger":
-                    sender = new StrangerSender(bot, "", e.Subject.Id, e.FromId);
+                    sender = new StrangerSender(bot, "", "", e.Subject.Id, e.FromId);
                     break;
 
                 default:
@@ -226,7 +233,7 @@ namespace WanBot.Api.Event
             if (cmd.Length == 0)
                 return;
 
-            Logger.Info($"{sender.Name} do command #{{cmd}}", cmd);
+            Logger.Info($"{sender.InternalName} do command #{{cmd}}", cmd);
 
             var eventArgs = new CommandEventArgs(sender, divider, cmd);
             try

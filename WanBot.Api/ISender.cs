@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api.Message;
+using WanBot.Api.Mirai;
 using WanBot.Api.Mirai.Message;
 
 namespace WanBot.Api
@@ -13,7 +14,15 @@ namespace WanBot.Api
     /// </summary>
     public interface ISender
     {
-        public string Name { get; }
+        /// <summary>
+        /// 内部名称
+        /// </summary>
+        public string InternalName { get; }
+
+        /// <summary>
+        /// 昵称
+        /// </summary>
+        public string DisplayName { get; }
 
         /// <summary>
         /// 消息发送源的QQ号
@@ -42,6 +51,12 @@ namespace WanBot.Api
         /// 戳一戳对方
         /// </summary>
         /// <returns></returns>
-        Task Nudge();
+        Task NudgeAsync();
+
+        /// <summary>
+        /// 获取发送者信息
+        /// </summary>
+        /// <returns></returns>
+        Task<Profile> GetProfileAsync();
     }
 }

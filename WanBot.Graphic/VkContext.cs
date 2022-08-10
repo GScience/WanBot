@@ -10,12 +10,10 @@ namespace WanBot.Graphic
 {
     public class VkContext : IDisposable
     {
-        public static VkContext Current = new();
-
         private Instance instance;
         public GRContext GrContext { get; }
 
-        internal VkContext()
+        public VkContext()
         {
             var grVkBackendContext = new GRSharpVkBackendContext();
 
