@@ -17,7 +17,7 @@ void Draw(bool useVk, string savePath = "test.png", bool isDebug = true)
     grid.Children.Add(gridBg);
 
     var content = new VerticalLayout();
-    for (var k = 0; k < 3; ++k)
+    for (var k = 0; k < 6; ++k)
     {
         var bgGrid = new Grid();
 
@@ -34,11 +34,13 @@ void Draw(bool useVk, string savePath = "test.png", bool isDebug = true)
         content.Children.Add(bgGrid);
 
         var horizontalLayout = new HorizontalLayout();
-
+        horizontalLayout.HorizontalAlignment = (HorizontalAlignment)(k % 3);
+        horizontalLayout.Margin = new Margin(0, 0);
         for (var j = 0; j < 6; ++j)
         {
             var verticalLayout = new VerticalLayout();
-            verticalLayout.Margin = new Margin(5, 5, 5, 5);
+            verticalLayout.VerticalAlignment = (VerticalAlignment)(j % 3);
+            verticalLayout.Margin = new Margin(0, 0);
 
             var titleText = new TextBox();
             titleText.Text = $"Title";

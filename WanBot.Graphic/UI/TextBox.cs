@@ -53,6 +53,10 @@ namespace WanBot.Graphic.UI
             while (text.Length != 0)
             {
                 var linePos = FontPaint.BreakText(text, RenderRect.Width, out var mesuredWidth);
+
+                if (linePos == 0)
+                    return ContentRect;
+
                 var line = text[0..(int)linePos];
                 text = text[(int)linePos..^0];
                 _lines.Add(line);

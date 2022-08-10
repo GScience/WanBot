@@ -22,6 +22,11 @@ namespace WanBot.Graphic.UI.Layout
         /// </summary>
         public float ChildWidth { get; set; }
 
+        /// <summary>
+        /// 水平布局
+        /// </summary>
+        public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Center;
+
         public override void DrawDebug(SKCanvas canvas)
         {
             base.DrawDebug(canvas);
@@ -51,7 +56,46 @@ namespace WanBot.Graphic.UI.Layout
             // 布局
             foreach (var child in Children)
             {
-                var childRect = new SKRect(currentPosX, currentPosY, currentPosX + ChildWidth, layoutBottom);
+                SKRect childRect;
+
+                var childHeight = child.Height;
+
+                if (childHeight == null && !(child.Margin.Top != null && child.Margin.Bottom != null))
+                    childHeight = child.RenderRect.Height;
+
+                if (childHeight != null && childHeight > 0)
+                {
+                    switch (HorizontalAlignment)
+                    {
+                        case HorizontalAlignment.Center:
+                            {
+                                var layoutHeight = layoutBottom - currentPosY - child.Margin.Top ?? 0;
+                                var layoutOffset = (layoutHeight - childHeight) / 2;
+
+                                var layoutOffsetTop = layoutOffset - child.Margin.Top ?? 0;
+                                var layoutOffsetBottom = layoutOffset - child.Margin.Bottom ?? 0;
+                                childRect = new SKRect(currentPosX, currentPosY + layoutOffsetTop, currentPosX + ChildWidth, layoutBottom - layoutOffsetBottom);
+                                break;
+                            }
+                        case HorizontalAlignment.Bottom:
+                            {
+                                var layoutHeight = layoutBottom - currentPosY - child.Margin.Top ?? 0;
+                                var layoutOffset = layoutHeight - childHeight;
+
+                                var layoutOffsetTop = layoutOffset - child.Margin.Top ?? 0;
+                                var layoutOffsetBottom = layoutOffset - child.Margin.Bottom ?? 0;
+                                childRect = new SKRect(currentPosX, currentPosY + layoutOffsetTop, currentPosX + ChildWidth, layoutBottom - layoutOffsetBottom);
+                                break;
+                            }
+                        default:
+                            childRect = new SKRect(currentPosX, currentPosY, currentPosX + ChildWidth, layoutBottom);
+                            break;
+                    }
+                }
+                else
+                {
+                    childRect = new SKRect(currentPosX, currentPosY, currentPosX + ChildWidth, layoutBottom);
+                }
                 childRect = child.UpdateLayout(childRect);
                 currentPosX = Space + childRect.Width + childRect.Left;
             }
