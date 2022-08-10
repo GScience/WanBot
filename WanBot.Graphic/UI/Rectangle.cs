@@ -38,5 +38,11 @@ namespace WanBot.Graphic.UI
         {
             base.DrawDebug(canvas);
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            Paint.Dispose();
+        }
     }
 }

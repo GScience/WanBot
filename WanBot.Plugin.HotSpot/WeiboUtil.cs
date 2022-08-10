@@ -37,6 +37,8 @@ namespace WanBot.Plugin.HotSpot
     {
         public string text { get; set; } = null!;
 
+        public string thumbnail_pic { get; set; } = null!;
+
         public WeiboUser user { get; set; } = null!;
     }
 

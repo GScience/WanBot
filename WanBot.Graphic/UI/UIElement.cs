@@ -117,6 +117,7 @@ namespace WanBot.Graphic.UI
 
         public virtual void Dispose()
         {
+            DebugPaint?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

@@ -23,9 +23,26 @@ namespace WanBot.Graphic.Util
             return this;
         }
 
-        public VerticalHelper Box(string text, float fontSize = 32, float margin = 0, SKTextAlign textAlignment = SKTextAlign.Center)
+        public VerticalHelper Box(
+            string text,
+            float fontSize = 32,
+            float margin = 0,
+            float radius = 0,
+            SKTextAlign textAlignment = SKTextAlign.Center)
         {
-            return Add(new Box(text, fontSize, SKColors.Black, SKColors.LightGray, textAlignment, margin));
+            return Add(new Box(text, fontSize, SKColors.Black, SKColors.LightGray, textAlignment, margin, radius, radius));
+        }
+
+        public VerticalHelper Box(
+            string text,
+            SKColor bgColor,
+            SKColor fontColor,
+            float fontSize = 32,
+            float margin = 0,
+            float radius = 0,
+            SKTextAlign textAlignment = SKTextAlign.Center)
+        {
+            return Add(new Box(text, fontSize, fontColor, bgColor, textAlignment, margin, radius, radius));
         }
 
         public VerticalHelper Width(float width)
@@ -37,6 +54,7 @@ namespace WanBot.Graphic.Util
         public VerticalHelper Space(float space)
         {
             VerticalLayout.Space = space;
+
             return this;
         }
 

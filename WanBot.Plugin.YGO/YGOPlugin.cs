@@ -20,7 +20,7 @@ namespace WanBot.Plugin.YGO
 
         private YgoDatabase _ygoDatabase = null!;
 
-        private UIRenderer _renderer;
+        private UIRenderer _renderer = null!;
 
         public override void PreInit()
         {

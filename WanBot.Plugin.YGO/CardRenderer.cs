@@ -39,7 +39,7 @@ namespace WanBot.Plugin.YGO
 
             // 卡片介绍
             var helper = new VerticalHelper();
-            helper.Box(cardName, 0.8f * FontSize, 5).Box(cardDesc, FontSize * 0.5f, 15, SKTextAlign.Left).Width(CardWidth).Space(10).Center();
+            helper.Box(cardName, 0.8f * FontSize, 5).Box(cardDesc, FontSize * 0.5f, 15, textAlignment: SKTextAlign.Left).Width(CardWidth).Space(10).Center();
             horizontalLayout.Children.Add(helper.VerticalLayout);
             grid.Children.Add(horizontalLayout);
 
@@ -48,7 +48,7 @@ namespace WanBot.Plugin.YGO
 
         public static async Task<SKImage> GenCardsImageAsync(UIRenderer renderer, string search, List<YgoCard> cards, int gridWidth = 3, int gridHeight = 2)
         {
-            var grid = new Grid();
+            using var grid = new Grid();
 
             var gridBg = new Rectangle();
             gridBg.Paint.Color = SKColors.White;
@@ -101,7 +101,6 @@ namespace WanBot.Plugin.YGO
             {
                 foreach (var img in imgList)
                     img.Dispose();
-                grid.Dispose();
             }
         }
     }

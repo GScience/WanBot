@@ -21,7 +21,7 @@ namespace WanBot.Graphic.UI
             Bottom = null;
         }
 
-        public Margin(float left, float top, float right, float bottom)
+        public Margin(float? left, float? top, float? right, float? bottom)
         {
             Left = left;
             Top = top;
