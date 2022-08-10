@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using WanBot.Api.Util;
 
-namespace WanBot.Plugin.EssentialPermission
+namespace WanBot.Plugin.Essential.Permission
 {
     internal class PermissionDatabase
     {

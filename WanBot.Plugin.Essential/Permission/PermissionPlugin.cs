@@ -9,7 +9,7 @@ using WanBot.Api.Message;
 using WanBot.Api.Mirai;
 using WanBot.Api.Util;
 
-namespace WanBot.Plugin.EssentialPermission
+namespace WanBot.Plugin.Essential.Permission
 {
     public class PermissionPlugin : WanBotPlugin
     {

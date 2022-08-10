@@ -6,7 +6,7 @@ using WanBot.Api.Mirai.Event;
 using System.Linq;
 using WanBot.Api.Util;
 using System.Text.Json;
-using WanBot.Plugin.EssentialPermission;
+using WanBot.Plugin.Essential.Permission;
 
 namespace WanBot.Plugin.HelloWorld
 {

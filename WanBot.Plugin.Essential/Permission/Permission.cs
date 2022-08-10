@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WanBot.Api;
 using WanBot.Api.Message;
 
-namespace WanBot.Plugin.EssentialPermission
+namespace WanBot.Plugin.Essential.Permission
 {
     public static class Permission
     {

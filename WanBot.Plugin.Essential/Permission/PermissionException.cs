@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WanBot.Plugin.EssentialPermission
+namespace WanBot.Plugin.Essential.Permission
 {
     /// <summary>
     /// 权限异常
@@ -12,7 +12,7 @@ namespace WanBot.Plugin.EssentialPermission
     public class PermissionException : Exception
     {
         public string RequirePermission { get; }
-        public PermissionException(string requirePermission):base($"Require permission {requirePermission}")
+        public PermissionException(string requirePermission) : base($"Require permission {requirePermission}")
         {
             RequirePermission = requirePermission;
         }

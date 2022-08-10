@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Test", "WanBot.Test\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.HelloWorld", "WanBot.Plugin.HelloWorld\WanBot.Plugin.HelloWorld.csproj", "{9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.EssentialPermission", "WanBot.Plugin.EssentialPermission\WanBot.Plugin.EssentialPermission.csproj", "{1B835950-4AA9-408B-921D-B5E7275B8CA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.Essential", "WanBot.Plugin.Essential\WanBot.Plugin.Essential.csproj", "{1B835950-4AA9-408B-921D-B5E7275B8CA1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.HotSpot", "WanBot.Plugin.HotSpot\WanBot.Plugin.HotSpot.csproj", "{0B98A2C9-5372-4DB6-BC33-23699CB5AE76}"
 EndProject
@@ -28,9 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.Jrrp", "WanBo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.YGO", "WanBot.Plugin.YGO\WanBot.Plugin.YGO.csproj", "{2A826954-87B8-4D34-B86E-18273D0AE940}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Graphic", "WanBot.Graphic\WanBot.Graphic.csproj", "{9A80B4D0-2162-4DAC-B235-8E1FEE51D1A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Graphic", "WanBot.Graphic\WanBot.Graphic.csproj", "{9A80B4D0-2162-4DAC-B235-8E1FEE51D1A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Graphic.Example", "WanBot.Graphic.Example\WanBot.Graphic.Example.csproj", "{39786B9E-443D-498D-9997-BC416D2A58B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Graphic.Example", "WanBot.Graphic.Example\WanBot.Graphic.Example.csproj", "{39786B9E-443D-498D-9997-BC416D2A58B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

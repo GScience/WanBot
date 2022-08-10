@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api;
 
-namespace WanBot.Plugin.EssentialPermission
+namespace WanBot.Plugin.Essential.Permission
 {
     public static class ISenderExtension
     {
@@ -14,7 +14,7 @@ namespace WanBot.Plugin.EssentialPermission
             var commandPermission = Permission.GetCommandPermission(plugin, cmdName, args);
             if (!Permission.CheckSender(sender, commandPermission))
             {
-                LogPermissionRequirement(sender, commandPermission);
+                sender.LogPermissionRequirement(commandPermission);
                 return false;
             }
             return true;
@@ -25,7 +25,7 @@ namespace WanBot.Plugin.EssentialPermission
             var pluginPermission = Permission.GetPluginPermission(plugin, permission);
             if (!Permission.CheckSender(sender, pluginPermission))
             {
-                LogPermissionRequirement(sender, pluginPermission);
+                sender.LogPermissionRequirement(pluginPermission);
                 return false;
             }
             return true;
@@ -44,7 +44,7 @@ namespace WanBot.Plugin.EssentialPermission
             var commandPermission = Permission.GetCommandPermission(plugin, cmdName, args);
             if (!Permission.CheckSender(sender, commandPermission))
             {
-                LogPermissionRequirement(sender, commandPermission);
+                sender.LogPermissionRequirement(commandPermission);
                 throw new PermissionException(commandPermission);
             }
         }
@@ -61,7 +61,7 @@ namespace WanBot.Plugin.EssentialPermission
             var pluginPermission = Permission.GetPluginPermission(plugin, permission);
             if (!Permission.CheckSender(sender, pluginPermission))
             {
-                LogPermissionRequirement(sender, pluginPermission);
+                sender.LogPermissionRequirement(pluginPermission);
                 throw new PermissionException(pluginPermission);
             }
         }

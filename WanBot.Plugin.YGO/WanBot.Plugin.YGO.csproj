@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WanBot.Api\WanBot.Api.csproj" />
-    <ProjectReference Include="..\WanBot.Plugin.EssentialPermission\WanBot.Plugin.EssentialPermission.csproj" />
+    <ProjectReference Include="..\WanBot.Plugin.Essential\WanBot.Plugin.Essential.csproj" />
   </ItemGroup>
 
 </Project>

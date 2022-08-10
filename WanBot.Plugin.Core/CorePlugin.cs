@@ -4,7 +4,7 @@ using WanBot.Api;
 using WanBot.Api.Event;
 using WanBot.Api.Mirai;
 using WanBot.Api.Util;
-using WanBot.Plugin.EssentialPermission;
+using WanBot.Plugin.Essential.Permission;
 
 namespace WanBot.Plugin.Core
 {

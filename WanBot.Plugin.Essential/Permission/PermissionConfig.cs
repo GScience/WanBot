@@ -1,4 +1,4 @@
-﻿namespace WanBot.Plugin.EssentialPermission
+﻿namespace WanBot.Plugin.Essential.Permission
 {
     public class PermissionConfig
     {
