@@ -67,7 +67,15 @@ namespace WanBot.Api.Mirai.Adapter
 
         internal async Task<HttpResponseMessage> PostAsync(string apiName, HttpContent content)
         {
-            return await _httpClient.PostAsync($"{BaseUrl}/{apiName}", content);
+            var url = $"{BaseUrl}/{apiName}";
+            try
+            {
+                return await _httpClient.PostAsync(url, content);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Failed to post content to {url} because: {e}\nPayload:\n{await content.ReadAsStringAsync()}");
+            }
         }
 
         public void Dispose()

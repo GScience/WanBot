@@ -9,6 +9,7 @@ namespace WanBot.Plugin.YGO
 {
     public static class YgoCardImage
     {
+        private static HttpClient _httpClient = new();
         public static string CachePath = string.Empty;
 
         /// <summary>
@@ -29,8 +30,7 @@ namespace WanBot.Plugin.YGO
             var path = Path.Combine(CachePath, $"{id}.png");
             if (string.IsNullOrEmpty(CachePath) || !File.Exists(path))
             {
-                using var httpClient = new HttpClient();
-                var response = await httpClient.GetAsync(GetCardImageUrl(id));
+                var response = await _httpClient.GetAsync(GetCardImageUrl(id));
                 if (!response.IsSuccessStatusCode)
                     return null;
 

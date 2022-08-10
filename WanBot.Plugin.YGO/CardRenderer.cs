@@ -17,6 +17,10 @@ namespace WanBot.Plugin.YGO
     /// </summary>
     public static class CardRenderer
     {
+        public static int CardWidth = 397 / 2;
+        public static int CardHeight = 578 / 2;
+        public static float FontSize = 48 / 2;
+
         public static Grid GenCard(string cardName, string cardDesc, SKImage cardImage)
         {
             var grid = new Grid();
@@ -26,8 +30,8 @@ namespace WanBot.Plugin.YGO
 
             // 卡图
             var cardImg = new ImageBox();
-            cardImg.Width = 397;
-            cardImg.Height = 578;
+            cardImg.Width = CardWidth;
+            cardImg.Height = CardHeight;
             cardImg.Image = cardImage;
             cardImg.Margin = new Margin(0, 0);
 
@@ -35,7 +39,7 @@ namespace WanBot.Plugin.YGO
 
             // 卡片介绍
             var helper = new VerticalHelper();
-            helper.Box(cardName, 38, 5).Box(cardDesc, 21, 15, SKTextAlign.Left).Width(397).Space(10).Center();
+            helper.Box(cardName, 0.8f * FontSize, 5).Box(cardDesc, FontSize * 0.5f, 15, SKTextAlign.Left).Width(CardWidth).Space(10).Center();
             horizontalLayout.Children.Add(helper.VerticalLayout);
             grid.Children.Add(horizontalLayout);
 
@@ -52,32 +56,17 @@ namespace WanBot.Plugin.YGO
 
             var verticalLayout = new VerticalLayout();
             verticalLayout.Space = 10;
-            var imgList = new Dictionary<int, SKImage>();
-            var tasks = new List<Task>();
             grid.Children.Add(verticalLayout);
 
+            var imgList = new List<SKImage>();
             var title = new TextBox();
-            title.FontPaint.TextSize = 48;
+            title.FontPaint.TextSize = FontSize;
             title.Text = $"查找结果：{search}";
             verticalLayout.Children.Add(title);
 
             try
             {
                 IEnumerable<YgoCard> cardEnumerator = cards;
-
-                var max = gridWidth * gridHeight;
-                if (cards.Count > max)
-                    cardEnumerator = cards.Take(max);
-
-                foreach (var card in cardEnumerator)
-                {
-                    var task = YgoCardImage.LoadFromIdAsync(card.Id);
-                    task.GetAwaiter().OnCompleted(() => imgList[card.Id] = task.Result!);
-                    tasks.Add(task);
-                }
-
-                foreach (var task in tasks)
-                    await task;
 
                 var cardIndex = 0;
                 for (var x = 0; x < gridWidth; ++x)
@@ -87,9 +76,11 @@ namespace WanBot.Plugin.YGO
                     for (var y = 0; y < gridHeight; ++y)
                     {
                         var card = cards[cardIndex++];
-                        var cardImage = imgList[card.Id];
+                        var cardImage = await YgoCardImage.LoadFromIdAsync(card.Id);
+                        if (cardImage != null)
+                            imgList.Add(cardImage);
 
-                        horizontalLayout.Children.Add(GenCard(card.Name, card.Desc, cardImage));
+                        horizontalLayout.Children.Add(GenCard(card.Name, card.Desc, cardImage!));
 
                         if (cards.Count <= cardIndex)
                             break;
@@ -108,8 +99,8 @@ namespace WanBot.Plugin.YGO
             }
             finally
             {
-                foreach (var pair in imgList)
-                    pair.Value?.Dispose();
+                foreach (var img in imgList)
+                    img.Dispose();
                 grid.Dispose();
             }
         }
