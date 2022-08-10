@@ -76,7 +76,10 @@ namespace WanBot
         /// </summary>
         public void LoadInternalDeps()
         {
-            foreach (var file in Directory.EnumerateFiles(Environment.CurrentDirectory, "*.dll"))
+            var basePath = System.AppDomain.CurrentDomain.BaseDirectory;
+            _logger.Info("Load deps from {exePath}", basePath);
+
+            foreach (var file in Directory.EnumerateFiles(basePath, "*.dll"))
             {
                 var assemblyName = AssemblyName.GetAssemblyName(file);
 
