@@ -1,14 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <BaseOutputPath>$(SolutionDir)Bin/Plugin/</BaseOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WanBot.Api\WanBot.Api.csproj" />
+    <ProjectReference Include="..\WanBot.Graphic\WanBot.Graphic.csproj" />
   </ItemGroup>
 
 </Project>

@@ -91,11 +91,16 @@ namespace WanBot.Plugin.Core
 
             var pluginName = commandEvent.GetNextArgs<string>();
 
-            var plugin = (Application.PluginManager as PluginManager)?.Plugins.Where((plugin) => plugin.PluginName == pluginName).FirstOrDefault();
+            var pluginManager = (Application.PluginManager as PluginManager);
+            var plugin = pluginManager?.Plugins.Where((plugin) => plugin.PluginName == pluginName).FirstOrDefault();
             if (plugin == null)
                 await commandEvent.Sender.ReplyAsync("插件未找到");
             else
-                await commandEvent.Sender.ReplyAsync($"插件名称：{plugin.PluginName}\n插件作者{plugin.PluginAuthor}\n插件版本：{plugin.PluginVersion}");
+                await commandEvent.Sender.ReplyAsync(
+                    $"插件名称：{plugin.PluginName}\n" +
+                    $"插件作者：{plugin.PluginAuthor}\n" +
+                    $"插件版本：{plugin.PluginVersion}\n" +
+                    $"所在程序集：{new FileInfo(pluginManager?.GetPluginPath(plugin) ?? "").Name}");
 
             return true;
         }
