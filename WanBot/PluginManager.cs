@@ -233,9 +233,12 @@ namespace WanBot
 
         public string GetPluginPath(BasePlugin plugin)
         {
-            var pluginAsm = plugin.GetType().Assembly;
+           return GetAssemblyPath(plugin.GetType().Assembly);
+        }
 
-            var pluginPath = AsmList.Where((pair)=>pair.asm == pluginAsm).FirstOrDefault();
+        public string GetAssemblyPath(Assembly pluginAsm)
+        {
+            var pluginPath = AsmList.Where((pair) => pair.asm == pluginAsm).FirstOrDefault();
             return pluginPath.path;
         }
 

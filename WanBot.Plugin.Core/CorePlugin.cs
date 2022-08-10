@@ -119,7 +119,9 @@ namespace WanBot.Plugin.Core
 
             var pluginName = commandEvent.GetNextArgs<string>();
 
-            var plugin = (Application.PluginManager as PluginManager)?.Plugins.Where((plugin) => plugin.PluginName == pluginName).FirstOrDefault();
+            var pluginManager = (Application.PluginManager as PluginManager);
+
+            var plugin = pluginManager?.Plugins.Where((plugin) => plugin.PluginName == pluginName).FirstOrDefault();
             if (plugin == null)
             {
                 await commandEvent.Sender.ReplyAsync("插件未找到");
@@ -127,7 +129,7 @@ namespace WanBot.Plugin.Core
             }
 
             // 检查是否为内部依赖项
-            var pluginPath = (Application.PluginManager as PluginManager)?.GetPluginPath(plugin);
+            var pluginPath = pluginManager?.GetPluginPath(plugin);
             if (string.IsNullOrEmpty(pluginPath))
             {
                 await commandEvent.Sender.ReplyAsync("此插件无法禁用，由于该插件为完犊子Bot的内部依赖项");
@@ -137,10 +139,21 @@ namespace WanBot.Plugin.Core
             // 检查是否有依赖此程序集的插件依赖
             var pluginAsm = plugin.GetType().Assembly;
             var deps = GetDependentAssemblies(pluginAsm);
+            var depList = new List<string>();
+            foreach (var dep in deps)
+            {
+                var path = pluginManager?.GetAssemblyPath(dep) ?? "";
+                if (path == "")
+                    continue;
+                var dllName = new FileInfo(path).Name;
+                if (!depList.Contains(dllName))
+                    depList.Add(dllName);
+            }
+
             if (deps.Any())
             {
-                var depStr = string.Join(',', deps.Select(asm => asm.GetName().Name));
-                await commandEvent.Sender.ReplyAsync($"此插件无法禁用，由于依赖该插件的{depStr}未被卸载");
+                var depStr = string.Join(",\n", depList.Where((dep) => !string.IsNullOrEmpty(dep)));
+                await commandEvent.Sender.ReplyAsync($"此插件无法禁用，由于依赖该插件的\n{depStr}\n未被卸载");
                 return true;
             }
 
