@@ -207,7 +207,7 @@ namespace WanBot
                             }
                             catch(Exception ex)
                             {
-                                _logger.Warn("Failed to connect to bot because {ex}", e.ToString());
+                                _logger.Warn("Failed to connect to bot because {ex}", ex.ToString());
                                 _logger.Error("Retry after 5 seconds...");
                                 Thread.Sleep(5000);
                             }
