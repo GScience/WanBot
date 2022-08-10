@@ -49,7 +49,8 @@ namespace WanBot.Plugin.HotSpot
             commandEvent.Blocked = true;
 
             var msgBuilder = new MessageBuilder();
-            msgBuilder.Image(new MiraiImage(bot, await GetHotSpotAsync()));
+            using var img = new MiraiImage(bot, await GetHotSpotAsync());
+            msgBuilder.Image(img);
             await commandEvent.Sender.ReplyAsync(msgBuilder); 
         }
 

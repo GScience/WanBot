@@ -48,9 +48,9 @@ namespace WanBot.Plugin.YGO
                 return;
             }
 
-            var outputImage = await CardRenderer.GenCardsImageAsync(_renderer, search, cards);
+            using var outputImage = new MiraiImage(bot, await CardRenderer.GenCardsImageAsync(_renderer, search, cards));
             var builder = new MessageBuilder();
-            builder.Image(new MiraiImage(bot, outputImage));
+            builder.Image(outputImage);
             await sender.ReplyAsync(builder);
         }
 

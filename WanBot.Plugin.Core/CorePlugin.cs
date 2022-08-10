@@ -30,6 +30,7 @@ namespace WanBot.Plugin.Core
             _mainDispatcher["reload"].Handle = OnReloadCommand;
             _mainDispatcher["disable"].Handle = OnDisableCommand;
             _mainDispatcher["enable"].Handle = OnEnableCommand;
+            _mainDispatcher["gc"].Handle = OnGCCommand;
             base.PreInit();
         }
 
@@ -57,9 +58,22 @@ namespace WanBot.Plugin.Core
         public async Task<bool> OnReloadCommand(MiraiBot bot, CommandEventArgs commandEvent)
         {
             commandEvent.Sender.RequireCommandPermission(this, "core.admin.reload");
-            Logger.Info("Reload");
+            Logger.Info("GC");
             await commandEvent.Sender.ReplyAsync("重新加载机器人");
             (Application as Application)?.Reload(false, false);
+            return true;
+        }
+        public async Task<bool> OnGCCommand(MiraiBot bot, CommandEventArgs commandEvent)
+        {
+            commandEvent.Sender.RequireCommandPermission(this, "core.admin.gc");
+            Logger.Info("Reload");
+            await commandEvent.Sender.ReplyAsync("清理垃圾，机器人可能会停止响应");
+            for (var i = 0; i < 10; ++i)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.WaitForFullGCComplete();
+            }
             return true;
         }
 
