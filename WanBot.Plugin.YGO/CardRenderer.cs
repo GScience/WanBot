@@ -46,7 +46,7 @@ namespace WanBot.Plugin.YGO
             return grid;
         }
 
-        public static async Task<(SKImage image, int count)> GenCardsImageAsync(UIRenderer renderer, string search, IEnumerator<YgoCard> cards, int gridWidth = 3, int gridHeight = 2)
+        public static async Task<(SKImage image, int count)> GenCardsImageAsync(UIRenderer renderer, string search, IEnumerator<YgoCard> cards, string titlePrefix, int gridWidth = 3, int gridHeight = 2)
         {
             using var grid = new Grid();
 
@@ -61,7 +61,7 @@ namespace WanBot.Plugin.YGO
             var imgList = new List<SKImage>();
             var title = new TextBox();
             title.FontPaint.TextSize = FontSize;
-            title.Text = $"查找结果：{search}";
+            title.Text = $"{titlePrefix}{search}";
             verticalLayout.Children.Add(title);
 
             try

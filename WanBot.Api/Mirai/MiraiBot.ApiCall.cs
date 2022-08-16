@@ -303,6 +303,7 @@ namespace WanBot.Api.Mirai
         public async Task<UploadImageResponse> UploadImageAsync(string type, Stream img)
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
+            _logger.Info("Sending image...");
             var result = await adapter.SendAsync<UploadImageResponse, UploadImageRequest>(
                 new UploadImageRequest()
                 {
@@ -310,7 +311,7 @@ namespace WanBot.Api.Mirai
                     Type = type,
                     Img = img
                 });
-            _logger.Info("Image sent. Url: {url}", result?.Url);
+            _logger.Info("Image sent! Url: {url}", result?.Url);
             return result!;
         }
     }

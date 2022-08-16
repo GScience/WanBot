@@ -55,7 +55,7 @@ namespace WanBot.Plugin.YGO
                 ?? throw new Exception("Failed to get renderer");
         }
 
-        private async Task<int> DisplayCardAsync(MiraiBot bot, ISender sender, IEnumerable<YgoCard> cards, string search, int? reply = null)
+        private async Task<int> DisplayCardAsync(MiraiBot bot, ISender sender, IEnumerable<YgoCard> cards, string search, int? reply = null, string prefix = "查找结果：")
         {
             if (!cards.Any())
             {
@@ -63,7 +63,7 @@ namespace WanBot.Plugin.YGO
                 return 0;
             }
 
-            var (image, count) = await CardRenderer.GenCardsImageAsync(_renderer, search, cards.GetEnumerator());
+            var (image, count) = await CardRenderer.GenCardsImageAsync(_renderer, search, cards.GetEnumerator(), prefix);
             using var outputImage = new MiraiImage(bot, image);
             var builder = new MessageBuilder();
             builder.At(sender);
@@ -101,13 +101,15 @@ namespace WanBot.Plugin.YGO
             {
                 var searchResult = _ygoDatabase.SearchByString(filter);
                 var randomIndex = (int)_random.NextInt64(0, searchResult.Count);
-                await DisplayCardAsync(bot, args.Sender, searchResult.Skip(randomIndex).Take(1), filter, args.GetMessageId());
+                await DisplayCardAsync(bot, args.Sender, searchResult.Skip(randomIndex).Take(1), filter, args.GetMessageId(), "卡池：");
             }
             catch (ArgumentException e)
             {
                 await args.Sender.ReplyAsync($"完犊子了！抽卡失败！不知道为啥参数出错了！");
                 Logger.Error("Error while random card: {e}", e);
             }
+
+            args.Blocked = true;
         }
 
         [Command("查卡")]
@@ -142,8 +144,6 @@ namespace WanBot.Plugin.YGO
             }
 
             args.Blocked = true;
-
-            return;
         }
 
         [Command("高级查卡")]
@@ -185,8 +185,6 @@ namespace WanBot.Plugin.YGO
             }
 
             args.Blocked = true;
-
-            return;
         }
 
         /// <summary>
