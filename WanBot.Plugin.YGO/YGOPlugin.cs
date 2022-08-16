@@ -100,7 +100,7 @@ namespace WanBot.Plugin.YGO
             try
             {
                 var searchResult = _ygoDatabase.SearchByString(filter);
-                var randomIndex = (int)_random.NextInt64(0, searchResult.Count);
+                var randomIndex = _random.Next(0, searchResult.Count);
                 await DisplayCardAsync(bot, args.Sender, searchResult.Skip(randomIndex).Take(1), filter, args.GetMessageId(), "卡池：");
             }
             catch (ArgumentException e)

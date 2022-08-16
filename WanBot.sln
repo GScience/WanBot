@@ -10,6 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot", "WanBot\WanBot.csp
 		{2A826954-87B8-4D34-B86E-18273D0AE940} = {2A826954-87B8-4D34-B86E-18273D0AE940}
 		{5D6F9BDB-7C20-427B-8CE2-CC30EB550BD2} = {5D6F9BDB-7C20-427B-8CE2-CC30EB550BD2}
 		{9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9} = {9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9}
+		{CD4BDCDA-4218-450C-80F3-C83D19E77D3F} = {CD4BDCDA-4218-450C-80F3-C83D19E77D3F}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Api", "WanBot.Api\WanBot.Api.csproj", "{8362D4AF-1295-4AE4-A3B7-17E11429940E}"
@@ -31,6 +32,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Graphic", "WanBot.Graphic\WanBot.Graphic.csproj", "{9A80B4D0-2162-4DAC-B235-8E1FEE51D1A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Graphic.Example", "WanBot.Graphic.Example\WanBot.Graphic.Example.csproj", "{39786B9E-443D-498D-9997-BC416D2A58B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.RandomStuff", "WanBot.Plugin.RandomStuff\WanBot.Plugin.RandomStuff.csproj", "{CD4BDCDA-4218-450C-80F3-C83D19E77D3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +85,10 @@ Global
 		{39786B9E-443D-498D-9997-BC416D2A58B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39786B9E-443D-498D-9997-BC416D2A58B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39786B9E-443D-498D-9997-BC416D2A58B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD4BDCDA-4218-450C-80F3-C83D19E77D3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD4BDCDA-4218-450C-80F3-C83D19E77D3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD4BDCDA-4218-450C-80F3-C83D19E77D3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD4BDCDA-4218-450C-80F3-C83D19E77D3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
