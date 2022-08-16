@@ -270,7 +270,7 @@ namespace WanBot.Plugin.YGO
                 // 如果无法进行分词就直接当作关键词
                 if (string.IsNullOrEmpty(currentWord))
                 {
-                    filter.Keyword = filterCode[i..];
+                    filter.Keyword = (lastWord ?? "") + filterCode[i..];
                     break;
                 }
                 else

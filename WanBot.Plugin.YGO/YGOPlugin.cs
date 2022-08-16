@@ -28,6 +28,8 @@ namespace WanBot.Plugin.YGO
 
         private CommandDispatcher _ygoCmdDispatcher = new();
 
+        private Random _random = new();
+
         public override void PreInit()
         {
             YgoCardImage.CachePath = Path.Combine(GetConfigPath(), "cardPicCache");
@@ -89,7 +91,23 @@ namespace WanBot.Plugin.YGO
         [Command("抽卡")]
         public async Task OnCommandRandom(MiraiBot bot, CommandEventArgs args)
         {
-            
+            if (!args.Sender.HasPermission(this, "random"))
+                return;
+
+            var codePlain = args.GetRemain()?.FirstOrDefault() as Plain;
+            var filter = codePlain?.Text ?? "";
+
+            try
+            {
+                var searchResult = _ygoDatabase.SearchByString(filter);
+                var randomIndex = (int)_random.NextInt64(0, searchResult.Count);
+                await DisplayCardAsync(bot, args.Sender, searchResult.Skip(randomIndex).Take(1), filter, args.GetMessageId());
+            }
+            catch (ArgumentException e)
+            {
+                await args.Sender.ReplyAsync($"完犊子了！抽卡失败！不知道为啥参数出错了！");
+                Logger.Error("Error while random card: {e}", e);
+            }
         }
 
         [Command("查卡")]

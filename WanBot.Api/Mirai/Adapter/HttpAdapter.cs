@@ -30,7 +30,14 @@ namespace WanBot.Api.Mirai.Adapter
             BaseUrl = baseUrl;
             VerifyKey = verifyKey;
             QQ = qq;
-            _httpClient = new HttpClient();
+
+            var socketsHandler = new SocketsHttpHandler
+            {
+                AutomaticDecompression = System.Net.DecompressionMethods.All,
+                EnableMultipleHttp2Connections = true,
+                UseProxy = false
+            };
+            _httpClient = new HttpClient(socketsHandler);
         }
 
         public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)
