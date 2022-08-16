@@ -14,6 +14,11 @@ namespace WanBot.Graphic.UI
 
         public string Text { get; set; } = string.Empty;
 
+        /// <summary>
+        /// 段间距
+        /// </summary>
+        public float ParagraphSpace = 5;
+
         private List<string> _lines = new();
         private List<SKPoint> _pos = new();
 
@@ -70,6 +75,7 @@ namespace WanBot.Graphic.UI
                     {
                         // 第一个字符是换行符，则跳过换行符重新循环
                         text = text[1..^0];
+                        currentY += ParagraphSpace;
                         continue;
                     }
                     else

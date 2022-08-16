@@ -35,7 +35,8 @@ namespace WanBot.Api.Mirai.Adapter
             {
                 AutomaticDecompression = System.Net.DecompressionMethods.All,
                 EnableMultipleHttp2Connections = true,
-                UseProxy = false
+                UseProxy = false,
+                KeepAlivePingPolicy = HttpKeepAlivePingPolicy.Always
             };
             _httpClient = new HttpClient(socketsHandler);
         }

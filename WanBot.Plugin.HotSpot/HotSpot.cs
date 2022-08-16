@@ -62,14 +62,6 @@ namespace WanBot.Plugin.HotSpot
             foreach (var topic in topics)
                 _searchCache.Add(topic.InnerText);
 
-            var containerId = HttpUtility.UrlEncode($"100103type=1&t=10&q={_searchCache[0]}", Encoding.UTF8);
-            var url = $"https://m.weibo.cn/api/container/getIndex?containerid={containerId}&page_type=searchall";
-            var hotHtmlDoc = await _web.LoadFromWebAsync(url);
-            var text = hotHtmlDoc.DocumentNode.InnerText;
-            var searchResult = JsonSerializer.Deserialize<WeiboSearchResult>(text);
-
-            var blog = searchResult!.data.cards.Where((card) => card.card_type == 9).FirstOrDefault();
-
             using var grid = new Grid();
             grid.Width = 800;
             var bg = new Rectangle();
@@ -83,14 +75,24 @@ namespace WanBot.Plugin.HotSpot
             verticalHelper
                 .Box("微博热搜", SKColors.White, SKColors.DarkOrange, 32, 5);
 
-            if (searchResult.data.cardlistInfo != null)
-                verticalHelper = verticalHelper.Box($"【{searchResult.data.cardlistInfo.cardlist_title}】{searchResult.data.cardlistInfo.desc}", SKColors.White, SKColors.Black, 26, textAlignment: SKTextAlign.Left);
-            verticalHelper
-                .Box($"{blog!.mblog.user.screen_name} 表示：\n{blog.mblog.text.Replace("</span>", "").Replace("</a>", "")}", SKColors.White, SKColors.Black, 26, margin: 10, radius: 0, textAlignment: SKTextAlign.Left)
-                .Width(800)
-                .Space(10);
+            for (var i = 0; i < 3; ++i)
+            {
+                var containerId = HttpUtility.UrlEncode($"100103type=1&t=10&q={_searchCache[i]}", Encoding.UTF8);
+                var url = $"https://m.weibo.cn/api/container/getIndex?containerid={containerId}&page_type=searchall";
+                var hotHtmlDoc = await _web.LoadFromWebAsync(url);
+                var text = hotHtmlDoc.DocumentNode.InnerText;
+                var searchResult = JsonSerializer.Deserialize<WeiboSearchResult>(text);
 
-            SKImage? img = null;
+                var blog = searchResult!.data.cards.Where((card) => card.card_type == 9).FirstOrDefault();
+
+                if (searchResult.data.cardlistInfo != null)
+                    verticalHelper = verticalHelper.Box($"【{searchResult.data.cardlistInfo.cardlist_title}】{searchResult.data.cardlistInfo.desc}", SKColors.White, SKColors.Black, 26, textAlignment: SKTextAlign.Left);
+                verticalHelper
+                    .Box($"{blog!.mblog.user.screen_name} 表示：\n{blog.mblog.text.Replace("</span>", "").Replace("</a>", "")}", SKColors.White, SKColors.Black, 26, margin: 10, radius: 0, textAlignment: SKTextAlign.Left)
+                    .Width(800)
+                    .Space(10);
+            }
+            /*SKImage? img = null;
 
             try
             {
@@ -117,7 +119,12 @@ namespace WanBot.Plugin.HotSpot
             finally
             {
                 img?.Dispose();
-            }
+            }*/
+
+            verticalHelper.VerticalLayout.Margin = new Margin(0, 0, 0, 0);
+            horizontalLayout.Children.Add(verticalHelper.VerticalLayout);
+            verticalHelper.Box($"{_searchCache[1]}\n{_searchCache[2]}\n{_searchCache[3]}\n...", SKColors.White, SKColors.Black, 21, margin: 10, radius: 0, textAlignment: SKTextAlign.Left);
+            return _renderer.Draw(grid);
         }
     }
 }
