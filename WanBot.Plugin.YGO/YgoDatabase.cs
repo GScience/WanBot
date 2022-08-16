@@ -17,7 +17,7 @@ namespace WanBot.Plugin.YGO
     /// </summary>
     public class YgoDatabase
     {
-        private const int NotUseParam = -233;
+        public const int NotUseParam = -233;
 
         public int DownloadBufferSize = 8192;
         private const string DatabaseUrl = "https://code.mycard.moe/mycard/ygopro-database/-/raw/master/locales/zh-CN/cards.cdb";
@@ -237,6 +237,26 @@ namespace WanBot.Plugin.YGO
             Attribute,
             Race,
             Other
+        }
+
+        public List<YgoCard> SearchByFilter(YgoFilter filter)
+        {
+            return SearchAdvanced(
+               filter.Keyword,
+               filter.Level,
+               NotUseParam,
+               NotUseParam,
+               filter.Level,
+               NotUseParam,
+               NotUseParam,
+               NotUseParam,
+               NotUseParam,
+               NotUseParam,
+               (uint)filter.Kind,
+               (uint)filter.Type,
+               (uint)filter.Rare,
+               (uint)filter.Attribute,
+               0);
         }
 
         public List<YgoCard> SearchByKeyword(string getName)

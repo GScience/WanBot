@@ -46,7 +46,7 @@ namespace WanBot.Plugin.YGO
             return grid;
         }
 
-        public static async Task<SKImage> GenCardsImageAsync(UIRenderer renderer, string search, List<YgoCard> cards, int gridWidth = 3, int gridHeight = 2)
+        public static async Task<(SKImage image, int count)> GenCardsImageAsync(UIRenderer renderer, string search, IEnumerator<YgoCard> cards, int gridWidth = 3, int gridHeight = 2)
         {
             using var grid = new Grid();
 
@@ -66,32 +66,48 @@ namespace WanBot.Plugin.YGO
 
             try
             {
-                IEnumerable<YgoCard> cardEnumerator = cards;
-
                 var cardIndex = 0;
+                var isEmpty = false;
+
                 for (var x = 0; x < gridWidth; ++x)
                 {
                     var horizontalLayout = new HorizontalLayout();
                     horizontalLayout.Space = 10;
                     for (var y = 0; y < gridHeight; ++y)
                     {
-                        var card = cards[cardIndex++];
+                        if (!cards.MoveNext())
+                        {
+                            isEmpty = true;
+                            break;
+                        }
+                        ++cardIndex;
+
+                        var card = cards.Current;
                         var cardImage = await YgoCardImage.LoadFromIdAsync(card.Id);
                         if (cardImage != null)
                             imgList.Add(cardImage);
 
                         horizontalLayout.Children.Add(GenCard(card.Name, card.Desc, cardImage!));
-
-                        if (cards.Count <= cardIndex)
-                            break;
                     }
                     verticalLayout.Children.Add(horizontalLayout);
 
-                    if (cards.Count <= cardIndex)
+                    if (isEmpty)
                         break;
                 }
 
-                return renderer.Draw(grid);
+                // 下一页
+                if (cards.MoveNext())
+                {
+                    var textBox = new TextBox();
+                    textBox.Text = "如需查找更多，请输入继续查";
+                    textBox.FontPaint.Color = SKColors.IndianRed;
+                    textBox.FontPaint.TextSize = FontSize;
+                    textBox.FontPaint.TextAlign = SKTextAlign.Right;
+                    textBox.Height = 50;
+                    verticalLayout.Children.Add(textBox);
+                }
+
+                return (renderer.Draw(grid), cardIndex);
             }
             catch (Exception)
             {

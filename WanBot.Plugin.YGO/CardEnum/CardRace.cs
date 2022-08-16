@@ -2,6 +2,7 @@
 {
     public enum CardRace
     {
+        Unknown = 0x0,
         Warrior = 0x1,
         SpellCaster = 0x2,
         Fairy = 0x4,

@@ -5,6 +5,7 @@ using WanBot.Api.Mirai;
 using WanBot.Api.Mirai.Message;
 using WanBot.Api.Util;
 using WanBot.Graphic;
+using WanBot.Plugin.Essential.Extension;
 using WanBot.Plugin.Essential.Graphic;
 using WanBot.Plugin.Essential.Permission;
 
@@ -38,6 +39,7 @@ namespace WanBot.Plugin.YGO
             _ygoCmdDispatcher["update"].Handle = async (s,o) => { await OnCommandUpdateDatabase(s, o); return true; };
             _ygoCmdDispatcher["search"].Handle = async (s, o) => { await OnCommandSearchCard(s, o); return true; };
             _ygoCmdDispatcher["searchadvance"].Handle = async (s, o) => { await OnCommandSearchAdvanceCard(s, o); return true; };
+            _ygoCmdDispatcher["random"].Handle = async (s, o) => { await OnCommandRandom(s, o); return true; };
 
             base.PreInit();
         }
@@ -51,18 +53,20 @@ namespace WanBot.Plugin.YGO
                 ?? throw new Exception("Failed to get renderer");
         }
 
-        private async Task DisplayCardAsync(MiraiBot bot, ISender sender, List<YgoCard> cards, string search, int? reply = null, int max = 5)
+        private async Task<int> DisplayCardAsync(MiraiBot bot, ISender sender, IEnumerable<YgoCard> cards, string search, int? reply = null)
         {
-            if (cards.Count == 0)
+            if (!cards.Any())
             {
                 await sender.ReplyAsync("未找到结果", reply);
-                return;
+                return 0;
             }
 
-            using var outputImage = new MiraiImage(bot, await CardRenderer.GenCardsImageAsync(_renderer, search, cards));
+            var (image, count) = await CardRenderer.GenCardsImageAsync(_renderer, search, cards.GetEnumerator());
+            using var outputImage = new MiraiImage(bot, image);
             var builder = new MessageBuilder();
             builder.Image(outputImage);
             await sender.ReplyAsync(builder);
+            return count;
         }
 
         [Command("ygo")]
@@ -80,7 +84,13 @@ namespace WanBot.Plugin.YGO
             await _ygoDatabase.UpdateAsync(_databasePath);
             args.Blocked = true;
         }
-        
+
+        [Command("抽卡")]
+        public async Task OnCommandRandom(MiraiBot bot, CommandEventArgs args)
+        {
+            
+        }
+
         [Command("查卡")]
         public async Task OnCommandSearchCard(MiraiBot bot, CommandEventArgs args)
         {
@@ -90,21 +100,26 @@ namespace WanBot.Plugin.YGO
             args.Blocked = true;
 
             var codePlain = args.GetRemain()?.FirstOrDefault() as Plain;
-            var keyword = codePlain?.Text ?? "";
-            if (keyword == "")
+            var filter = codePlain?.Text ?? "";
+            if (filter == "")
             {
-                await args.Sender.ReplyAsync($"格式不正确，请输入 #查卡 关键词 来查卡");
+                await args.Sender.ReplyAsync($"格式不正确，请输入 #查卡 卡片信息 来查卡");
                 return;
             }
 
             try
             {
-                var searchResult = _ygoDatabase.SearchByKeyword(keyword);
-                await DisplayCardAsync(bot, args.Sender, searchResult, keyword, args.GetMessageId());
+                var searchResult = _ygoDatabase.SearchByFilter(YgoFilter.FromString(filter));
+                var displayIndex = 0;
+                do
+                {
+                    displayIndex += await DisplayCardAsync(bot, args.Sender, searchResult.Skip(displayIndex), filter, args.GetMessageId());
+                } while (IsContinueDisplay(args.Sender));
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
                 await args.Sender.ReplyAsync($"完犊子了！查卡失败！不知道为啥参数出错了！");
+                Logger.Error("Error while search card: {e}", e);
             }
 
             args.Blocked = true;
@@ -144,15 +159,34 @@ namespace WanBot.Plugin.YGO
                 var searchResult = _ygoDatabase.SearchByCode(code);
                 await DisplayCardAsync(bot, args.Sender, searchResult, code, args.GetMessageId());
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException e)
             {
                 await args.Sender.ReplyAsync($"完犊子了！查卡失败！参数是不是输错了！");
-                Logger.Info($"{code} throw an exception: {ex.Message}");
+                Logger.Error("Error while search card: {e}", e);
             }
 
             args.Blocked = true;
 
             return;
+        }
+
+        /// <summary>
+        /// 判断是否继续显示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
+        private bool IsContinueDisplay(ISender sender)
+        {
+            var chain = sender.WaitForReply(TimeSpan.FromSeconds(30));
+            var str = chain?.AsPlain()?.Text;
+            if (str != null && 
+                (
+                    str == "继续查" ||
+                    str == "下一页" ||
+                    str == "继续"
+                ))
+                return true;
+            return false;
         }
     }
 }

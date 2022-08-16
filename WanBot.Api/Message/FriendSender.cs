@@ -48,5 +48,18 @@ namespace WanBot.Api.Message
         {
             return await _bot.FriendProfileAsync(Id);
         }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not FriendSender friendSender)
+                return false;
+            return
+                friendSender.Id == Id;
+        }
     }
 }

@@ -2,6 +2,7 @@
 {
     public enum CardAttribute
     {
+        Unknown = 0x0,
         Earth = 0x01,
         Water = 0x02,
         Fire = 0x04,

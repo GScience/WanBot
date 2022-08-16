@@ -53,5 +53,19 @@ namespace WanBot.Api.Message
         {
             return await _bot.MemberProfileAsync(GroupId, Id);
         }
+
+        public override int GetHashCode()
+        {
+            return (GroupId ^ Id).GetHashCode();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not GroupSender groupSender)
+                return false;
+            return 
+                groupSender.Id == Id && 
+                groupSender.GroupId == GroupId;
+        }
     }
 }

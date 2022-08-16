@@ -2,6 +2,7 @@
 {
     public enum CardType
     {
+        Unknown = 0x0,
         Monster = 0x1,
         Spell = 0x2,
         Trap = 0x4,
