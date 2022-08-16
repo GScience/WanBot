@@ -123,7 +123,7 @@ namespace WanBot.Plugin.HotSpot
 
             verticalHelper.VerticalLayout.Margin = new Margin(0, 0, 0, 0);
             horizontalLayout.Children.Add(verticalHelper.VerticalLayout);
-            verticalHelper.Box($"{_searchCache[1]}\n{_searchCache[2]}\n{_searchCache[3]}\n...", SKColors.White, SKColors.Black, 21, margin: 10, radius: 0, textAlignment: SKTextAlign.Left);
+            verticalHelper.Box($"{_searchCache[3]}\n{_searchCache[4]}\n{_searchCache[5]}\n...", SKColors.White, SKColors.Black, 21, margin: 10, radius: 0, textAlignment: SKTextAlign.Left);
             return _renderer.Draw(grid);
         }
     }

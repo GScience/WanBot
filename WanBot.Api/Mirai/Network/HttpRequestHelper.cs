@@ -19,7 +19,7 @@ namespace WanBot.Api.Mirai.Network
     /// <typeparam name="T"></typeparam>
     internal static class HttpRequestHelper<T>
     {
-        private const string _boundary = "--WanBotBoundaryFIDOEJRTUIVAS";
+        private const string _boundary = "--WanBotBoundaryAaBbCcDd";
 
         private static PropertyInfo[]? _properties;
 
