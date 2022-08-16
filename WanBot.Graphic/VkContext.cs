@@ -13,6 +13,8 @@ namespace WanBot.Graphic
         private Instance instance;
         public GRContext GrContext { get; }
 
+        private Device _device;
+
         public VkContext()
         {
             var grVkBackendContext = new GRSharpVkBackendContext();
@@ -39,10 +41,10 @@ namespace WanBot.Graphic
                 new DeviceQueueCreateInfo { QueueFamilyIndex = (uint)graphicsFamily.Value, QueuePriorities = new[] { 1f } }
             };
 
-            var device = physicalDevice.CreateDevice(queueInfos, null, null);
-            grVkBackendContext.VkDevice = device;
+            _device = physicalDevice.CreateDevice(queueInfos, null, null);
+            grVkBackendContext.VkDevice = _device;
 
-            var graphicsQueue = device.GetQueue((uint)graphicsFamily.Value, 0);
+            var graphicsQueue = _device.GetQueue((uint)graphicsFamily.Value, 0);
             grVkBackendContext.VkQueue = graphicsQueue;
             grVkBackendContext.GraphicsQueueIndex = (uint)graphicsFamily.Value;
 
@@ -67,7 +69,10 @@ namespace WanBot.Graphic
         public void Dispose()
         {
             GrContext.Dispose();
+            _device.Dispose();
+            _device = null!;
             instance.Dispose();
+            instance = null!;
 
             GC.SuppressFinalize(this);
         }
