@@ -239,6 +239,9 @@ namespace WanBot.Api.Event
             try
             {
                 await bot.PublishAsync(eventArgs.GetEventName(), eventArgs);
+
+                if (!eventArgs.Blocked)
+                    Logger.Warn($"Command #{{cmd}} not found, or not blocked by the handle", cmd);
             }
             catch (Exception)
             {
