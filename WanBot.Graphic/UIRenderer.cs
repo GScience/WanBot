@@ -11,7 +11,6 @@ namespace WanBot.Graphic
         private VkContext _vkContext;
         private GRContext? _grContext;
         private bool _disposed;
-        private bool _isDrawing;
 
         public UIRenderer()
         {
@@ -32,8 +31,6 @@ namespace WanBot.Graphic
             if (_disposed)
                 return null!;
 
-            _isDrawing = true;
-
             var rect = uiElement.UpdateLayout(layoutRect);
             var imageInfo = new SKImageInfo((int)rect.Width, (int)rect.Height);
 
@@ -41,7 +38,6 @@ namespace WanBot.Graphic
             {
                 using var surface = SKSurface.Create(imageInfo);
                 uiElement.Draw(surface.Canvas);
-                _isDrawing = false;
                 return surface.Snapshot();
             }
             else
@@ -51,7 +47,6 @@ namespace WanBot.Graphic
                     using var surface = SKSurface.Create(_grContext, false, imageInfo);
                     uiElement.Draw(surface.Canvas);
                     _grContext.Flush();
-                    _isDrawing = false;
                     return surface.Snapshot();
                 }
             }
