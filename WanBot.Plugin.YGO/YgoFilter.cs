@@ -18,6 +18,21 @@ namespace WanBot.Plugin.YGO
             "阶"
         };
 
+        public static string[] LevelWord =
+        {
+            "0",
+            "10",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+        };
+
         public static string[] RareWord =
         {
             "战士",
@@ -96,6 +111,7 @@ namespace WanBot.Plugin.YGO
 
         internal static IEnumerable<string> YgoWordsEnumerator()
         {
+            foreach (var word in LevelWord) yield return word;
             foreach (var word in RareWord) yield return word;
             foreach (var word in TypeWord) yield return word;
             foreach (var word in KindWord) yield return word;
@@ -298,6 +314,7 @@ namespace WanBot.Plugin.YGO
                 }
             }
             filter.SetType(cardType);
+
             return filter;
         }
     }

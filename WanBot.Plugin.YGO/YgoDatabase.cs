@@ -173,11 +173,11 @@ namespace WanBot.Plugin.YGO
                         || card.Id.ToString() == getName
                     )
                     {
-                        if (((card.Type & getTypeFilter) == getTypeFilter || getTypeFilter == 0)
-                            && ((card.Type == getTypeFilter2
-                                 || getTypeFilter == (uint)CardType.Monster) &&
-                                (card.Type & getTypeFilter2) == getTypeFilter2
-                                || getTypeFilter2 == 0))
+                        if (
+                            ((card.Type & getTypeFilter) == getTypeFilter || getTypeFilter == 0) && 
+                            ((card.Type == getTypeFilter2 || getTypeFilter == (uint)CardType.Monster) &&
+                            (card.Type & getTypeFilter2) == getTypeFilter2 || getTypeFilter2 == 0)
+                           )
                         {
                             if (!(getRaceFilter == 0 || (card.Race & getRaceFilter) > 0)) continue;
                             if (!(getAttributeFilter == 0 || (card.Attribute & getAttributeFilter) > 0)) continue;
@@ -238,6 +238,22 @@ namespace WanBot.Plugin.YGO
             Race,
             Other
         }
+        public List<YgoCard> SearchByString(string str)
+        {
+            // 首先尝试Filter
+            var filterResult = SearchByFilter(YgoFilter.FromString(str));
+
+            // 之后尝试关键词
+            var keywordResult = SearchByKeyword(str);
+
+            var hashSet = new SortedSet<YgoCard>();
+            foreach (var card in filterResult)
+                hashSet.Add(card);
+            foreach (var card in keywordResult)
+                hashSet.Add(card);
+
+            return hashSet.ToList();
+        }
 
         public List<YgoCard> SearchByFilter(YgoFilter filter)
         {
@@ -293,7 +309,7 @@ namespace WanBot.Plugin.YGO
         /// ra(race)=种族，如恶魔，多属性需要使用分割符分离
         /// </summary>
         /// <param name="searchCode"></param>
-        public List<YgoCard> SearchByCode(string searchCode)
+        public List<YgoCard> SearchByYgoSearchCode(string searchCode)
         {
             string getName = "";
             var getLevel = NotUseParam;

@@ -109,7 +109,7 @@ namespace WanBot.Plugin.YGO
 
             try
             {
-                var searchResult = _ygoDatabase.SearchByFilter(YgoFilter.FromString(filter));
+                var searchResult = _ygoDatabase.SearchByString(filter);
                 var displayIndex = 0;
                 do
                 {
@@ -156,7 +156,7 @@ namespace WanBot.Plugin.YGO
             Logger.Info($"Try to search card by search code: {code}");
             try
             {
-                var searchResult = _ygoDatabase.SearchByCode(code);
+                var searchResult = _ygoDatabase.SearchByYgoSearchCode(code);
                 await DisplayCardAsync(bot, args.Sender, searchResult, code, args.GetMessageId());
             }
             catch (ArgumentException e)
