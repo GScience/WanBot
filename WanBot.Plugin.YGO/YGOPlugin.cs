@@ -64,6 +64,7 @@ namespace WanBot.Plugin.YGO
             var (image, count) = await CardRenderer.GenCardsImageAsync(_renderer, search, cards.GetEnumerator());
             using var outputImage = new MiraiImage(bot, image);
             var builder = new MessageBuilder();
+            builder.At(sender);
             builder.Image(outputImage);
             await sender.ReplyAsync(builder);
             return count;

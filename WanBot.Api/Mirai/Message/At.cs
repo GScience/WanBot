@@ -19,6 +19,6 @@ namespace WanBot.Api.Mirai.Message
         /// <summary>
         /// At时显示的文字，发送消息时无效，自动使用群名片
         /// </summary>
-        public string? Display { get; set; } = null;
+        public string Display { get; set; } = string.Empty;
     }
 }

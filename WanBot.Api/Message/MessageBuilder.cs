@@ -13,6 +13,18 @@ namespace WanBot.Api.Message
 
         private List<object> _chains = new();
 
+        public MessageBuilder At(long id)
+        {
+            _chains.Add(new At { Target = id });
+            return this;
+        }
+
+        public MessageBuilder At(ISender sender)
+        {
+            _chains.Add(new At { Target = sender.Id });
+            return this;
+        }
+
         public MessageBuilder Text(string text)
         {
             if (_chains.Count != 0 && _chains.Last() is Plain plain)
