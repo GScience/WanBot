@@ -310,7 +310,7 @@ namespace WanBot.Api.Mirai
                     Type = type,
                     Img = img
                 });
-
+            _logger.Info("Image sent. Url: {url}", result?.Url);
             return result!;
         }
     }

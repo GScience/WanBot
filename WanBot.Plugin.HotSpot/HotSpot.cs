@@ -90,21 +90,21 @@ namespace WanBot.Plugin.HotSpot
                 .Width(800)
                 .Space(10);
 
-            SKImage? bmiddlePic = null;
+            SKImage? img = null;
 
             try
             {
-                if (blog.mblog.bmiddle_pic != null)
+                if (blog.mblog.original_pic != null)
                 {
                     using var httpClient = new HttpClient();
-                    using var imgStream = await httpClient.GetStreamAsync(blog.mblog.bmiddle_pic);
+                    using var imgStream = await httpClient.GetStreamAsync(blog.mblog.original_pic);
                     using var data = SKData.Create(imgStream);
-                    bmiddlePic = SKImage.FromEncodedData(data);
+                    img = SKImage.FromEncodedData(data);
                     verticalHelper.Add(new ImageBox
                     {
-                        Image = bmiddlePic,
-                        Width = bmiddlePic.Width,
-                        Height = bmiddlePic.Height
+                        Image = img,
+                        Width = img.Width,
+                        Height = img.Height
                     });
                 }
                 verticalHelper.VerticalLayout.Margin = new Margin(0, 0, 0, 0);
@@ -116,7 +116,7 @@ namespace WanBot.Plugin.HotSpot
             }
             finally
             {
-                bmiddlePic?.Dispose();
+                img?.Dispose();
             }
         }
     }

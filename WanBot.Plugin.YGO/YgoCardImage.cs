@@ -30,7 +30,7 @@ namespace WanBot.Plugin.YGO
             var path = Path.Combine(CachePath, $"{id}.png");
             if (string.IsNullOrEmpty(CachePath) || !File.Exists(path))
             {
-                var response = await _httpClient.GetAsync(GetCardImageUrl(id));
+                using var response = await _httpClient.GetAsync(GetCardImageUrl(id));
                 if (!response.IsSuccessStatusCode)
                     return null;
 

@@ -22,11 +22,27 @@ namespace WanBot.Plugin.YGO
         public int DownloadBufferSize = 8192;
         private const string DatabaseUrl = "https://code.mycard.moe/mycard/ygopro-database/-/raw/master/locales/zh-CN/cards.cdb";
         private ILogger _logger;
-        private static IDictionary<int, YgoCard> _cards = new Dictionary<int, YgoCard>();
+        private IDictionary<int, YgoCard> _cards = new Dictionary<int, YgoCard>();
 
         internal YgoDatabase(ILogger logger)
         {
             _logger = logger;
+        }
+
+        public async Task UpdateAsync(string databasePath)
+        {
+            _logger.Warn($"Update database");
+            await UpdateDatabaseAsync(databasePath);
+
+            using SqliteConnection connection = new SqliteConnection("Data Source=" + databasePath);
+            connection.Open();
+
+            using var command =
+                new SqliteCommand("SELECT datas.*, texts.* FROM datas,texts WHERE datas.id=texts.id;", connection);
+
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+                LoadCard(reader);
         }
 
         /// <summary>
@@ -41,8 +57,8 @@ namespace WanBot.Plugin.YGO
                 await UpdateDatabaseAsync(databasePath);
             }
 
-            using SqliteConnection connection = new SqliteConnection("Data Source=" + databasePath);
-            connection.Open();
+            using var connection = new SqliteConnection("Data Source=" + databasePath);
+            await connection.OpenAsync();
 
             using var command =
                 new SqliteCommand("SELECT datas.*, texts.* FROM datas,texts WHERE datas.id=texts.id;", connection);
@@ -50,13 +66,15 @@ namespace WanBot.Plugin.YGO
             using var reader = command.ExecuteReader();
             while (reader.Read())
                 LoadCard(reader);
+            SqliteConnection.ClearPool(connection);
+            await connection.CloseAsync();
         }
 
         /// <summary>
         /// 加载卡片
         /// </summary>
         /// <param name="reader"></param>
-        private static void LoadCard(IDataRecord reader)
+        private void LoadCard(IDataRecord reader)
         {
             YgoCard card = new(reader);
             if (!_cards.ContainsKey(card.Id))
@@ -74,19 +92,18 @@ namespace WanBot.Plugin.YGO
 
             using var client = new HttpClient();
             var response = await client.GetAsync(url);
-            using Stream netStream = await response.Content.ReadAsStreamAsync();
-            using FileStream fileStream = new(databasePath, FileMode.CreateNew);
+            using var ns = await response.Content.ReadAsStreamAsync();
+            using var fs = File.Create(databasePath);
             var buffer = new byte[DownloadBufferSize];
 
-            long resultLength = netStream.Length;
+            long resultLength = ns.Length;
             long totalReadLength = 0;
             int length;
 
-            int currentTop = Console.CursorTop;
-            while ((length = await netStream.ReadAsync(buffer)) != 0)
+            while ((length = await ns.ReadAsync(buffer)) != 0)
             {
                 totalReadLength += length;
-                fileStream.Write(buffer, 0, length);
+                fs.Write(buffer, 0, length);
 
                 // 显示日志
                 if (resultLength == 0)
@@ -126,7 +143,7 @@ namespace WanBot.Plugin.YGO
         /// <param name="getAttributeFilter"></param>
         /// <param name="getCatagoryFilter"></param>
         /// <returns></returns>
-        internal static List<YgoCard> SearchAdvanced(
+        internal List<YgoCard> SearchAdvanced(
             string getName,
             int getLevel,
             int getAttack,

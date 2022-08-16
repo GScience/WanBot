@@ -19,6 +19,8 @@ namespace WanBot.Api.Mirai.Network
     /// <typeparam name="T"></typeparam>
     internal static class HttpRequestHelper<T>
     {
+        private const string _boundary = "--WanBotBoundaryFIDOEJRTUIVAS";
+
         private static PropertyInfo[]? _properties;
 
         private static string _apiName;
@@ -85,10 +87,9 @@ namespace WanBot.Api.Mirai.Network
 
         private static async Task<HttpResponseMessage> PostMultipartAsync(HttpAdapter adapter, T payload)
         {
-            var boundary = $"--{DateTime.Now.Ticks:x}";
-            var content = new MultipartFormDataContent(boundary);
+            var content = new MultipartFormDataContent(_boundary);
             content.Headers.ContentType = new MediaTypeHeaderValue($"multipart/form-data");
-            content.Headers.ContentType.Parameters.Add(new NameValueHeaderValue("boundary", boundary));
+            content.Headers.ContentType.Parameters.Add(new NameValueHeaderValue("boundary", _boundary));
 
             foreach (var property in _properties!)
             {

@@ -3,6 +3,7 @@ using WanBot.Api.Event;
 using WanBot.Api.Message;
 using WanBot.Api.Mirai;
 using WanBot.Api.Mirai.Message;
+using WanBot.Api.Util;
 using WanBot.Graphic;
 using WanBot.Plugin.Essential.Graphic;
 using WanBot.Plugin.Essential.Permission;
@@ -22,12 +23,22 @@ namespace WanBot.Plugin.YGO
 
         private UIRenderer _renderer = null!;
 
+        private string _databasePath = string.Empty;
+
+        private CommandDispatcher _ygoCmdDispatcher = new();
+
         public override void PreInit()
         {
             YgoCardImage.CachePath = Path.Combine(GetConfigPath(), "cardPicCache");
 
+            _databasePath = Path.Combine(GetConfigPath(), "cards.cdb");
             _ygoDatabase = new(Logger);
-            _ygoDatabase.LoadAsync(Path.Combine(GetConfigPath(), "cards.cdb")).Wait();
+            _ygoDatabase.LoadAsync(_databasePath).Wait();
+
+            _ygoCmdDispatcher["update"].Handle = async (s,o) => { await OnCommandUpdateDatabase(s, o); return true; };
+            _ygoCmdDispatcher["search"].Handle = async (s, o) => { await OnCommandSearchCard(s, o); return true; };
+            _ygoCmdDispatcher["searchadvance"].Handle = async (s, o) => { await OnCommandSearchAdvanceCard(s, o); return true; };
+
             base.PreInit();
         }
 
@@ -54,6 +65,22 @@ namespace WanBot.Plugin.YGO
             await sender.ReplyAsync(builder);
         }
 
+        [Command("ygo")]
+        public async Task OnCommandYgo(MiraiBot bot, CommandEventArgs args)
+        {
+            await _ygoCmdDispatcher.HandleCommandAsync(bot, args);
+        }
+
+        public async Task OnCommandUpdateDatabase(MiraiBot bot, CommandEventArgs args)
+        {
+            if (!args.Sender.HasPermission(this, "update"))
+                return;
+
+            await args.Sender.ReplyAsync($"正在重新同步卡牌数据库");
+            await _ygoDatabase.UpdateAsync(_databasePath);
+            args.Blocked = true;
+        }
+        
         [Command("查卡")]
         public async Task OnCommandSearchCard(MiraiBot bot, CommandEventArgs args)
         {
@@ -66,7 +93,7 @@ namespace WanBot.Plugin.YGO
             var keyword = codePlain?.Text ?? "";
             if (keyword == "")
             {
-                await args.Sender.ReplyAsync($"格式不正确，请输入 .查卡 关键词 来查卡");
+                await args.Sender.ReplyAsync($"格式不正确，请输入 #查卡 关键词 来查卡");
                 return;
             }
 
@@ -79,6 +106,8 @@ namespace WanBot.Plugin.YGO
             {
                 await args.Sender.ReplyAsync($"完犊子了！查卡失败！不知道为啥参数出错了！");
             }
+
+            args.Blocked = true;
 
             return;
         }
@@ -96,7 +125,7 @@ namespace WanBot.Plugin.YGO
             if (code == "")
             {
                 await args.Sender.ReplyAsync(
-                    $"高级查询格式：.高级查卡 kw 青眼白龙 kd 魔法\n" +
+                    $"高级查询格式：#高级查卡 kw 青眼白龙 kd 魔法\n" +
                     $"kw(keyword) 检索关键词\n" +
                     $"kd(kind) 卡种，支持怪兽，魔法，陷阱\n" +
                     $"tp(type) 类型，支持XYZ等\n" +
@@ -120,6 +149,8 @@ namespace WanBot.Plugin.YGO
                 await args.Sender.ReplyAsync($"完犊子了！查卡失败！参数是不是输错了！");
                 Logger.Info($"{code} throw an exception: {ex.Message}");
             }
+
+            args.Blocked = true;
 
             return;
         }
