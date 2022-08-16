@@ -240,19 +240,8 @@ namespace WanBot.Plugin.YGO
         }
         public List<YgoCard> SearchByString(string str)
         {
-            // 首先尝试Filter
             var filterResult = SearchByFilter(YgoFilter.FromString(str));
-
-            // 之后尝试关键词
-            var keywordResult = SearchByKeyword(str);
-
-            var hashSet = new SortedSet<YgoCard>();
-            foreach (var card in filterResult)
-                hashSet.Add(card);
-            foreach (var card in keywordResult)
-                hashSet.Add(card);
-
-            return hashSet.ToList();
+            return filterResult;
         }
 
         public List<YgoCard> SearchByFilter(YgoFilter filter)
@@ -262,8 +251,8 @@ namespace WanBot.Plugin.YGO
                filter.Level,
                NotUseParam,
                NotUseParam,
-               filter.Level,
                NotUseParam,
+               filter.Level,
                NotUseParam,
                NotUseParam,
                NotUseParam,
