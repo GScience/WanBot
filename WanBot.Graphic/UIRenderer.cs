@@ -8,11 +8,14 @@ namespace WanBot.Graphic
     /// </summary>
     public class UIRenderer : IDisposable
     {
-        private VkContext _vkContext;
+        private VkContext? _vkContext;
         private GRContext? _grContext;
         private bool _disposed;
 
-        public UIRenderer()
+        /// <summary>
+        /// 启用GPU加速
+        /// </summary>
+        public void EnableGPU()
         {
             _vkContext = new();
             _grContext = _vkContext.GrContext;
@@ -66,7 +69,7 @@ namespace WanBot.Graphic
         public void Dispose()
         {
             _disposed = true;
-            _vkContext.Dispose();
+            _vkContext?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

@@ -35,6 +35,16 @@ namespace WanBot.Plugin.Essential.Graphic
         {
             base.PreInit();
             Renderer = new();
+
+            try
+            {
+                Renderer.EnableGPU();
+            }
+            catch (Exception e)
+            {
+                Logger.Warn($"Failed to enable GPU accelleration because {e}");
+            }
+
             _config = GetConfig<GraphicConfig>();
             LoadFontAsync().Wait();
         }

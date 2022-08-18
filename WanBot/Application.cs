@@ -76,10 +76,16 @@ namespace WanBot
             for (var i = 0; i < args.Length; i++)
             {
                 if (args[i].ToLower() == "-config")
+                {
                     ConfigPath = args[++i];
+                    _logger.Info($"Switch config dir to {ConfigPath}");
+                }
 
                 if (args[i].ToLower() == "-plugin")
+                {
                     PluginPath = args[++i];
+                    _logger.Info($"Switch plugin dir to {PluginPath}");
+                }
             }
 
             // 创建插件管理器
