@@ -10,10 +10,10 @@ namespace WanBot.Graphic
 {
     public class VkContext : IDisposable
     {
-        private Instance instance;
-        public GRContext GrContext { get; }
+        private Instance? instance;
+        public GRContext? GrContext { get; }
 
-        private Device _device;
+        private Device? _device;
 
         public VkContext()
         {
@@ -68,10 +68,10 @@ namespace WanBot.Graphic
 
         public void Dispose()
         {
-            GrContext.Dispose();
-            _device.Dispose();
+            GrContext?.Dispose();
+            _device?.Dispose();
             _device = null!;
-            instance.Dispose();
+            instance?.Dispose();
             instance = null!;
 
             GC.SuppressFinalize(this);

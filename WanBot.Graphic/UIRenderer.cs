@@ -17,10 +17,19 @@ namespace WanBot.Graphic
         /// </summary>
         public void EnableGPU()
         {
-            _vkContext = new();
-            _grContext = _vkContext.GrContext;
+            try
+            {
+                _vkContext = new();
+                _grContext = _vkContext.GrContext;
 
-            _vkContext.GrContext?.SetResourceCacheLimit(1024 * 50);
+                _vkContext.GrContext?.SetResourceCacheLimit(1024 * 50);
+            }
+            catch (Exception)
+            {
+                _grContext?.Dispose();
+                _vkContext?.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
