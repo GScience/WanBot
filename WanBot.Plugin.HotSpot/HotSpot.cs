@@ -33,6 +33,10 @@ namespace WanBot.Plugin.HotSpot
         private UIRenderer _renderer = null!;
         public override void Start()
         {
+            this.GetBotHelp()
+                .Category("微博热搜")
+                .Command("#今日热点", "抓取当前最新最热的实事");
+
             base.Start();
 
             _renderer = this.GetUIRenderer();

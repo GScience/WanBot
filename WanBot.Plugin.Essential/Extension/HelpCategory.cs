@@ -22,7 +22,7 @@ namespace WanBot.Plugin.Essential.Extension
             var vertical = new VerticalHelper();
 
             vertical
-                .Box(category, SKColors.White, SKColors.Black, 21)
+                .Box(category, SKColors.White, SKColors.Black, 19)
                 .Width(width);
 
             return vertical.VerticalLayout;

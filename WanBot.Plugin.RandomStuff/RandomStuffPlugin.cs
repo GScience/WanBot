@@ -2,6 +2,7 @@
 using WanBot.Api.Event;
 using WanBot.Api.Message;
 using WanBot.Api.Mirai;
+using WanBot.Plugin.Essential.Extension;
 using WanBot.Plugin.Essential.Permission;
 
 namespace WanBot.Plugin.RandomStuff
@@ -17,6 +18,16 @@ namespace WanBot.Plugin.RandomStuff
         public override Version PluginVersion => Version.Parse("1.0.0");
 
         private Random _random = new();
+
+        public override void Start()
+        {
+            this.GetBotHelp()
+                .Category("随机小功能")
+                .Command("#随机对象", "抓个群里的人当对象")
+                .Info("如果不如意可以打爆完犊子");
+
+            base.Start();
+        }
 
         [Command("随机对象")]
         public async Task OnRandomCp(MiraiBot bot, CommandEventArgs args)

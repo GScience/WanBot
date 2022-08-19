@@ -70,6 +70,7 @@ namespace WanBot.Plugin.Essential.Extension
             var horizontalLayout = new HorizontalLayout();
             horizontalLayout.Margin = new Margin(15, 15);
             horizontalLayout.Height = height;
+            horizontalLayout.Space = 15;
 
             var helpIndex = 0;
 
