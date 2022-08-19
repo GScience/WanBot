@@ -58,6 +58,18 @@ namespace WanBot.Plugin.Essential.EssAttribute
             await commandEvent.Sender.ReplyAsync($"你有 {essUsr.Money} 元");
         }
 
+        [Command("状态")]
+        public async Task OnStatusCommand(MiraiBot bot, CommandEventArgs commandEvent)
+        {
+            if (!commandEvent.Sender.HasCommandPermission(this, "status"))
+                return;
+
+            commandEvent.Blocked = true;
+
+            await using var essUsr = essAttrUsrFactory!.FromSender(commandEvent.Sender);
+            await commandEvent.Sender.ReplyAsync($"你已经休息了 {DateTime.Now - essUsr._user.LastTimeCheckEnergy} 时间，休息满1小时即可恢复体力");
+        }
+
         [Command("体力")]
         public async Task OnEnergyCommand(MiraiBot bot, CommandEventArgs commandEvent)
         {

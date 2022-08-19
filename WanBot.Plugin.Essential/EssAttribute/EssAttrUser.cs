@@ -18,7 +18,7 @@ namespace WanBot.Plugin.Essential.EssAttribute
 
         private DbEssAttributeUser? _userCache;
 
-        private DbEssAttributeUser _user
+        internal DbEssAttributeUser _user
         {
             get
             {
@@ -78,6 +78,11 @@ namespace WanBot.Plugin.Essential.EssAttribute
             {
                 var usr = _user;
                 var nowTime = DateTime.Now;
+
+                // 防止出现意外
+                if (nowTime < usr.LastTimeCheckEnergy)
+                    usr.LastTimeCheckEnergy = nowTime;
+
                 var timeSpan = nowTime - usr.LastTimeCheckEnergy;
                 usr.Energy += (int)timeSpan.TotalHours * 5;
                 if (usr.Energy > usr.EnergyMax)
