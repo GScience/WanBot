@@ -10,7 +10,7 @@ using WanBot.Api.Mirai.Network;
 namespace WanBot.Api.Mirai.Payload
 {
     /// <summary>
-    /// 发送群消息
+    /// 撤回
     /// </summary>
     [HttpApi("recall", HttpAdapterMethod.PostJson)]
     [WsApi("recall")]

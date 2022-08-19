@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api.Message;
 using WanBot.Api.Mirai.Adapter;
+using WanBot.Api.Mirai.Event;
 using WanBot.Api.Mirai.Message;
 using WanBot.Api.Mirai.Payload;
 
@@ -312,6 +313,27 @@ namespace WanBot.Api.Mirai
                     Img = img
                 });
             _logger.Info("Image sent! Url: {url}, Id: {id}", result?.Url, result?.ImageId);
+            return result!;
+        }
+
+        /// <summary>
+        /// 批准入群
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ResponseBotInvitedJoinGroupRequestEventResponse> ResponseBotInvitedJoinGroupRequestEventAsync(BotInvitedJoinGroupRequestEvent e, bool isDeny, string message = "")
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<ResponseBotInvitedJoinGroupRequestEventResponse, ResponseBotInvitedJoinGroupRequestEventRequest>(
+                new ResponseBotInvitedJoinGroupRequestEventRequest()
+                {
+                    SessionKey = SessionKey,
+                    EventId = e.EventId,
+                    FromId = e.FromId,
+                    GroupId = e.GroupId,
+                    Operate = isDeny ? 1 : 0,
+                    Message = message
+                });
+
             return result!;
         }
     }
