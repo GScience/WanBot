@@ -20,6 +20,16 @@ namespace WanBot.Plugin.Jrrp
         public float Jrrp { get; set; }
 
         /// <summary>
+        /// 能做的事情Id
+        /// </summary>
+        public int CanDo { get; set; }
+
+        /// <summary>
+        /// 不能做的事情Id
+        /// </summary>
+        public int CantDo { get; set; }
+
+        /// <summary>
         /// 上次获取日期
         /// </summary>
         public DateTime LastTime { get; set; }

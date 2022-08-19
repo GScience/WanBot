@@ -19,12 +19,14 @@ namespace WanBot.Plugin.Jrrp
 
         public override Version PluginVersion => Version.Parse("1.0.0");
         private JrrpDatabaseContext _jrrpDb = null!;
+        private JrrpConfig _config = null!;
 
         public override void PreInit()
         {
             _jrrpDb = new JrrpDatabaseContext(Path.Combine(GetConfigPath(), "jrrp.db"));
             _jrrpDb.Database.Migrate();
 
+            _config = GetConfig<JrrpConfig>();
             base.PreInit();
         }
 
@@ -47,7 +49,15 @@ namespace WanBot.Plugin.Jrrp
 
             args.Blocked = true;
             var jrrpUser = await GetJrrpUserAsync(args.Sender.Id);
-            await args.Sender.ReplyAsync($"今日运势：{(int)(jrrpUser.Jrrp * 100)}");
+            if (jrrpUser.CanDo > _config.Activity.Count)
+                jrrpUser.CanDo = 0;
+            if (jrrpUser.CantDo > _config.Activity.Count)
+                jrrpUser.CantDo = _config.Activity.Count - 1;
+
+            await args.Sender.ReplyAsync(
+                $"今日运势：{(int)(jrrpUser.Jrrp * 100)}\n\n" +
+                $"     宜：{_config.Activity[jrrpUser.CanDo]}\n\n" +
+                $" 不宜：{_config.Activity[jrrpUser.CantDo]}");
         }
 
         [Command("我应该")]
@@ -104,7 +114,12 @@ namespace WanBot.Plugin.Jrrp
             if (now.Day != user.LastTime.Day)
             {
                 user.LastTime = now;
-                user.Jrrp = (float)_random.NextDouble();
+                user.Jrrp = _random.NextSingle();
+                user.CanDo = _random.Next(0, _config.Activity.Count);
+                do
+                {
+                    user.CantDo = _random.Next(0, _config.Activity.Count);
+                } while (user.CantDo == user.CanDo);
             }
 
             await _jrrpDb.SaveChangesAsync();

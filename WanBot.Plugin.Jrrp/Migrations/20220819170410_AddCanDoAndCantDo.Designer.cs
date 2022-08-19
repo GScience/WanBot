@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WanBot.Plugin.Jrrp;
 
@@ -10,9 +11,10 @@ using WanBot.Plugin.Jrrp;
 namespace WanBot.Plugin.Jrrp.Migrations
 {
     [DbContext(typeof(JrrpDatabaseContext))]
-    partial class JrrpDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220819170410_AddCanDoAndCantDo")]
+    partial class AddCanDoAndCantDo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.8");
