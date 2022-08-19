@@ -2,6 +2,7 @@
 using WanBot.Api;
 using WanBot.Api.Event;
 using WanBot.Api.Mirai;
+using WanBot.Plugin.Essential.Extension;
 using WanBot.Plugin.Essential.Permission;
 
 namespace WanBot.Plugin.Jrrp
@@ -27,6 +28,17 @@ namespace WanBot.Plugin.Jrrp
             base.PreInit();
         }
 
+        public override void Start()
+        {
+            this.GetBotHelp()
+                .Category("今日运势")
+                .Command("#jrrp", "查看今日运势")
+                .Command("#我应该 AAA还是BBB还是.....", "看看自己应该怎么办")
+                .Info("准不准另说（");
+
+            base.Start();
+        }
+
         [Command("jrrp")]
         public async Task OnJrrp(MiraiBot bot, CommandEventArgs args)
         {
@@ -35,7 +47,42 @@ namespace WanBot.Plugin.Jrrp
 
             args.Blocked = true;
             var jrrpUser = await GetJrrpUserAsync(args.Sender.Id);
-            await args.Sender.ReplyAsync($"今日运势：{jrrpUser.Jrrp}");
+            await args.Sender.ReplyAsync($"今日运势：{(int)(jrrpUser.Jrrp * 100)}");
+        }
+
+        [Command("我应该")]
+        public async Task OnWhatShouldIDo(MiraiBot bot, CommandEventArgs args)
+        {
+            if (!args.Sender.HasCommandPermission(this, "WhatShouldIDo"))
+                return;
+
+            args.Blocked = true;
+
+            try
+            {
+                var rawText = args.GetNextArgs<string>();
+                var selections = rawText.Split("还是");
+
+                // 检查是否应该回复完犊子
+                if (_random.Next(0, 20) == 5)
+                    await args.Sender.ReplyAsync($"完犊子了，你什么都不应该做");
+                else
+                {
+                    if (selections.Length == 0)
+                        await args.Sender.ReplyAsync($"?");
+                    else if (selections.Length == 1)
+                        await args.Sender.ReplyAsync($"你不应该 {selections[0]} 哦");
+                    else
+                    {
+                        var rndIndex = _random.Next(0, selections.Length);
+                        await args.Sender.ReplyAsync($"你应该 {selections[rndIndex]} 哦");
+                    }
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                await args.Sender.ReplyAsync($"你应该好好检查自己的参数哦~");
+            }
         }
 
         public async Task<JrrpUser> GetJrrpUserAsync(long id)

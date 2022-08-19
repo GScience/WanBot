@@ -25,7 +25,7 @@ namespace WanBot.Plugin.Essential.Graphic
 
             // 垂直布局
             var verticalLayout = new VerticalLayout();
-            verticalLayout.VerticalAlignment = VerticalAlignment.Center;
+            verticalLayout.HorizontalAlignment = HorizontalAlignment.Center;
 
             {
                 //文本框

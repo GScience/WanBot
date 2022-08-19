@@ -11,6 +11,7 @@ using WanBot.Graphic;
 using WanBot.Graphic.UI;
 using WanBot.Graphic.UI.Layout;
 using WanBot.Graphic.Util;
+using WanBot.Plugin.Essential.Extension;
 using WanBot.Plugin.Essential.Graphic;
 using WanBot.Plugin.Essential.Permission;
 
@@ -34,9 +35,7 @@ namespace WanBot.Plugin.HotSpot
         {
             base.Start();
 
-            _renderer =
-                Application.PluginManager.GetPlugin<GraphicPlugin>()?.Renderer
-                ?? throw new Exception("Failed to get renderer");
+            _renderer = this.GetUIRenderer();
         }
 
         [Command("今日热点")]

@@ -21,4 +21,8 @@
     <ProjectReference Include="..\WanBot.Graphic\WanBot.Graphic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Economy\" />
+  </ItemGroup>
+
 </Project>

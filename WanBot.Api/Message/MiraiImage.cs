@@ -19,10 +19,13 @@ namespace WanBot.Api.Message
         private SKImage _image;
         private string[] _imageId = new string[3];
 
-        public MiraiImage(MiraiBot bot, SKImage image)
+        private bool _disposeImage;
+
+        public MiraiImage(MiraiBot bot, SKImage image, bool disposeImage = true)
         {
             _bot = bot;
             _image = image;
+            _disposeImage = disposeImage;
         }
 
         /// <summary>
@@ -43,7 +46,8 @@ namespace WanBot.Api.Message
 
         public void Dispose()
         {
-            _image.Dispose();
+            if (_disposeImage)
+                _image?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

@@ -6,7 +6,6 @@ using WanBot.Api.Mirai.Message;
 using WanBot.Api.Util;
 using WanBot.Graphic;
 using WanBot.Plugin.Essential.Extension;
-using WanBot.Plugin.Essential.Graphic;
 using WanBot.Plugin.Essential.Permission;
 
 namespace WanBot.Plugin.YGO
@@ -50,9 +49,15 @@ namespace WanBot.Plugin.YGO
         {
             base.Start();
 
-            _renderer = 
-                Application.PluginManager.GetPlugin<GraphicPlugin>()?.Renderer 
-                ?? throw new Exception("Failed to get renderer");
+            this.GetBotHelp()
+                .Category("游~戏~王")
+                .Command("#查卡 关键词", "查找指定的卡片")
+                .Command("#抽卡 关键词（可选）", "看看你和卡牌的羁绊")
+                .Command("#高级查卡 检索命令", "超高级的卡片查询功能")
+                .Command("#ygo update", "更新并重载卡牌数据库")
+                .Info("胜利是属于我的！");
+
+            _renderer = this.GetUIRenderer();
         }
 
         private async Task<int> DisplayCardAsync(MiraiBot bot, ISender sender, IEnumerable<YgoCard> cards, string search, int? reply = null, string prefix = "查找结果：")

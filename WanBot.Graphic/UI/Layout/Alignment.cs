@@ -11,12 +11,12 @@ namespace WanBot.Graphic.UI.Layout
         Top, Center, Bottom 
     }
 
-    public enum VerticalAlignment
+    public enum HorizontalAlignment
     {
         Left, Center, Right
     }
 
-    public enum HorizontalAlignment
+    public enum VerticalAlignment
     {
         Top, Center, Bottom
     }

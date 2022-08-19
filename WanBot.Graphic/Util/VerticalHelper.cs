@@ -60,7 +60,7 @@ namespace WanBot.Graphic.Util
 
         public VerticalHelper Center()
         {
-            VerticalLayout.VerticalAlignment = VerticalAlignment.Center;
+            VerticalLayout.HorizontalAlignment = HorizontalAlignment.Center;
             return this;
         }
     }

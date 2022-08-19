@@ -62,6 +62,8 @@ namespace WanBot
         private void UnloadPlugins()
         {
             foreach (var plugin in Plugins)
+                plugin.Stop();
+            foreach (var plugin in Plugins)
                 if (plugin is IDisposable disposable)
                     disposable.Dispose();
                 else if (plugin is IAsyncDisposable asyncDisposable)

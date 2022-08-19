@@ -25,7 +25,7 @@ namespace WanBot.Graphic.UI.Layout
         /// <summary>
         /// 水平布局
         /// </summary>
-        public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Center;
+        public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Center;
 
         public override void DrawDebug(SKCanvas canvas)
         {
@@ -65,9 +65,9 @@ namespace WanBot.Graphic.UI.Layout
 
                 if (childHeight != null && childHeight > 0)
                 {
-                    switch (HorizontalAlignment)
+                    switch (VerticalAlignment)
                     {
-                        case HorizontalAlignment.Center:
+                        case VerticalAlignment.Center:
                             {
                                 var layoutHeight = layoutBottom - currentPosY - child.Margin.Top ?? 0;
                                 var layoutOffset = (layoutHeight - childHeight) / 2;
@@ -77,7 +77,7 @@ namespace WanBot.Graphic.UI.Layout
                                 childRect = new SKRect(currentPosX, currentPosY + layoutOffsetTop, currentPosX + ChildWidth, layoutBottom - layoutOffsetBottom);
                                 break;
                             }
-                        case HorizontalAlignment.Bottom:
+                        case VerticalAlignment.Bottom:
                             {
                                 var layoutHeight = layoutBottom - currentPosY - child.Margin.Top ?? 0;
                                 var layoutOffset = layoutHeight - childHeight;

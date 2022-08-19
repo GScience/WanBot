@@ -78,5 +78,12 @@ namespace WanBot.Api
         public virtual void Start()
         {
         }
+
+        /// <summary>
+        /// 结束运行
+        /// </summary>
+        public virtual void Stop()
+        {
+        }
     }
 }
