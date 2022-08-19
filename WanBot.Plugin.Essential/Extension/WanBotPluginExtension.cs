@@ -26,7 +26,7 @@ namespace WanBot.Plugin.Essential.Extension
         public static BotHelp GetBotHelp(this WanBotPlugin plugin)
         {
             return plugin.Application.PluginManager.GetPlugin<ExtensionPlugin>()?.botHelp
-                ?? throw new Exception("Failed to get botHelp");;
+                ?? throw new Exception("Failed to get botHelp");
         }
     }
 }

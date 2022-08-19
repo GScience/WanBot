@@ -98,6 +98,7 @@ namespace WanBot.Plugin.Essential.Extension
         public void Dispose()
         {
             Instance = null!;
+            scheduler?.Dispose();
         }
 
         public override void Stop()

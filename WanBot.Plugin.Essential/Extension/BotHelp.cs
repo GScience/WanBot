@@ -60,9 +60,11 @@ namespace WanBot.Plugin.Essential.Extension
         private SKImage GenHelp(UIRenderer renderer, int height, int columnWidth, int column)
         {
             using var grid = new Grid();
+            grid.Height = height + 30;
             grid.Margin = new Margin(0, 0);
             var bg = new Rectangle();
             bg.Margin = new Margin(0, 0, 0, 0);
+            bg.Height = height + 30;
             bg.Paint.Color = SKColors.White;
 
             grid.Children.Add(bg);
@@ -82,7 +84,7 @@ namespace WanBot.Plugin.Essential.Extension
 
                 while(helpIndex < _help.Count)
                 {
-                    var help = _help[helpIndex++];
+                    var help = _help[helpIndex];
                     var helpUI = help.ToUI(columnWidth);
                     var helpUIRect = helpUI.UpdateLayout(SKRect.Empty);
                     heightRemain -= helpUIRect.Height;
@@ -91,6 +93,7 @@ namespace WanBot.Plugin.Essential.Extension
                         helpUI.Dispose();
                         break;
                     }
+                    ++helpIndex;
 
                     verticalLayout.Children.Add(helpUI);
                     heightRemain -= verticalLayout.Space;
