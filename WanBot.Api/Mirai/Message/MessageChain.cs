@@ -24,6 +24,9 @@ namespace WanBot.Api.Mirai.Message
 
         public MessageChain(IEnumerable<BaseChain> chain)
         {
+            if (chain.FirstOrDefault() is Source source)
+                messageId = source.Id;
+
             Chain = chain;
         }
 

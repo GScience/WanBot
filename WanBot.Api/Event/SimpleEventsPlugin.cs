@@ -243,9 +243,14 @@ namespace WanBot.Api.Event
                 if (!eventArgs.Blocked)
                     Logger.Warn($"Command #{{cmd}} not found, or not blocked by the handle", cmd);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Logger.Warn("Error while deal with command #{cmd}", cmd);
+
+                var errMsg = e.Message;
+                if (errMsg.Length > 20)
+                    errMsg = errMsg[0..17] + "...";
+                await sender.ReplyAsync($"好奇怪，{errMsg}", messageChain.messageId);
                 throw;
             }
         }
