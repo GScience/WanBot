@@ -1,11 +1,17 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /App
 
-# Copy files
+# Copy csproject
+COPY ./*.sln ./
+COPY ./**/*.csproj ./
+RUN for file in $(ls *.csproj); do mkdir -p ./${file%.*}/ && mv $file ./${file%.*}/; done
+# Restore
+RUN dotnet restore
+
+# Copy other files
 COPY . ./
 
 # Build release
-RUN dotnet restore
 RUN dotnet publish -c Release --os linux
 
 # Build runtime image
