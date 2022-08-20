@@ -31,6 +31,8 @@ namespace WanBot.Plugin.HotSpot
 
         public WeiboBlog mblog { get; set; } = null!;
 
+        public List<WeiboCard> card_group = new();
+
     }
 
     public class WeiboBlog
