@@ -31,7 +31,7 @@ namespace WanBot.Api.Event
         public CommandAttribute(params string[] commands)
         {
             Commands = commands;
-            Priority = priority;
+            Priority = 0;
         }
     }
 }
