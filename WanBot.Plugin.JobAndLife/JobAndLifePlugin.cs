@@ -53,7 +53,7 @@ namespace WanBot.Plugin.JobAndLife
             {
                 usr.Money -= 1500;
                 usr.Energy = usr.EnergyMax;
-                await args.Sender.ReplyAsync("你没有那么累还旷工，老板扣了你 1000 元");
+                await args.Sender.ReplyAsync("你没有那么累还旷工，老板扣了你 1500 元");
             }
             else if (usr.Energy < 0)
             {
