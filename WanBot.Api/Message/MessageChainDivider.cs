@@ -28,7 +28,7 @@ namespace WanBot.Api.Message
         /// <returns></returns>
         public int? GetMessageId()
         {
-            return _baseChain.messageId;
+            return _baseChain.MessageId;
         }
 
         public MessageChainDivider(MessageChain chain)

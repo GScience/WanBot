@@ -250,7 +250,7 @@ namespace WanBot.Api.Event
                 var errMsg = e.Message;
                 if (errMsg.Length > 20)
                     errMsg = errMsg[0..17] + "...";
-                await sender.ReplyAsync($"好奇怪，{errMsg}", messageChain.messageId);
+                await sender.ReplyAsync($"好奇怪，{errMsg}", messageChain.MessageId);
                 throw;
             }
         }

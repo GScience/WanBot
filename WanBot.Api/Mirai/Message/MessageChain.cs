@@ -18,15 +18,20 @@ namespace WanBot.Api.Mirai.Message
         /// <summary>
         /// 消息Id
         /// </summary>
-        public int? messageId;
+        public int? MessageId
+        {
+            get
+            {
+                if (Chain.FirstOrDefault() is Source source)
+                    return source.Id;
+                return null;
+            }
+        }
 
         internal IEnumerable<BaseChain> Chain { get; }
 
         public MessageChain(IEnumerable<BaseChain> chain)
         {
-            if (chain.FirstOrDefault() is Source source)
-                messageId = source.Id;
-
             Chain = chain;
         }
 
