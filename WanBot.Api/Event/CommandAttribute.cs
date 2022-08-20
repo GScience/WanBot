@@ -12,13 +12,25 @@ namespace WanBot.Api.Event
     [AttributeUsage(AttributeTargets.Method)]
     public class CommandAttribute : EventAttribute
     {
-        public string Command { get; }
+        public string[] Commands { get; }
 
         public int Priority { get; }
 
         public CommandAttribute(string command, int priority = 0)
         {
-            Command = command;
+            Commands = new[] { command };
+            Priority = priority;
+        }
+
+        public CommandAttribute(IEnumerable<string> commands, int priority = 0)
+        {
+            Commands = commands.ToArray();
+            Priority = priority;
+        }
+
+        public CommandAttribute(params string[] commands)
+        {
+            Commands = commands;
             Priority = priority;
         }
     }

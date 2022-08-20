@@ -43,7 +43,7 @@ namespace WanBot.Api.Mirai.Payload
         /// <summary>
         /// 回复的信息
         /// </summary>
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 
     public class ResponseBotInvitedJoinGroupRequestEventResponse : Response

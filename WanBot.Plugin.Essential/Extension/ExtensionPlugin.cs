@@ -82,7 +82,7 @@ namespace WanBot.Plugin.Essential.Extension
             return Task.CompletedTask;
         }
 
-        [Command("help")]
+        [Command("help", "帮助")]
         public async Task OnHelpCommand(MiraiBot bot, CommandEventArgs args)
         {
             if (!args.Sender.HasCommandPermission(this, "help"))

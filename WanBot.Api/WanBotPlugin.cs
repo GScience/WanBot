@@ -136,11 +136,15 @@ namespace WanBot.Api
                 return;
 
             // 注册事件
-            Application.BotManager.Subscript(
-                CommandEventArgs.GetEventName(commandEvent.Command),
-                commandEvent.Priority,
-                (bot, e) => (Task)method.Invoke(this, new object?[] { bot, e })!
-                );
+
+            foreach (var cmd in commandEvent.Commands)
+            {
+                Application.BotManager.Subscript(
+                    CommandEventArgs.GetEventName(cmd),
+                    commandEvent.Priority,
+                    (bot, e) => (Task)method.Invoke(this, new object?[] { bot, e })!
+                    );
+            }
         }
 
         private void AddMiraiEvent(MethodInfo method, MiraiEventAttribute miraiEvent)
