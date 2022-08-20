@@ -31,8 +31,9 @@ namespace WanBot.Plugin.RandomStuff
                 .Category("随机小功能")
                 .Command("#随机对象", "抓个群里的人当对象（默认禁用）")
                 .Command("#舔我", "找个舔狗舔你")
-                .Command("#来只狗", "找个舔狗舔你")
-                .Command("#来只猫", "找个舔狗舔你")
+                .Command("#来只狗", "看看可爱小狗狗")
+                .Command("#来只猫", "看看可爱小猫猫")
+                .Command("#来只狐狸", "看看可爱小狐狸")
                 .Info("如果不如意可以打爆完犊子");
 
             _renderer = this.GetUIRenderer();
@@ -102,6 +103,20 @@ namespace WanBot.Plugin.RandomStuff
             await args.Sender.ReplyAsync(msgBuilder);
         }
 
+        [Command("来只狐狸")]
+        public async Task OnFoxCommand(MiraiBot bot, CommandEventArgs args)
+        {
+            if (!args.Sender.HasCommandPermission(this, "fox"))
+                return;
+
+            args.Blocked = true;
+            var foxRequest = await _httpClient.GetStringAsync("https://randomfox.ca/floof/");
+            var jDocument = JsonSerializer.Deserialize<Dictionary<string, string>>(foxRequest)!;
+            var msgBuilder = new MessageBuilder();
+            msgBuilder.At(args.Sender).ImageByUrl(jDocument["image"]);
+            await args.Sender.ReplyAsync(msgBuilder);
+        }
+
         [Command("来只猫")]
         public async Task OnCatCommand(MiraiBot bot, CommandEventArgs args)
         {
@@ -109,8 +124,8 @@ namespace WanBot.Plugin.RandomStuff
                 return;
 
             args.Blocked = true;
-            var dogRequest = await _httpClient.GetStringAsync("https://api.thecatapi.com/v1/images/search");
-            var jDocument = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(dogRequest[1..^1])!;
+            var catRequest = await _httpClient.GetStringAsync("https://api.thecatapi.com/v1/images/search");
+            var jDocument = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(catRequest[1..^1])!;
             var msgBuilder = new MessageBuilder();
             msgBuilder.At(args.Sender).ImageByUrl(jDocument["url"].GetString()!);
             await args.Sender.ReplyAsync(msgBuilder);

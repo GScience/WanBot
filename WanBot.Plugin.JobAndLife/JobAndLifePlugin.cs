@@ -26,10 +26,41 @@ namespace WanBot.Plugin.JobAndLife
         {
             this.GetBotHelp()
                 .Category("工作和生活")
-                .Command("#打工", "尝试从资本家手里抢钱");
+                .Command("#打工", "尝试从资本家手里抢钱")
+                .Command("#旷工", "老子今天不上班");
 
             _attrUsr = this.GetEssAttrUserFactory();
             base.Start();
+        }
+        [Command("旷工")]
+        public async Task OnNotWorkCommand(MiraiBot bot, CommandEventArgs args)
+        {
+            if (!args.Sender.HasPermission(this, "User"))
+            {
+                await args.Sender.ReplyAsync("完犊子，你没有 旷工 的权限");
+                return;
+            }
+            args.Blocked = true;
+
+            await using var usr = _attrUsr.FromSender(args.Sender);
+
+            if (usr.Energy >= usr.EnergyMax)
+            {
+                usr.Money -= 2000;
+                await args.Sender.ReplyAsync("你一点都不累还旷工，老板扣了你 2000 元");
+            }
+            else if (usr.Energy > 0)
+            {
+                usr.Money -= 1000;
+                usr.Energy = usr.EnergyMax;
+                await args.Sender.ReplyAsync("你没有那么累还旷工，老板扣了你 1000 元");
+            }
+            else if (usr.Energy < 0)
+            {
+                usr.Money -= 500;
+                usr.Energy += 50;
+                await args.Sender.ReplyAsync("看在你那么累的份上，老板好心只扣了你 500 元");
+            }
         }
 
         [Command("打工")]
@@ -70,13 +101,13 @@ namespace WanBot.Plugin.JobAndLife
                         await args.Sender.ReplyAsync($"你加班干了个私活，赚了 {luckMoney1} 元");
                         break;
                     case 2:
-                        var unluckMoney1 = -_random.Next(50, 250);
-                        usr.Money += unluckMoney1;
+                        var unluckMoney1 = _random.Next(50, 250);
+                        usr.Money -= unluckMoney1;
                         await args.Sender.ReplyAsync($"没赶上末班车，打车花了 {unluckMoney1} 元");
                         break;
                     case 3:
-                        var unluckMoney2 = -_random.Next(5, 50);
-                        usr.Money += unluckMoney2;
+                        var unluckMoney2 = _random.Next(5, 50);
+                        usr.Money -= unluckMoney2;
                         await args.Sender.ReplyAsync($"钱包被人拿走了，丢了 {unluckMoney2} 元");
                         break;
                     case 4:
