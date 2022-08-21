@@ -38,7 +38,7 @@ namespace WanBot.Plugin.Essential.Graphic
 
             try
             {
-                Renderer.EnableGPU();
+                Renderer.EnableGPU((str) => Logger.Info($"Vulkan: {str}"));
             }
             catch (Exception e)
             {

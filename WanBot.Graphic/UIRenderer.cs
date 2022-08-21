@@ -15,11 +15,12 @@ namespace WanBot.Graphic
         /// <summary>
         /// 启用GPU加速
         /// </summary>
-        public void EnableGPU()
+        public void EnableGPU(Action<string> logger)
         {
+            _vkContext = new();
             try
             {
-                _vkContext = new();
+                _vkContext.Init(logger);
                 _grContext = _vkContext.GrContext;
 
                 _vkContext.GrContext?.SetResourceCacheLimit(1024 * 50);

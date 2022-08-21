@@ -18,6 +18,11 @@ RUN dotnet publish -c Release --os linux
 FROM mcr.microsoft.com/dotnet/runtime:6.0
 WORKDIR /App
 
+# Install vulkan
+RUN apt-get update && \
+    apt-get install -y libvulkan1 libc6-dev && \
+    apt-get clean
+
 # Create dir
 VOLUME [ "/data" ]
 RUN mkdir Plugin
