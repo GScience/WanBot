@@ -60,7 +60,7 @@ namespace WanBot.Plugin.RandomStuff
 
             var index = _random.Next(0, groupMemberList.Data.Count);
             var msgBuilder = new MessageBuilder();
-            msgBuilder.At(groupSender).Text(" 你的对象是：").At(groupMemberList.Data[index].Id);
+            msgBuilder.At(groupSender).Text(" 你的对象是：").Text(groupMemberList.Data[index].MemberName);
             await groupSender.ReplyAsync(msgBuilder);
 
             args.Blocked = true;
