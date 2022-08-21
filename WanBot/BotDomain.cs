@@ -25,6 +25,8 @@ namespace WanBot
 
         private BotDomain(string[] args)
         {
+            // 监听未处理异常
+            AppDomain.CurrentDomain.UnhandledException += UnhandledException;
             // 显示日志
             _logger = new Logger($"Launcher");
             _logger.Info("WanBot By GScience Studio Ver {WanBotVersion} (Api: {ApiVersion})",
@@ -80,6 +82,11 @@ namespace WanBot
             using var domain = new BotDomain(args);
             domain.Run();
             domain._appCloseSemaphore.WaitOne();
+        }
+
+        private void UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            _logger.Error("Unhandled exception: {e}", e.ExceptionObject);
         }
     }
 }

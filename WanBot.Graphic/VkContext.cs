@@ -59,7 +59,7 @@ namespace WanBot.Graphic
                     ptr = instance.GetProcedureAddress(name);
 
                 if (ptr == IntPtr.Zero)
-                    throw new Exception("Null ptr");
+                    throw new Exception($"{name} not found");
                 return ptr;
             };
 
