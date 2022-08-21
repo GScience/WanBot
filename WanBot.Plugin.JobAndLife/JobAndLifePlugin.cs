@@ -44,7 +44,11 @@ namespace WanBot.Plugin.JobAndLife
 
             await using var usr = _attrUsr.FromSender(args.Sender);
 
-            if (usr.Energy >= usr.EnergyMax)
+            if (usr.Money < 0)
+            {
+                await args.Sender.ReplyAsync("你没钱了，哪都去不了");
+            }
+            else if (usr.Energy >= usr.EnergyMax)
             {
                 usr.Money -= 2000;
                 await args.Sender.ReplyAsync("你一点都不累还旷工，老板扣了你 2000 元");
