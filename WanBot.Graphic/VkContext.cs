@@ -33,6 +33,12 @@ namespace WanBot.Graphic
                 var property = pd.GetProperties();
                 logger($"GPU {i}: {property.DeviceName}");
 
+                // 只采用VirtualCpu独立显卡和核显
+                if (property.DeviceType != PhysicalDeviceType.IntegratedGpu &&
+                    property.DeviceType != PhysicalDeviceType.DiscreteGpu &&
+                    property.DeviceType != PhysicalDeviceType.IntegratedGpu)
+                    continue;
+
                 // 默认不使用虚拟Gpu
                 if (property.DeviceType == PhysicalDeviceType.VirtualGpu &&
                     physicalDevice != null)
