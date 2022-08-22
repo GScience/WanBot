@@ -13,7 +13,8 @@ RUN dotnet restore
 COPY . ./
 
 # Build release
-RUN dotnet publish -c Release --os linux
+ARG BUILD_NUMBER=0
+RUN dotnet publish -c Release --os linux --version-suffix $BUILD_NUMBER
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/runtime:6.0
