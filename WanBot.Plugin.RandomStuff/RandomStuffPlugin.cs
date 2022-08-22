@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using WanBot.Api;
 using WanBot.Api.Event;
 using WanBot.Api.Message;
@@ -96,11 +97,7 @@ namespace WanBot.Plugin.RandomStuff
                 return;
 
             args.Blocked = true;
-            var dogRequest = await _httpClient.GetStringAsync("https://dog.ceo/api/breeds/image/random");
-            var jDocument = JsonSerializer.Deserialize<Dictionary<string, string>>(dogRequest)!;
-            var msgBuilder = new MessageBuilder();
-            msgBuilder.At(args.Sender).ImageByUrl(jDocument["message"]);
-            await args.Sender.ReplyAsync(msgBuilder);
+            await SendRandomDog(args.Sender, true);
         }
 
         [Command("来只狐狸")]
@@ -110,11 +107,7 @@ namespace WanBot.Plugin.RandomStuff
                 return;
 
             args.Blocked = true;
-            var foxRequest = await _httpClient.GetStringAsync("https://randomfox.ca/floof/");
-            var jDocument = JsonSerializer.Deserialize<Dictionary<string, string>>(foxRequest)!;
-            var msgBuilder = new MessageBuilder();
-            msgBuilder.At(args.Sender).ImageByUrl(jDocument["image"]);
-            await args.Sender.ReplyAsync(msgBuilder);
+            await SendRandomFox(args.Sender, true);
         }
 
         [Command("来只猫")]
@@ -124,11 +117,109 @@ namespace WanBot.Plugin.RandomStuff
                 return;
 
             args.Blocked = true;
-            var catRequest = await _httpClient.GetStringAsync("https://api.thecatapi.com/v1/images/search");
-            var jDocument = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(catRequest[1..^1])!;
+            await SendRandomCat(args.Sender, true);
+        }
+
+        [Regex("狗")]
+        public async Task OnDogKeyword(MiraiBot bot, RegexEventArgs args)
+        {
+            if (_random.Next(0, 30) != 5)
+                return;
+
+            if (!args.Sender.HasCommandPermission(this, "dog"))
+                return;
+
+            args.Blocked = true;
+            await SendRandomDog(args.Sender, false);
+        }
+
+        [Regex("猫")]
+        public async Task OnCatKeyword(MiraiBot bot, RegexEventArgs args)
+        {
+            if (_random.Next(0, 30) != 5)
+                return;
+
+            if (!args.Sender.HasCommandPermission(this, "cat"))
+                return;
+
+            args.Blocked = true;
+            await SendRandomCat(args.Sender, false);
+        }
+
+        [Regex("狐狸")]
+        public async Task OnFoxKeyword(MiraiBot bot, RegexEventArgs args)
+        {
+            if (_random.Next(0, 30) != 5)
+                return;
+
+            if (!args.Sender.HasCommandPermission(this, "fox"))
+                return;
+
+            await SendRandomFox(args.Sender, false);
+        }
+
+        /// <summary>
+        /// 随机猫
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="atSender"></param>
+        /// <returns></returns>
+        public async Task SendRandomCat(ISender sender, bool atSender)
+        {
+            if (_random.Next(0, 10) == 5)
+            {
+                // 网络状态猫
+                var statusCodes = Enum.GetValues<HttpStatusCode>();
+                var netState = (int)statusCodes[_random.Next(0, statusCodes.Length)];
+                var msgBuilder = new MessageBuilder();
+                if (atSender)
+                    msgBuilder.At(sender);
+                msgBuilder.ImageByUrl($"https://http.cat/{netState}");
+                await sender.ReplyAsync(msgBuilder);
+            }
+            else
+            {
+                // 普通猫
+                var catRequest = await _httpClient.GetStringAsync("https://api.thecatapi.com/v1/images/search");
+                var jDocument = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(catRequest[1..^1])!;
+                var msgBuilder = new MessageBuilder();
+                if (atSender)
+                    msgBuilder.At(sender);
+                msgBuilder.ImageByUrl(jDocument["url"].GetString()!);
+                await sender.ReplyAsync(msgBuilder);
+            }
+        }
+
+        /// <summary>
+        /// 随机狐狸
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="atSender"></param>
+        /// <returns></returns>
+        public async Task SendRandomFox(ISender sender, bool atSender)
+        {
+            var foxRequest = await _httpClient.GetStringAsync("https://randomfox.ca/floof/");
+            var jDocument = JsonSerializer.Deserialize<Dictionary<string, string>>(foxRequest)!;
             var msgBuilder = new MessageBuilder();
-            msgBuilder.At(args.Sender).ImageByUrl(jDocument["url"].GetString()!);
-            await args.Sender.ReplyAsync(msgBuilder);
+            if (atSender)
+                msgBuilder.At(sender);
+            msgBuilder.ImageByUrl(jDocument["image"]);
+            await sender.ReplyAsync(msgBuilder);
+        }
+
+        /// <summary>
+        /// 随机狗
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="atSender"></param>
+        /// <returns></returns>
+        public async Task SendRandomDog(ISender sender, bool atSender)
+        {
+            var dogRequest = await _httpClient.GetStringAsync("https://dog.ceo/api/breeds/image/random");
+            var jDocument = JsonSerializer.Deserialize<Dictionary<string, string>>(dogRequest)!;
+            var msgBuilder = new MessageBuilder();
+            msgBuilder.At(sender).ImageByUrl(jDocument["message"]);
+            await sender.ReplyAsync(msgBuilder);
         }
 
         public void Dispose()
