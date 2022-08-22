@@ -32,6 +32,7 @@ namespace WanBot.Plugin.Core
             _mainDispatcher["enable"].Handle = OnEnableCommand;
             _mainDispatcher["gc"].Handle = OnGCCommand;
             _mainDispatcher["stop"].Handle = OnStopCommand;
+            _mainDispatcher["status"].Handle = OnStatusCommand;
             base.PreInit();
         }
 
@@ -74,6 +75,15 @@ namespace WanBot.Plugin.Core
             return true;
         }
 
+        public async Task<bool> OnStatusCommand(MiraiBot bot, CommandEventArgs commandEvent)
+        {
+            commandEvent.Sender.RequireCommandPermission(this, "core.admin.status");
+
+            var msg = $"当前时间：{DateTime.Now}\n已分配内存：{Math.Round(GC.GetTotalMemory(false) / 1024f / 1024)}MB";
+            await commandEvent.Sender.ReplyAsync(msg);
+            return true;
+        }
+        
         public async Task<bool> OnGCCommand(MiraiBot bot, CommandEventArgs commandEvent)
         {
             commandEvent.Sender.RequireCommandPermission(this, "core.admin.gc");
