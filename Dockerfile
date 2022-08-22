@@ -5,6 +5,7 @@ WORKDIR /App
 COPY ./*.sln ./
 COPY ./**/*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p ./${file%.*}/ && mv $file ./${file%.*}/; done
+
 # Restore
 RUN dotnet restore
 
@@ -26,6 +27,9 @@ RUN apt-get update && \
 # Create dir
 VOLUME [ "/data" ]
 RUN mkdir Plugin
+
+# Set timezone
+ENV TZ=Asia/Shanghai
 
 COPY --from=build-env /App/WanBot/bin/Release/net6.0/linux-x64/publish/ .
 COPY --from=build-env /App/Bin/Plugin/Release/net6.0/linux-x64/publish/ ./Plugin/
