@@ -81,6 +81,11 @@ namespace WanBot
         {
             using var domain = new BotDomain(args);
             domain.Run();
+            AssemblyLoadContext.Default.Unloading += (context) =>
+            {
+                domain._logger.Info("Unloading default assembly load context");
+                domain._appCloseSemaphore.Release();
+            };
             domain._appCloseSemaphore.WaitOne();
         }
 
