@@ -64,10 +64,14 @@ namespace WanBot
             foreach (var plugin in Plugins)
                 plugin.Stop();
             foreach (var plugin in Plugins)
+            {
+                plugin.Logger.Info($"Unload plugin {plugin.PluginName}");
+
                 if (plugin is IDisposable disposable)
                     disposable.Dispose();
                 else if (plugin is IAsyncDisposable asyncDisposable)
                     asyncDisposable.DisposeAsync().AsTask().Wait();
+            }
 
             Plugins.Clear();
             AsmList.Clear();

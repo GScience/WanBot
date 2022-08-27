@@ -173,8 +173,10 @@ namespace WanBot.Api.Mirai
 
         public void Dispose()
         {
+            _logger.Info("Disconnecting");
             foreach (var adapter in _adapterDict.Values)
                 adapter.Dispose();
+            _logger.Info("Disconnected");
             GC.SuppressFinalize(this);
         }
 

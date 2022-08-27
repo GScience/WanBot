@@ -84,7 +84,8 @@ namespace WanBot
             AssemblyLoadContext.Default.Unloading += (context) =>
             {
                 domain._logger.Info("Unloading default assembly load context");
-                domain._appCloseSemaphore.Release();
+                if (!Task.Run(domain.Dispose).Wait(5000))
+                    domain._logger.Info("Failed to dispose resources");
             };
             domain._appCloseSemaphore.WaitOne();
         }
