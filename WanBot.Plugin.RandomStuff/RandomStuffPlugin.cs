@@ -27,6 +27,14 @@ namespace WanBot.Plugin.RandomStuff
 
         private UIRenderer _renderer = null!;
 
+        private RandomStuffConfig _config = null!;
+
+        public override void PreInit()
+        {
+            _config = GetConfig<RandomStuffConfig>();
+            base.PreInit();
+        }
+
         public override void Start()
         {
             this.GetBotHelp()
@@ -68,37 +76,33 @@ namespace WanBot.Plugin.RandomStuff
                 hashCode ^= msg.GetHashCode();
             var rand = new Random(seed.GetHashCode() ^ hashCode);
 
-            var randNum = rand.Next(0, 8);
+            var randNum = rand.Next(0, _config.RateBase);
             var replacePersonalPronoun = true;
 
             switch (randNum)
             {
-                // 1/20的概率发问号
+                // 1/20的概率发随机质疑词
                 case 0:
-                    await args.Sender.ReplyAsync("？");
-                    return;
-
-                // 1/20的概率发你说啥
-                case 1:
-                    await args.Sender.ReplyAsync("你说啥");
-                    return;
-
-                // 1/20的概率发嗷呜？
-                case 2:
-                    await args.Sender.ReplyAsync("嗷呜？");
+                    var wordIndex = rand.Next(0, _config.TalkWords.Length);
+                    await args.Sender.ReplyAsync(_config.TalkWords[wordIndex]);
                     return;
 
                 // 1/20的概率颠倒复读
-                case 3:
+                case 1:
                     foreach (var msg in msgChain)
                         if (msg is Plain reversePlain)
                             reversePlain.Text = string.Concat(reversePlain.Text.Reverse());
                     break;
 
                 // 1/20的概率不替换人称代词
-                case 4:
+                case 2:
                     replacePersonalPronoun = false;
                     break;
+
+                // 1/20的概率只戳一戳
+                case 3:
+                    await args.Sender.NudgeAsync();
+                    return;
             }
 
             // 替换人称
@@ -299,7 +303,9 @@ namespace WanBot.Plugin.RandomStuff
             var dogRequest = await _httpClient.GetStringAsync("https://dog.ceo/api/breeds/image/random");
             var jDocument = JsonSerializer.Deserialize<Dictionary<string, string>>(dogRequest)!;
             var msgBuilder = new MessageBuilder();
-            msgBuilder.At(sender).ImageByUrl(jDocument["message"]);
+            if (atSender)
+                msgBuilder.At(sender);
+            msgBuilder.ImageByUrl(jDocument["message"]);
             await sender.ReplyAsync(msgBuilder);
         }
 
