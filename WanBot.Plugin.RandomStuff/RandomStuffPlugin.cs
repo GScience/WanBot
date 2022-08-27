@@ -68,7 +68,7 @@ namespace WanBot.Plugin.RandomStuff
                 hashCode ^= msg.GetHashCode();
             var rand = new Random(seed.GetHashCode() ^ hashCode);
 
-            var randNum = rand.Next(0, 20);
+            var randNum = rand.Next(0, 8);
             var replacePersonalPronoun = true;
 
             switch (randNum)
