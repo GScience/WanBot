@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace WanBot.Api.Mirai.Message
 {
@@ -35,5 +36,15 @@ namespace WanBot.Api.Mirai.Message
         /// 被引用回复的原消息的消息链对象
         /// </summary>
         public MessageChain? Origin { get; set; } = null;
+
+        public override int GetHashCode()
+        {
+            return
+                Id.GetHashCode() ^
+                GroupId.GetHashCode() ^
+                SenderId.GetHashCode() ^
+                TargetId.GetHashCode() ^
+                (Origin?.GetHashCode() ?? 0);
+        }
     }
 }

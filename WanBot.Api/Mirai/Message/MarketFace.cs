@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,5 +21,10 @@ namespace WanBot.Api.Mirai.Message
         /// 表情显示名称
         /// </summary>
         public string? Name { get; set; } = null;
+
+        public override int GetHashCode()
+        {
+            return Id;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -16,5 +17,10 @@ namespace WanBot.Api.Mirai.Message
         /// 点数
         /// </summary>
         public int Value { get; set; }
+
+        public override int GetHashCode()
+        {
+            return Value;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace WanBot.Api.Mirai.Message
@@ -20,5 +21,12 @@ namespace WanBot.Api.Mirai.Message
         /// 时间戳
         /// </summary>
         public int Time { get; set; } = 0;
+
+        public override int GetHashCode()
+        {
+            return
+                Id.GetHashCode() ^
+                Time.GetHashCode();
+        }
     }
 }

@@ -13,5 +13,11 @@ namespace WanBot.Api.Mirai.Message
     {
         [JsonPropertyOrder(int.MinValue)]
         public string Type => GetType().Name;
+
+        /// <summary>
+        /// 获取消息的HashCode
+        /// </summary>
+        /// <returns></returns>
+        public abstract override int GetHashCode();
     }
 }

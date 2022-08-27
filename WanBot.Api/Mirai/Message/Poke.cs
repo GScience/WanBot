@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WanBot.Api.Mirai.Message
 {
@@ -16,5 +17,10 @@ namespace WanBot.Api.Mirai.Message
         /// 戳一戳的类型
         /// </summary>
         public string Name { get; set; } = string.Empty;
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
     }
 }

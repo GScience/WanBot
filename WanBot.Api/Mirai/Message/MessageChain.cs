@@ -49,5 +49,14 @@ namespace WanBot.Api.Mirai.Message
         {
             return Chain.GetEnumerator();
         }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 0;
+            if (Chain != null)
+                foreach (var node in Chain)
+                    hashCode ^= node.GetHashCode();
+            return hashCode;
+        }
     }
 }

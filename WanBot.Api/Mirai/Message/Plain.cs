@@ -15,5 +15,10 @@ namespace WanBot.Api.Mirai.Message
         /// 文字消息
         /// </summary>
         public string Text { get; set; } = string.Empty;
+
+        public override int GetHashCode()
+        {
+            return Text.GetHashCode();
+        }
     }
 }

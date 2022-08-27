@@ -30,5 +30,14 @@ namespace WanBot.Api.Mirai.Message
         /// 图片的 Base64 编码
         /// </summary>
         public string? Base64 { get; set; } = null;
+
+        public override int GetHashCode()
+        {
+            return
+                ImageId?.GetHashCode() ??
+                Url?.GetHashCode() ??
+                Path?.GetHashCode() ??
+                Base64?.GetHashCode() ?? 0;
+        }
     }
 }

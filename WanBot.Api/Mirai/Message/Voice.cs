@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WanBot.Api.Mirai.Message
 {
@@ -35,5 +36,15 @@ namespace WanBot.Api.Mirai.Message
         /// 返回的语音长度, 发送消息时可以不传
         /// </summary>
         public long Length { get; set; }
+
+        public override int GetHashCode()
+        {
+            return
+                VoiceId?.GetHashCode() ??
+                Url?.GetHashCode() ??
+                Path?.GetHashCode() ??
+                Base64?.GetHashCode() ??
+                Length.GetHashCode();
+        }
     }
 }

@@ -4,6 +4,7 @@ using WanBot.Api;
 using WanBot.Api.Event;
 using WanBot.Api.Message;
 using WanBot.Api.Mirai;
+using WanBot.Api.Mirai.Message;
 using WanBot.Graphic;
 using WanBot.Graphic.Util;
 using WanBot.Plugin.Essential.Extension;
@@ -32,6 +33,7 @@ namespace WanBot.Plugin.RandomStuff
                 .Category("随机小功能")
                 .Command("#随机对象", "抓个群里的人当对象（默认禁用）")
                 .Command("#舔我", "找个舔狗舔你")
+                .Command("#说", "完犊子是一只不听话的小鹦鹉")
                 .Command("#来只狗", "看看可爱小狗狗")
                 .Command("#来只猫", "看看可爱小猫猫")
                 .Command("#来只狐狸", "看看可爱小狐狸")
@@ -39,6 +41,79 @@ namespace WanBot.Plugin.RandomStuff
 
             _renderer = this.GetUIRenderer();
             base.Start();
+        }
+
+        [Command("说")]
+        public async Task OnTalkCommand(MiraiBot bot, CommandEventArgs args)
+        {
+            if (!args.Sender.HasCommandPermission(this, "talk"))
+                return;
+
+            args.Blocked = true;
+
+            var seed = args.Sender.Id;
+            var msgChain = args.GetRemain()?.ToList();
+            if (msgChain == null || msgChain.Count == 0)
+            {
+                await args.Sender.ReplyAsync("说啥？");
+                return;
+            }
+
+            // 去掉第一个字符串前边的空格
+            if (msgChain[0] is Plain firstPlain)
+                firstPlain.Text = firstPlain.Text.TrimStart();
+
+            var hashCode = 0;
+            foreach (var msg in msgChain)
+                hashCode ^= msg.GetHashCode();
+            var rand = new Random(seed.GetHashCode() ^ hashCode);
+
+            var randNum = rand.Next(0, 20);
+            var replacePersonalPronoun = true;
+
+            switch (randNum)
+            {
+                // 1/20的概率发问号
+                case 0:
+                    await args.Sender.ReplyAsync("？");
+                    return;
+
+                // 1/20的概率发你说啥
+                case 1:
+                    await args.Sender.ReplyAsync("你说啥");
+                    return;
+
+                // 1/20的概率发嗷呜？
+                case 2:
+                    await args.Sender.ReplyAsync("嗷呜？");
+                    return;
+
+                // 1/20的概率颠倒复读
+                case 3:
+                    foreach (var msg in msgChain)
+                        if (msg is Plain reversePlain)
+                            reversePlain.Text = string.Concat(reversePlain.Text.Reverse());
+                    break;
+
+                // 1/20的概率不替换人称代词
+                case 4:
+                    replacePersonalPronoun = false;
+                    break;
+            }
+
+            // 替换人称
+            if (replacePersonalPronoun)
+                foreach (var msg in msgChain)
+                    if (msg is Plain replacePlain)
+                        replacePlain.Text = string.Concat(
+                            replacePlain.Text.Select(
+                                c => 
+                                    c == '我' ? '你' :
+                                    c == '你' ? '我' : 
+                                    c
+                                ));
+
+            await args.Sender.ReplyAsync(new MessageChain(msgChain));
         }
 
         [Command("随机对象")]
@@ -75,7 +150,13 @@ namespace WanBot.Plugin.RandomStuff
 
             var msg = await _httpClient.GetStringAsync("https://api.ixiaowai.cn/tgrj/index.php");
 
-            msg = msg.Replace('他', '你');
+            msg = string.Concat(
+                msg.Select(
+                    c =>
+                        c == '他' ? '你' :
+                        c == '她' ? '你' : 
+                        c
+                    ));
 
             var verticalHelper = new VerticalHelper();
             verticalHelper

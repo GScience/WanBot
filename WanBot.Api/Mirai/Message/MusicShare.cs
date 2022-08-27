@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static WanBot.Api.Mirai.Message.Forward;
 
 namespace WanBot.Api.Mirai.Message
 {
@@ -45,5 +46,16 @@ namespace WanBot.Api.Mirai.Message
         /// 简介
         /// </summary>
         public string Brief { get; set; } = string.Empty;
+
+        public override int GetHashCode()
+        {
+            return 
+                Kind.GetHashCode() ^ 
+                Title.GetHashCode() ^
+                Summary.GetHashCode() ^ 
+                JumpUrl.GetHashCode() ^ 
+                PictureUrl.GetHashCode() ^ 
+                Brief.GetHashCode();
+        }
     }
 }
