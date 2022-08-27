@@ -73,7 +73,7 @@ namespace WanBot
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-            CurrentApplication.Dispose();
+            CurrentApplication?.Dispose();
             CurrentApplication = null!;
         }
 

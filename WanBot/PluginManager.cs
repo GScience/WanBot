@@ -65,12 +65,19 @@ namespace WanBot
                 plugin.Stop();
             foreach (var plugin in Plugins)
             {
-                plugin.Logger.Info($"Unload plugin {plugin.PluginName}");
+                plugin.Logger.Info("Unload plugin {name}", plugin.PluginName);
 
-                if (plugin is IDisposable disposable)
-                    disposable.Dispose();
-                else if (plugin is IAsyncDisposable asyncDisposable)
-                    asyncDisposable.DisposeAsync().AsTask().Wait();
+                try
+                {
+                    if (plugin is IDisposable disposable)
+                        disposable.Dispose();
+                    else if (plugin is IAsyncDisposable asyncDisposable)
+                        asyncDisposable.DisposeAsync().AsTask().Wait();
+                }
+                catch (Exception e)
+                {
+                    plugin.Logger.Info("Failedd to unload plugin because {e}", e);
+                }
             }
 
             Plugins.Clear();
