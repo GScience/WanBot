@@ -18,13 +18,19 @@ namespace WanBot.Plugin.Jrrp
         public override string PluginDescription => "算命，但是不准，仅供娱乐";
 
         public override Version PluginVersion => Version.Parse("1.0.0");
-        private JrrpDatabaseContext _jrrpDb = null!;
+
+        private JrrpDatabaseContext GetDbContext()
+        {
+            return new JrrpDatabaseContext(Path.Combine(GetConfigPath(), "jrrp.db"));
+        }
+
         private JrrpConfig _config = null!;
 
         public override void PreInit()
         {
-            _jrrpDb = new JrrpDatabaseContext(Path.Combine(GetConfigPath(), "jrrp.db"));
-            _jrrpDb.Database.Migrate();
+            using var jrrpDb = GetDbContext();
+            jrrpDb.Database.Migrate();
+            jrrpDb.SaveChanges();
 
             _config = GetConfig<JrrpConfig>();
             base.PreInit();
@@ -48,7 +54,8 @@ namespace WanBot.Plugin.Jrrp
                 return;
 
             args.Blocked = true;
-            var jrrpUser = await GetJrrpUserAsync(args.Sender.Id);
+            using var jrrpDb = GetDbContext();
+            var jrrpUser = await GetJrrpUserAsync(jrrpDb, args.Sender.Id);
             if (jrrpUser.CanDo > _config.Activity.Count)
                 jrrpUser.CanDo = 0;
             if (jrrpUser.CantDo > _config.Activity.Count)
@@ -95,9 +102,9 @@ namespace WanBot.Plugin.Jrrp
             }
         }
 
-        public async Task<JrrpUser> GetJrrpUserAsync(long id)
+        private async Task<JrrpUser> GetJrrpUserAsync(JrrpDatabaseContext jrrpDb, long id)
         {
-            var user = await _jrrpDb.Users.SingleOrDefaultAsync(jrrpUser => jrrpUser.Id == id);
+            var user = await jrrpDb.Users.SingleOrDefaultAsync(jrrpUser => jrrpUser.Id == id);
 
             if (user == null)
             {
@@ -107,7 +114,7 @@ namespace WanBot.Plugin.Jrrp
                     LastTime = DateTime.MinValue,
                     Jrrp = 0
                 };
-                await _jrrpDb.Users.AddAsync(user);
+                await jrrpDb.Users.AddAsync(user);
             }
 
             var now = DateTime.Now;
@@ -122,13 +129,12 @@ namespace WanBot.Plugin.Jrrp
                 } while (user.CantDo == user.CanDo);
             }
 
-            await _jrrpDb.SaveChangesAsync();
+            await jrrpDb.SaveChangesAsync();
             return user;
         }
 
         public void Dispose()
         {
-            _jrrpDb.Dispose();
             GC.SuppressFinalize(this);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,16 +10,17 @@ namespace WanBot.Plugin.Essential.EssAttribute
 {
     public class EssAttrUserFactory
     {
-        private EssAttributeDatabaseContext _db;
+        private string _dbPath;
 
-        public EssAttrUserFactory(EssAttributeDatabaseContext db)
+        public EssAttrUserFactory(string dbPath)
         {
-            _db = db;
+            _dbPath = dbPath;
         }
 
         public EssAttrUser FromSender(ISender sender)
         {
-            return new EssAttrUser(sender.Id, _db);
+            var db = new EssAttributeDatabaseContext(_dbPath);
+            return new EssAttrUser(sender.Id, db);
         }
     }
 }

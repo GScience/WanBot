@@ -22,16 +22,15 @@ namespace WanBot.Plugin.Essential.EssAttribute
 
         public override Version PluginVersion => Version.Parse("1.0.0");
 
-        internal EssAttributeDatabaseContext? _essAttrDb;
-
         public EssAttrUserFactory? essAttrUsrFactory;
 
         public override void PreInit()
         {
-            _essAttrDb = new EssAttributeDatabaseContext(Path.Combine(GetConfigPath(), "essAttr.db"));
-            _essAttrDb.Database.Migrate();
+            using var essAttrDb = new EssAttributeDatabaseContext(Path.Combine(GetConfigPath(), "essAttr.db"));
+            essAttrDb.Database.Migrate();
+            essAttrDb.SaveChanges();
 
-            essAttrUsrFactory = new(_essAttrDb);
+            essAttrUsrFactory = new("essAttr.db");
             base.PreInit();
         }
 
@@ -54,7 +53,7 @@ namespace WanBot.Plugin.Essential.EssAttribute
 
             commandEvent.Blocked = true;
 
-            await using var essUsr = essAttrUsrFactory!.FromSender(commandEvent.Sender);
+            using var essUsr = essAttrUsrFactory!.FromSender(commandEvent.Sender);
             await commandEvent.Sender.ReplyAsync($"你有 {essUsr.Money} 元");
         }
 
@@ -66,7 +65,7 @@ namespace WanBot.Plugin.Essential.EssAttribute
 
             commandEvent.Blocked = true;
 
-            await using var essUsr = essAttrUsrFactory!.FromSender(commandEvent.Sender);
+            using var essUsr = essAttrUsrFactory!.FromSender(commandEvent.Sender);
             await commandEvent.Sender.ReplyAsync($"你已经休息了 {DateTime.Now - essUsr._user.LastTimeCheckEnergy} 时间，休息满1小时即可恢复体力");
         }
 
@@ -78,13 +77,12 @@ namespace WanBot.Plugin.Essential.EssAttribute
 
             commandEvent.Blocked = true;
 
-            await using var essUsr = essAttrUsrFactory!.FromSender(commandEvent.Sender);
+            using var essUsr = essAttrUsrFactory!.FromSender(commandEvent.Sender);
             await commandEvent.Sender.ReplyAsync($"你有 {(int)((float)essUsr.Energy / essUsr.EnergyMax * 100)}% 的体力");
         }
 
         public void Dispose()
         {
-            _essAttrDb?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

@@ -11,7 +11,7 @@ namespace WanBot.Plugin.Essential.EssAttribute
     /// <summary>
     /// 基础属性用户
     /// </summary>
-    public class EssAttrUser : IAsyncDisposable, IDisposable
+    public class EssAttrUser : IDisposable
     {
         private EssAttributeDatabaseContext _db;
         private long _id;
@@ -131,15 +131,10 @@ namespace WanBot.Plugin.Essential.EssAttribute
             _db = db;
         }
 
-        public async ValueTask DisposeAsync()
-        {
-            await _db.SaveChangesAsync();
-            GC.SuppressFinalize(this);
-        }
-
         public void Dispose()
         {
             _db.SaveChanges();
+            _db.Dispose();
             GC.SuppressFinalize(this);
         }
     }

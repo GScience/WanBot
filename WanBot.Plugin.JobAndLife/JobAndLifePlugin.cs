@@ -100,7 +100,7 @@ namespace WanBot.Plugin.JobAndLife
 
         public async Task<bool> DoWork(ISender sender, bool overwork)
         {
-            await using var usr = _attrUsr.FromSender(sender);
+            using var usr = _attrUsr.FromSender(sender);
 
             // 能量小于0禁止打工
             if (usr.Energy < 0)
