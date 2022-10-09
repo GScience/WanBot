@@ -23,7 +23,8 @@ namespace WanBot.Plugin.WanCoin
         internal static DateTime StartTime = new DateTime(2022, 10, 1);
 
         internal const long ServerQQId = 1000;
-        internal const long CoinHashMask = 0x6969;
+        internal const ulong CoinHashMask = 0xFF;
+        internal const ulong CoinHashEnd  = 0x69;
 
         public override string PluginName => "WanCoin";
 
@@ -386,7 +387,7 @@ namespace WanBot.Plugin.WanCoin
             var hash = HashFunc(msg, e.Sender.Group.Id);
 
             // 是否满足虚犊币
-            if ((hash & CoinHashMask) != CoinHashMask)
+            if (((ulong)hash & CoinHashMask) != CoinHashEnd)
                 return;
 
             using var wanCoinDb = GetWanCoinDatabase();
