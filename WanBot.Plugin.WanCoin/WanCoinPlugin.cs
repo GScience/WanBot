@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -248,7 +249,7 @@ namespace WanBot.Plugin.WanCoin
             {
                 // 记录是否购买成功
                 var bought = false;
-                long totalBuyPrise = 0;
+                BigInteger totalBuyPrise = 0;
 
                 lock (this)
                 {
@@ -318,7 +319,7 @@ namespace WanBot.Plugin.WanCoin
                 await args.Sender.ReplyAsync($"完犊子了，你的币只有{user.CoinCount}了");
             else
             {
-                long totalSellPrise = 0;
+                BigInteger totalSellPrise = 0;
 
                 lock (this)
                 {
