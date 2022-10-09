@@ -160,7 +160,7 @@ namespace WanBot.Plugin.WanCoin
             var k = h / 16.0 + Math.Sin(h / 16.0) * 16 + Math.Sin(h / 512.0) * 128;
 
             // 计算币价
-            var prise = y + k;
+            var prise = y * k;
 
             // 防止币价过小或过大
             if (prise < 10)
