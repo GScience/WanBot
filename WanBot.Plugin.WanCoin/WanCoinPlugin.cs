@@ -151,7 +151,7 @@ namespace WanBot.Plugin.WanCoin
         /// 计算当前币价
         /// </summary>
         /// <param name="x">服务器拥有的币数</param>
-        private static long GetCurrentPrise(long x)
+        private static long GetCurrentPrice(long x)
         {
             // 根据银行的币数进行波动
             var y = 512.0 / (x * x / 1024.0 + 1) + 150 + 64 * (Math.Sin(x / 128.0) + Math.Sin(x / 1024.0));
@@ -161,15 +161,15 @@ namespace WanBot.Plugin.WanCoin
             var k = h / 16.0 + Math.Sin(h / 16.0) * 16 + Math.Sin(h / 512.0) * 128;
 
             // 计算币价
-            var prise = y * k;
+            var Price = y * k;
 
             // 防止币价过小或过大
-            if (prise < 10)
-                prise = 10;
-            else if (prise > 100000)
-                prise = 100000;
+            if (Price < 10)
+                Price = 10;
+            else if (Price > 100000)
+                Price = 100000;
 
-            return (long)Math.Round(prise);
+            return (long)Math.Round(Price);
         }
 
         private WanCoinUser GetWanCoinUser(WanCoinDatabase wanCoinDb, long id)
@@ -203,14 +203,14 @@ namespace WanBot.Plugin.WanCoin
             {
                 var user = GetWanCoinUser(wanCoinDb, args.Sender.Id);
                 var serverUser = GetWanCoinUser(wanCoinDb, ServerQQId);
-                var sellPrise = GetCurrentPrise(serverUser.CoinCount);
-                long? buyPrise = serverUser.CoinCount == 0 ? 
+                var sellPrice = GetCurrentPrice(serverUser.CoinCount);
+                long? buyPrice = serverUser.CoinCount == 0 ? 
                     null : 
-                    GetCurrentPrise(serverUser.CoinCount - 1);
+                    GetCurrentPrice(serverUser.CoinCount - 1);
 
                 await args.Sender.ReplyAsync(
                     $"您有 {user.CoinCount} 枚虚犊新币\n" +
-                    $"当前币价：卖({sellPrise}) 买({buyPrise?.ToString() ?? "没币了"})");
+                    $"当前币价：卖({sellPrice}) 买({buyPrice?.ToString() ?? "没币了"})");
             }
         }
 
@@ -249,26 +249,26 @@ namespace WanBot.Plugin.WanCoin
             {
                 // 记录是否购买成功
                 var bought = false;
-                BigInteger totalBuyPrise = 0;
+                BigInteger totalBuyPrice = 0;
 
                 lock (this)
                 {
                     // 计算需要花多少钱
                     for (var i = 0; i < buyCount; ++i)
                     {
-                        var buyPrise = GetCurrentPrise(serverUser.CoinCount - 1 - i);
-                        totalBuyPrise += buyPrise;
+                        var buyPrice = GetCurrentPrice(serverUser.CoinCount - 1 - i);
+                        totalBuyPrice += buyPrice;
                     }
 
                     // 钱够吗
                     using var attrUsr = _attrUsr.FromSender(args.Sender);
 
-                    if (attrUsr.Money < totalBuyPrise)
+                    if (attrUsr.Money < totalBuyPrice)
                         bought = false;
                     else
                     {
                         var user = GetWanCoinUser(wanCoinDb, args.Sender.Id);
-                        attrUsr.Money -= totalBuyPrise;
+                        attrUsr.Money -= totalBuyPrice;
                         serverUser.CoinCount -= buyCount;
                         user.CoinCount += buyCount;
                         wanCoinDb.SaveChanges();
@@ -277,9 +277,9 @@ namespace WanBot.Plugin.WanCoin
                 }
 
                 if (bought)
-                    await args.Sender.ReplyAsync($"你买了{buyCount}枚虚犊币，总共花了{totalBuyPrise}钱");
+                    await args.Sender.ReplyAsync($"你买了{buyCount}枚虚犊币，总共花了{totalBuyPrice}钱");
                 else
-                    await args.Sender.ReplyAsync($"钱不够了！需要{totalBuyPrise}钱才能买{buyCount}枚币！");
+                    await args.Sender.ReplyAsync($"钱不够了！需要{totalBuyPrice}钱才能买{buyCount}枚币！");
             }
 
             return true;
@@ -319,24 +319,24 @@ namespace WanBot.Plugin.WanCoin
                 await args.Sender.ReplyAsync($"完犊子了，你的币只有{user.CoinCount}了");
             else
             {
-                BigInteger totalSellPrise = 0;
+                BigInteger totalSellPrice = 0;
 
                 lock (this)
                 {
                     // 计算卖了多少钱
                     for (var i = 0; i < sellCount; ++i)
                     {
-                        var sellPrise = GetCurrentPrise(serverUser.CoinCount + i);
-                        totalSellPrise += sellPrise;
+                        var sellPrice = GetCurrentPrice(serverUser.CoinCount + i);
+                        totalSellPrice += sellPrice;
                     }
 
                     using (var attrUsr = _attrUsr.FromSender(args.Sender))
-                        attrUsr.Money += totalSellPrise;
+                        attrUsr.Money += totalSellPrice;
                     user.CoinCount -= sellCount;
                     serverUser.CoinCount += sellCount;
                     wanCoinDb.SaveChanges();
                 }
-                await args.Sender.ReplyAsync($"你卖了{sellCount}枚虚犊币，赚了{totalSellPrise}钱！");
+                await args.Sender.ReplyAsync($"你卖了{sellCount}枚虚犊币，赚了{totalSellPrice}钱！");
             }
 
             return true;
