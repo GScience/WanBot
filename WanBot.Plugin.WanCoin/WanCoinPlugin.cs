@@ -136,9 +136,11 @@ namespace WanBot.Plugin.WanCoin
         public override void Start()
         {
             this.GetBotHelp()
+                .Category("虚犊币")
                 .Command("#coin", "查看虚犊币信息")
                 .Command("#coin 卖 数量", "卖出虚犊新币")
-                .Command("#coin 买 数量", "买入虚犊新币");
+                .Command("#coin 买 数量", "买入虚犊新币")
+                .Info("虚犊币是什么币呢？");
 
             _attrUsr = this.GetEssAttrUserFactory();
             base.Start();
