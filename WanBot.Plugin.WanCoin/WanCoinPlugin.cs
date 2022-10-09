@@ -23,7 +23,7 @@ namespace WanBot.Plugin.WanCoin
         internal static DateTime StartTime = new DateTime(2022, 10, 1);
 
         internal const long ServerQQId = 1000;
-        internal const long CoinHashMask = 0x99;
+        internal const long CoinHashMask = 0x6969;
 
         public override string PluginName => "WanCoin";
 
@@ -410,6 +410,8 @@ namespace WanBot.Plugin.WanCoin
                 ++user.CoinCount;
                 wanCoinDb.SaveChanges();
             }
+
+            Logger.Info($"New WanCoin found in group {e.Sender.Group.Id} with hash {hash}\n({msg})");
 
             if (source != null)
                 await bot.SendGroupMessageAsync(e.Sender.Group.Id, source.Id, "好，给你一枚虚犊币吧~");
