@@ -59,6 +59,9 @@ namespace WanBot.Plugin.Essential.Extension
 
         private SKImage GenHelp(UIRenderer renderer, int height, int columnWidth, int column)
         {
+            // 加入关于
+            Info("源码: https://github.com/GScience/WanBot");
+
             using var grid = new Grid();
             grid.Height = height + 30;
             grid.Margin = new Margin(0, 0);
