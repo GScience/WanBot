@@ -26,11 +26,12 @@ namespace WanBot.Plugin.Essential.EssAttribute
 
         public override void PreInit()
         {
-            using var essAttrDb = new EssAttributeDatabaseContext(Path.Combine(GetConfigPath(), "essAttr.db"));
+            var dbPath = Path.Combine(GetConfigPath(), "essAttr.db");
+            using var essAttrDb = new EssAttributeDatabaseContext(dbPath);
             essAttrDb.Database.Migrate();
             essAttrDb.SaveChanges();
 
-            essAttrUsrFactory = new("essAttr.db");
+            essAttrUsrFactory = new(dbPath);
             base.PreInit();
         }
 
