@@ -133,8 +133,9 @@ namespace WanBot.Plugin.JobAndLife
             var salary = GetSalary();
             if (usr.Energy < 0)
             {
-                usr.Money -= (BigInteger)(salary * 0.8);
-                await sender.ReplyAsync("完犊子了，累到脑淤血还不算工伤，亏了 1000 元");
+                var costMoney = (BigInteger)(salary * 0.8);
+                usr.Money -= costMoney;
+                await sender.ReplyAsync($"完犊子了，累到脑溢血还不算工伤，亏了 {costMoney} 元");
             }
             else if (usr.Energy < 30)
             {
