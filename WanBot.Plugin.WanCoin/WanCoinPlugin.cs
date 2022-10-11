@@ -20,7 +20,7 @@ namespace WanBot.Plugin.WanCoin
 {
     public class WanCoinPlugin : WanBotPlugin
     {
-        internal static DateTime StartTime = new DateTime(2022, 10, 1);
+        internal static DateTime StartTime = new DateTime(2021, 10, 1);
 
         internal const long ServerQQId = 1000;
         internal const ulong CoinHashMask = 0xFF;
@@ -156,26 +156,41 @@ namespace WanBot.Plugin.WanCoin
         /// <summary>
         /// 计算当前币价
         /// </summary>
-        /// <param name="x">服务器拥有的币数</param>
-        private static long GetCurrentPrice(long x)
+        /// <param name="x"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        private static long GetCurrentPrice(long x, double d)
         {
+            // 根据时间的缩放系数
+            var k = d / 16.0 + Math.Sin(d / 16.0) * 16 + Math.Sin(d / 512.0) * 128;
+
+            // 根据时间进行偏移后的币数
+            var x2 = x / d * 512;
+
             // 根据银行的币数进行波动
-            var y = 512.0 / (x * x / 1024.0 + 1) + 150 + 64 * (Math.Sin(x / 128.0) + Math.Sin(x / 1024.0));
+            var y = 512.0 / (x2 * x2 / 1024.0 + 1) + 200;
 
-            // 根据小时数进行波动，按照整小时计算
-            var h = Math.Floor((DateTime.Now - StartTime).TotalHours);
-            var k = h / 16.0 + Math.Sin(h / 16.0) * 16 + Math.Sin(h / 512.0) * 128;
-
-            // 计算币价
-            var Price = y * k;
+            // 计算最终币价，加入随机波动
+            var price = y * k + 32 * Math.Sin(x / 128.0) + 64 * Math.Sin(x / 1024.0);
 
             // 防止币价过小或过大
-            if (Price < 10)
-                Price = 10;
-            else if (Price > 100000)
-                Price = 100000;
+            if (price < 10)
+                price = 10;
+            else if (price > 1000000)
+                price = 1000000;
 
-            return (long)Math.Round(Price);
+            return (long)Math.Round(price);
+        }
+
+        /// <summary>
+        /// 计算当前币价
+        /// </summary>
+        /// <param name="x">服务器拥有的币数</param>
+        private static long GetCurrentPrice(long x)
+        {            
+            // 根据天数进行波动，按照整小时进行离散运算
+            var d = Math.Floor((DateTime.Now - StartTime).TotalHours) / 24;
+            return GetCurrentPrice(x, d);
         }
 
         private WanCoinUser GetWanCoinUser(WanCoinDatabase wanCoinDb, long id)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using WanBot.Api;
 using WanBot.Api.Event;
 using WanBot.Api.Mirai;
@@ -10,6 +11,9 @@ namespace WanBot.Plugin.JobAndLife
 {
     public class JobAndLifePlugin : WanBotPlugin
     {
+        internal static DateTime StartTime = new DateTime(2021, 10, 1);
+        internal static double BaseSalary = 200;
+
         private Random _random = new();
 
         public override string PluginName => "JobAndLife";
@@ -98,6 +102,20 @@ namespace WanBot.Plugin.JobAndLife
                 await args.Sender.ReplyAsync("你感觉很虚弱，还想干活请加班");
         }
 
+        /// <summary>
+        /// 计算工资
+        /// </summary>
+        /// <returns></returns>
+        private double GetSalary()
+        {
+            // 根据天数进行波动，按照整小时进行离散运算
+            var d = Math.Floor((DateTime.Now - StartTime).TotalHours) / 24;
+            // 根据时间的缩放系数
+            var k = d / 16.0 + Math.Sin(d / 16.0) * 16 + Math.Sin(d / 512.0) * 128;
+
+            return BaseSalary * k;
+        }
+
         public async Task<bool> DoWork(ISender sender, bool overwork)
         {
             using var usr = _attrUsr.FromSender(sender);
@@ -112,9 +130,10 @@ namespace WanBot.Plugin.JobAndLife
 
             usr.Energy -= 50;
 
+            var salary = GetSalary();
             if (usr.Energy < 0)
             {
-                usr.Money -= 1000;
+                usr.Money -= (BigInteger)(salary * 0.8);
                 await sender.ReplyAsync("完犊子了，累到脑淤血还不算工伤，亏了 1000 元");
             }
             else if (usr.Energy < 30)
@@ -125,22 +144,22 @@ namespace WanBot.Plugin.JobAndLife
                         await sender.ReplyAsync("老板没看到你加班，不给钱");
                         break;
                     case 1:
-                        var luckMoney1 = _random.Next(100, 5000);
+                        var luckMoney1 = (BigInteger)(salary * _random.Next(1, 500) / 10.0);
                         usr.Money += luckMoney1;
                         await sender.ReplyAsync($"你加班干了个私活，赚了 {luckMoney1} 元");
                         break;
                     case 2:
-                        var unluckMoney1 = _random.Next(50, 250);
+                        var unluckMoney1 = (BigInteger)(salary * _random.Next(1, 90) / 100.0);
                         usr.Money -= unluckMoney1;
                         await sender.ReplyAsync($"没赶上末班车，打车花了 {unluckMoney1} 元");
                         break;
                     case 3:
-                        var unluckMoney2 = _random.Next(5, 50);
+                        var unluckMoney2 = (BigInteger)(salary * _random.Next(1, 10) / 100.0);
                         usr.Money -= unluckMoney2;
                         await sender.ReplyAsync($"钱包被人拿走了，丢了 {unluckMoney2} 元");
                         break;
                     case 4:
-                        var luckMoney2 = _random.Next(5, 50);
+                        var luckMoney2 = (BigInteger)(salary * _random.Next(1, 10) / 100.0);
                         usr.Money += luckMoney2;
                         await sender.ReplyAsync($"捡走了某人的钱包，赚了 {luckMoney2} 元");
                         break;
@@ -148,8 +167,8 @@ namespace WanBot.Plugin.JobAndLife
             }
             else
             {
-                usr.Money += 1000;
-                await sender.ReplyAsync("今天也是辛苦的一天，赚了 1000 元");
+                usr.Money += (BigInteger)salary;
+                await sender.ReplyAsync($"今天也是辛苦的一天，赚了 {(BigInteger)salary} 元");
             }
 
             return true;
