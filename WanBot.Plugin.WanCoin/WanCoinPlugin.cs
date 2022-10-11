@@ -47,6 +47,11 @@ namespace WanBot.Plugin.WanCoin
         /// </summary>
         private CommandDispatcher _mainHandler = new();
 
+        /// <summary>
+        /// 总币数
+        /// </summary>
+        private int _totalCoinCount = 0;
+
         public WanCoinPlugin()
         {
             HashFunc = DefaultHashFunc;
@@ -133,6 +138,9 @@ namespace WanBot.Plugin.WanCoin
             using var wanCoinDb = GetWanCoinDatabase();
             wanCoinDb.Database.Migrate();
             wanCoinDb.SaveChanges();
+            _totalCoinCount = wanCoinDb.CoinHash.Count();
+
+            Logger.Info($"Total {_totalCoinCount} WanCoins");
 
             _mainHandler["买"].Handle = OnBuyCommand;
             _mainHandler["卖"].Handle = OnSellCommand;
@@ -159,34 +167,29 @@ namespace WanBot.Plugin.WanCoin
         /// <param name="x"></param>
         /// <param name="t"></param>
         /// <returns></returns>
-        private static long GetCurrentPrice(long x, double d)
+        private long GetCurrentPrice(long x, double d)
         {
-            // 根据时间的缩放系数
-            var k = d / 16.0 + Math.Sin(d / 16.0) * 16 + Math.Sin(d / 512.0) * 128;
+            // 虚犊币基础价格
+            var c1 = 300;
+            // 服务器所拥有的虚犊币占比
+            var k1 = (double)x / _totalCoinCount;
+            // 通货膨胀率（日）
+            var k2 = 0.01;
+            // 虚犊币膨胀后的价格
+            var r1 = c1 + c1 * d * k2;
 
-            // 根据时间进行偏移后的币数
-            var x2 = x / d * 512;
+            // 完犊子希望持有20%的币，币少了就印钞收币，币多了就降价不收
+            var k3 = 0.2 / k1;
+            var r2 = r1 * k3;
 
-            // 根据银行的币数进行波动
-            var y = 512.0 / (x2 * x2 / 1024.0 + 1) + 200;
-
-            // 计算最终币价，加入随机波动
-            var price = y * k + 32 * Math.Sin(x / 128.0) + 64 * Math.Sin(x / 1024.0);
-
-            // 防止币价过小或过大
-            if (price < 10)
-                price = 10;
-            else if (price > 1000000)
-                price = 1000000;
-
-            return (long)Math.Round(price);
+            return (long)r2;
         }
 
         /// <summary>
         /// 计算当前币价
         /// </summary>
         /// <param name="x">服务器拥有的币数</param>
-        private static long GetCurrentPrice(long x)
+        private long GetCurrentPrice(long x)
         {            
             // 根据天数进行波动，按照整小时进行离散运算
             var d = Math.Floor((DateTime.Now - StartTime).TotalHours) / 24;
@@ -425,6 +428,7 @@ namespace WanBot.Plugin.WanCoin
                 var user = GetWanCoinUser(wanCoinDb, e.Sender.Id);
                 ++user.CoinCount;
                 wanCoinDb.SaveChanges();
+                ++_totalCoinCount;
             }
 
             Logger.Info($"New WanCoin found in group {e.Sender.Group.Id} with hash {hash}\n({msg})");

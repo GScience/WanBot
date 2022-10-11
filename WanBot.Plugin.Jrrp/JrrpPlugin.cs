@@ -19,6 +19,9 @@ namespace WanBot.Plugin.Jrrp
 
         public override Version PluginVersion => Version.Parse("1.0.0");
 
+        // Tip注入列表，每次发送jrrp时会随机选取
+        public List<Func<long, float, string>> Tips = new();
+
         private JrrpDatabaseContext GetDbContext()
         {
             return new JrrpDatabaseContext(Path.Combine(GetConfigPath(), "jrrp.db"));
@@ -61,10 +64,22 @@ namespace WanBot.Plugin.Jrrp
             if (jrrpUser.CantDo > _config.Activity.Count)
                 jrrpUser.CantDo = _config.Activity.Count - 1;
 
-            await args.Sender.ReplyAsync(
+            // 生成消息
+            var msg =
                 $"今日运势：{(int)(jrrpUser.Jrrp * 100)}\n\n" +
                 $"     宜：{_config.Activity[jrrpUser.CanDo]}\n\n" +
-                $" 不宜：{_config.Activity[jrrpUser.CantDo]}");
+                $" 不宜：{_config.Activity[jrrpUser.CantDo]}";
+
+            // 随机选取个tip
+            if (Tips.Count != 0)
+            {
+                var tip = Tips[_random.Next(0, Tips.Count)];
+                msg += 
+                    $"\n\n" +
+                    $"——{tip(args.Sender.Id, jrrpUser.Jrrp)}";
+            }
+
+            await args.Sender.ReplyAsync(msg, args.GetMessageId());
         }
 
         [Command("我应该")]
@@ -131,6 +146,17 @@ namespace WanBot.Plugin.Jrrp
 
             await jrrpDb.SaveChangesAsync();
             return user;
+        }
+
+        /// <summary>
+        /// 获取Jrrp
+        /// </summary>
+        /// <returns></returns>
+        public async Task<float> GetJrrpAsync(long id)
+        {
+            using var jrrpDb = GetDbContext();
+            var jrrpUser = await GetJrrpUserAsync(jrrpDb, id);
+            return jrrpUser.Jrrp;
         }
 
         public void Dispose()

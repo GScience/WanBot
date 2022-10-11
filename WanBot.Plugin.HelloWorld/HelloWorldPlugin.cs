@@ -21,6 +21,10 @@ namespace WanBot.Plugin.HelloWorld
         public override string PluginDescription => "你好，完犊子，这是第一个完犊子Bot的插件";
 
         public override Version PluginVersion => Version.Parse("1.0.0");
+
+        private JrrpAddition? _jrrpAddition;
+        private Random _random = new();
+
         public override void Start()
         {
             this.GetBotHelp()
@@ -29,6 +33,15 @@ namespace WanBot.Plugin.HelloWorld
                 .Command("或者也可以直接问", "完犊子呢")
                 .Command("戳一戳完犊子", "戳一戳你")
                 .Info("你好，世界，完犊子活了！");
+
+            try
+            {
+                _jrrpAddition = new JrrpAddition(this);
+            }
+            catch (Exception e)
+            {
+                Logger.Warn("Failed to load JrrpAddition {e}", e);
+            }
 
             base.Start();
         }
@@ -57,7 +70,20 @@ namespace WanBot.Plugin.HelloWorld
             if (!nudgeEvent.Sender.HasPermission(this, "nudge"))
                 return;
 
-            await nudgeEvent.Sender.NudgeAsync();
+            if (_jrrpAddition != null)
+            {
+                if (await _jrrpAddition.CanBeatWanBotAsync(nudgeEvent.Sender.Id))
+                    await nudgeEvent.Sender.NudgeAsync();
+                else
+                {
+                    if (_random.NextDouble() > 0.3)
+                        await nudgeEvent.Sender.ReplyAsync("戳不到");
+                    else
+                        await nudgeEvent.Sender.NudgeAsync();
+                }
+            }
+            else
+                await nudgeEvent.Sender.NudgeAsync();
         }
 
         [Regex("完犊子呢")]

@@ -6,6 +6,7 @@ using WanBot.Api.Mirai;
 using WanBot.Plugin.Essential.EssAttribute;
 using WanBot.Plugin.Essential.Extension;
 using WanBot.Plugin.Essential.Permission;
+using WanBot.Plugin.Jrrp;
 
 namespace WanBot.Plugin.JobAndLife
 {
@@ -25,6 +26,7 @@ namespace WanBot.Plugin.JobAndLife
         public override Version PluginVersion => Version.Parse("1.0.0");
 
         private EssAttrUserFactory _attrUsr = null!;
+        private JrrpAddition? _jrrpAddition;
 
         public override void Start()
         {
@@ -33,6 +35,15 @@ namespace WanBot.Plugin.JobAndLife
                 .Command("#打工", "尝试从资本家手里抢钱")
                 .Command("#加班", "尝试继续从资本家手里抢钱")
                 .Command("#旷工", "老子今天不上班");
+
+            try
+            {
+                _jrrpAddition = new JrrpAddition(this);
+            }
+            catch (Exception e)
+            {
+                Logger.Warn("Failed to load JrrpAddition {e}", e);
+            }
 
             _attrUsr = this.GetEssAttrUserFactory();
             base.Start();
@@ -110,10 +121,12 @@ namespace WanBot.Plugin.JobAndLife
         {
             // 根据天数进行波动，按照整小时进行离散运算
             var d = Math.Floor((DateTime.Now - StartTime).TotalHours) / 24;
-            // 根据时间的缩放系数
-            var k = d / 16.0 + Math.Sin(d / 16.0) * 16 + Math.Sin(d / 512.0) * 128;
+            // 通货膨胀率（日）
+            var k2 = 0.01;
+            // 虚犊币膨胀后的价格
+            var r1 = BaseSalary + BaseSalary * d * k2;
 
-            return BaseSalary * k;
+            return r1;
         }
 
         public async Task<bool> DoWork(ISender sender, bool overwork)
@@ -130,7 +143,8 @@ namespace WanBot.Plugin.JobAndLife
 
             usr.Energy -= 50;
 
-            var salary = GetSalary();
+            var salary = GetSalary() * 
+                (_jrrpAddition == null ? 1 : await _jrrpAddition.GetJrrpSalaryScale(sender.Id));
             if (usr.Energy < 0)
             {
                 var costMoney = (BigInteger)(salary * 0.8);
