@@ -169,6 +169,10 @@ namespace WanBot.Plugin.WanCoin
         /// <returns></returns>
         private long GetCurrentPrice(long x, double d)
         {
+            // x不允许非正
+            if (x<=0)
+                x=1;
+
             // 虚犊币基础价格
             var c1 = 300;
             // 服务器所拥有的虚犊币占比
