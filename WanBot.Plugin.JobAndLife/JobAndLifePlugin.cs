@@ -143,8 +143,8 @@ namespace WanBot.Plugin.JobAndLife
 
             usr.Energy -= 50;
 
-            var salary = GetSalary() * 
-                (_jrrpAddition == null ? 1 : await _jrrpAddition.GetJrrpSalaryScale(sender.Id));
+            var jrrpScale = _jrrpAddition == null ? 1 : await _jrrpAddition.GetJrrpSalaryScale(sender.Id);
+            var salary = GetSalary() * jrrpScale;
             if (usr.Energy < 0)
             {
                 var costMoney = (BigInteger)(salary * 0.8);
@@ -153,7 +153,11 @@ namespace WanBot.Plugin.JobAndLife
             }
             else if (usr.Energy < 30)
             {
-                switch (_random.Next(0, 5))
+                var rand = (jrrpScale > 1) ? 
+                    _random.Next(0, 2) : 
+                    _random.Next(0, 5);
+
+                switch (rand)
                 {
                     case 0:
                         await sender.ReplyAsync("老板没看到你加班，不给钱");
