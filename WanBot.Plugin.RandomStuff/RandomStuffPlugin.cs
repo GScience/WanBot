@@ -138,11 +138,19 @@ namespace WanBot.Plugin.RandomStuff
                 return;
             }
 
-            var index = _random.Next(0, groupMemberList.Data.Count);
-            var msgBuilder = new MessageBuilder();
-            msgBuilder.At(groupSender).Text(" 你的对象是：").Text(groupMemberList.Data[index].MemberName);
-            await groupSender.ReplyAsync(msgBuilder);
-
+            if (_random.Next(0, 5) == 1)
+            {
+                var msgBuilder = new MessageBuilder();
+                msgBuilder.At(groupSender).Text(" 你没有对象");
+                await groupSender.ReplyAsync(msgBuilder);
+            }
+            else
+            {
+                var index = _random.Next(0, groupMemberList.Data.Count);
+                var msgBuilder = new MessageBuilder();
+                msgBuilder.At(groupSender).Text(" 你的对象是：").Text(groupMemberList.Data[index].MemberName);
+                await groupSender.ReplyAsync(msgBuilder);
+            }
             args.Blocked = true;
         }
 
