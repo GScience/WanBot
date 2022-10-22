@@ -78,8 +78,11 @@ namespace WanBot.Plugin.Core
         public async Task<bool> OnStatusCommand(MiraiBot bot, CommandEventArgs commandEvent)
         {
             commandEvent.Sender.RequireCommandPermission(this, "core.admin.status");
-
-            var msg = $"当前时间：{DateTime.Now}\n已分配内存：{Math.Round(GC.GetTotalMemory(false) / 1024f / 1024)}MB";
+            var groupList = (await bot.GroupListAsync()).Data;
+            var msg = 
+                $"当前时间：{DateTime.Now}\n" +
+                $"已分配内存：{Math.Round(GC.GetTotalMemory(false) / 1024f / 1024)}MB\n" +
+                $"已加入群聊：{groupList?.Count.ToString() ?? "未知"}";
             await commandEvent.Sender.ReplyAsync(msg);
             return true;
         }
