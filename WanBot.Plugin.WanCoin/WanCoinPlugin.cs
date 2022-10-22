@@ -52,6 +52,8 @@ namespace WanBot.Plugin.WanCoin
         /// </summary>
         private int _totalCoinCount = 0;
 
+        private JrrpAddition? _jrrpAddition;
+
         public WanCoinPlugin()
         {
             HashFunc = DefaultHashFunc;
@@ -65,7 +67,7 @@ namespace WanBot.Plugin.WanCoin
             return hash;
         }
 
-        private WanCoinDatabase GetWanCoinDatabase()
+        internal WanCoinDatabase GetWanCoinDatabase()
         {
             return new WanCoinDatabase(Path.Combine(GetConfigPath(), "wanCoin.db"));
         }
@@ -157,6 +159,15 @@ namespace WanBot.Plugin.WanCoin
                 .Command("#coin 买 数量", "买入虚犊新币")
                 .Info("虚犊币是什么币呢？");
 
+            try
+            {
+                _jrrpAddition = new JrrpAddition(this);
+            }
+            catch (Exception e)
+            {
+                Logger.Warn("Failed to load JrrpAddition {e}", e);
+            }
+
             _attrUsr = this.GetEssAttrUserFactory();
             base.Start();
         }
@@ -193,14 +204,14 @@ namespace WanBot.Plugin.WanCoin
         /// 计算当前币价
         /// </summary>
         /// <param name="x">服务器拥有的币数</param>
-        private long GetCurrentPrice(long x)
+        internal long GetCurrentPrice(long x)
         {            
             // 根据天数进行波动，按照整小时进行离散运算
             var d = Math.Floor((DateTime.Now - StartTime).TotalHours) / 24;
             return GetCurrentPrice(x, d);
         }
 
-        private WanCoinUser GetWanCoinUser(WanCoinDatabase wanCoinDb, long id)
+        internal WanCoinUser GetWanCoinUser(WanCoinDatabase wanCoinDb, long id)
         {
             var user = wanCoinDb.Users.Where(user => user.UserId == id).FirstOrDefault();
             if (user == null)
