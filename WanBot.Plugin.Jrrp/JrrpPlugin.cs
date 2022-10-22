@@ -74,9 +74,19 @@ namespace WanBot.Plugin.Jrrp
             if (Tips.Count != 0)
             {
                 var tip = Tips[_random.Next(0, Tips.Count)];
+                string tipMsg;
+                try
+                {
+                    tipMsg = tip(args.Sender.Id, jrrpUser.Jrrp);
+                }
+                catch (Exception e)
+                {
+                    tipMsg = $"嗯？{e.Message}";
+                }
+
                 msg += 
                     $"\n\n" +
-                    $"——{tip(args.Sender.Id, jrrpUser.Jrrp)}";
+                    $"——{tipMsg}";
             }
 
             await args.Sender.ReplyAsync(msg, args.GetMessageId());
