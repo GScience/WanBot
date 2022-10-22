@@ -273,6 +273,8 @@ namespace WanBot.Plugin.WanCoin
                 TotalCount = totalCount,
                 User = user
             });
+
+            Logger.Info($"User {user} {(isBuy?"buy":"sell")} {count} coin(s) from group {group}");
         }
 
         /// <summary>
