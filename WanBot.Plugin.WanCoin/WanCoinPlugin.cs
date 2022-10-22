@@ -243,6 +243,39 @@ namespace WanBot.Plugin.WanCoin
         }
 
         /// <summary>
+        /// 加入交易记录
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="user"></param>
+        /// <param name="group"></param>
+        /// <param name="count"></param>
+        /// <param name="price"></param>
+        /// <param name="time"></param>
+        /// <param name="totalCount"></param>
+        /// <param name="isBuy"></param>
+        private void AddCoinTrade(
+            WanCoinDatabase db,
+            long user, 
+            long group,
+            long count,
+            BigInteger price,
+            DateTime time, 
+            long totalCount, 
+            bool isBuy)
+        {
+            db.Trade.Add(new WanCoinTrade
+            {
+                CoinCount = count,
+                Group = group,
+                IsBuy = isBuy,
+                Time = time,
+                Price = price.ToString(),
+                TotalCount = totalCount,
+                User = user
+            });
+        }
+
+        /// <summary>
         /// 购买虚犊币
         /// </summary>
         /// <param name="bot"></param>
@@ -299,13 +332,28 @@ namespace WanBot.Plugin.WanCoin
                         attrUsr.Money -= totalBuyPrice;
                         serverUser.CoinCount -= buyCount;
                         user.CoinCount += buyCount;
+
+                        // 记录交易
+                        long groupId = 0;
+                        if (args.Sender is GroupSender gs)
+                            groupId = gs.GroupId;
+                        AddCoinTrade(
+                            wanCoinDb,
+                            args.Sender.Id,
+                            groupId,
+                            buyCount,
+                            totalBuyPrice,
+                            DateTime.Now,
+                            serverUser.CoinCount,
+                            true);
+
                         wanCoinDb.SaveChanges();
                         bought = true;
                     }
                 }
 
                 if (bought)
-                    await args.Sender.ReplyAsync($"你买了{buyCount}枚虚犊币，总共花了{totalBuyPrice}钱", args.GetMessageId());
+                    await args.Sender.ReplyAsync($"你买了{buyCount}枚虚犊币，总共花了{totalBuyPrice}钱，均价{totalBuyPrice / buyCount}", args.GetMessageId());
                 else
                     await args.Sender.ReplyAsync($"钱不够了！需要{totalBuyPrice}钱才能买{buyCount}枚币！", args.GetMessageId());
             }
@@ -362,9 +410,24 @@ namespace WanBot.Plugin.WanCoin
                         attrUsr.Money += totalSellPrice;
                     user.CoinCount -= sellCount;
                     serverUser.CoinCount += sellCount;
+
+                    // 记录交易
+                    long groupId = 0;
+                    if (args.Sender is GroupSender gs)
+                        groupId = gs.GroupId;
+                    AddCoinTrade(
+                        wanCoinDb,
+                        args.Sender.Id,
+                        groupId,
+                        sellCount,
+                        totalSellPrice,
+                        DateTime.Now,
+                        serverUser.CoinCount,
+                        false);
+
                     wanCoinDb.SaveChanges();
                 }
-                await args.Sender.ReplyAsync($"你卖了{sellCount}枚虚犊币，赚了{totalSellPrice}钱！", args.GetMessageId());
+                await args.Sender.ReplyAsync($"你卖了{sellCount}枚虚犊币，赚了{totalSellPrice}钱！均价{totalSellPrice / sellCount}", args.GetMessageId());
             }
 
             return true;

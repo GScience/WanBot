@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WanBot.Plugin.WanCoin;
 
@@ -10,9 +11,10 @@ using WanBot.Plugin.WanCoin;
 namespace WanBot.Plugin.WanCoin.Migrations
 {
     [DbContext(typeof(WanCoinDatabase))]
-    partial class WanCoinDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20221022055158_AddTrade")]
+    partial class AddTrade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.8");

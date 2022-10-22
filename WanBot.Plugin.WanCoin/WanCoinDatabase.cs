@@ -23,6 +23,11 @@ namespace WanBot.Plugin.WanCoin
         /// </summary>
         public DbSet<WanCoinHash> CoinHash { get; set; }
 
+        /// <summary>
+        /// 虚犊币交易记录
+        /// </summary>
+        public DbSet<WanCoinTrade> Trade { get; set; }
+
         public string DbPath { get; }
 
         public WanCoinDatabase(string dbPath = "database.db")
