@@ -180,6 +180,9 @@ namespace WanBot.Plugin.WanCoin
         /// <returns></returns>
         private long GetCurrentPrice(long x, double d)
         {
+            // x以10为阶梯对币价产生影响
+            x = x / 10 * 10;
+
             // x不允许非正
             if (x<=0)
                 x=1;
