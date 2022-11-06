@@ -9,6 +9,7 @@ using WanBot.Graphic;
 using WanBot.Graphic.Util;
 using WanBot.Plugin.Essential.Extension;
 using WanBot.Plugin.Essential.Permission;
+using WanBot.Plugin.RandomStuff.Food;
 
 namespace WanBot.Plugin.RandomStuff
 {
@@ -29,6 +30,8 @@ namespace WanBot.Plugin.RandomStuff
 
         private RandomStuffConfig _config = null!;
 
+        private RandomFoodGenerator _foodGenerator = new();
+
         public override void PreInit()
         {
             _config = GetConfig<RandomStuffConfig>();
@@ -45,6 +48,7 @@ namespace WanBot.Plugin.RandomStuff
                 .Command("#来只狗", "看看可爱小狗狗")
                 .Command("#来只猫", "看看可爱小猫猫")
                 .Command("#来只狐狸", "看看可爱小狐狸")
+                .Command("#吃什么", "看看今天吃啥")
                 .Info("如果不如意可以打爆完犊子");
 
             _renderer = this.GetUIRenderer();
@@ -213,6 +217,16 @@ namespace WanBot.Plugin.RandomStuff
             await SendRandomCat(args.Sender, true);
         }
 
+        [Command("吃什么")]
+        public async Task OnEatCommand(MiraiBot bot, CommandEventArgs args)
+        {
+            if (!args.Sender.HasCommandPermission(this, "eat"))
+                return;
+
+            args.Blocked = true;
+            await SendFood(args.Sender);
+        }
+
         [Regex("狗")]
         public async Task OnDogKeyword(MiraiBot bot, RegexEventArgs args)
         {
@@ -249,6 +263,19 @@ namespace WanBot.Plugin.RandomStuff
                 return;
 
             await SendRandomFox(args.Sender, false);
+        }
+
+        [Regex("(吃(什么|啥)|好饿|饿了)")]
+        public async Task OnEatCommand(MiraiBot bot, RegexEventArgs args)
+        {
+            if (_random.Next(0, 4) != 2)
+                return;
+
+            if (!args.Sender.HasCommandPermission(this, "eat"))
+                return;
+
+            args.Blocked = true;
+            await SendFood(args.Sender);
         }
 
         /// <summary>
@@ -315,6 +342,26 @@ namespace WanBot.Plugin.RandomStuff
                 msgBuilder.At(sender);
             msgBuilder.ImageByUrl(jDocument["message"]);
             await sender.ReplyAsync(msgBuilder);
+        }
+
+        /// <summary>
+        /// 今天吃啥
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
+        public async Task SendFood(ISender sender)
+        {
+            var food = _foodGenerator.GenFood();
+            Logger.Info($"Send a food call {food}");
+            await (_random.Next(0, 5) switch
+            {
+                0 => sender.ReplyAsync($"今天吃{food}吧"),
+                1 => sender.ReplyAsync($"不如试试{food}"),
+                2 => sender.ReplyAsync($"要不然去吃{food}？"),
+                3 => sender.ReplyAsync($"{food}咋样"),
+                4 => sender.ReplyAsync($"尝尝{food}"),
+                _ => sender.ReplyAsync(food)
+            });
         }
 
         public void Dispose()
