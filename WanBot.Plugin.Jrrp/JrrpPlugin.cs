@@ -67,7 +67,7 @@ namespace WanBot.Plugin.Jrrp
             // 生成消息
             var msg =
                 $"今日运势：{(int)(jrrpUser.Jrrp * 100)}\n\n" +
-                $"     宜：{_config.Activity[jrrpUser.CanDo]}\n\n" +
+                $"    宜：{_config.Activity[jrrpUser.CanDo]}\n\n" +
                 $" 不宜：{_config.Activity[jrrpUser.CantDo]}";
 
             // 随机选取个tip
@@ -89,7 +89,7 @@ namespace WanBot.Plugin.Jrrp
                     $"——{tipMsg}";
             }
 
-            await args.Sender.ReplyAsync(msg, args.GetMessageId());
+            await args.Sender.ReplyAsImageAsync(msg, args.GetMessageId());
         }
 
         [Command("我应该")]

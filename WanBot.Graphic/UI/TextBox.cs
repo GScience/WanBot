@@ -54,7 +54,7 @@ namespace WanBot.Graphic.UI
             _pos.Clear();
 
             var text = Text;
-            text = text.Replace("\r\n", "\n").Replace("\r", "\n");
+            text = text.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\t", "    ");
 
             var currentY = RenderRect.Top;
 

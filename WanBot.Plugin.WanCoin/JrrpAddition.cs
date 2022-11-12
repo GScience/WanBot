@@ -27,11 +27,10 @@ namespace WanBot.Plugin.WanCoin
                 var serverUser = wanCoinPlugin.GetWanCoinUser(wanCoinDb, WanCoinPlugin.ServerQQId);
                 var buyPrice = wanCoinPlugin.GetCurrentPrice(serverUser.CoinCount - 1);
                 var sellPrice = wanCoinPlugin.GetCurrentPrice(serverUser.CoinCount);
-                /*if (jrrp < 0.5)
+                if (jrrp < 0.5)
                     return $"虚犊币当前价格 买：{buyPrice} 卖：{sellPrice}（快买 快买 快买）";
                 else
-                    return $"虚犊币当前价格 买：{buyPrice} 卖：{sellPrice}（快卖 快卖 快卖）";*/
-                return $"输入 #coin 看看虚犊币多少钱了";
+                    return $"虚犊币当前价格 买：{buyPrice} 卖：{sellPrice}（快卖 快卖 快卖）";
             });
         }
     }

@@ -108,15 +108,15 @@ namespace WanBot.Plugin.Essential.Extension
             content.Width = 180;
 
             var text = new TextBox();
+            text.Height = 60;
             text.Text = message;
             text.FontPaint.TextSize = 16;
             text.FontPaint.TextAlign = SKTextAlign.Left;
-            text.Margin = new Margin(5, 5, 5, 5);
-            text.TextVerticalAlignment = TextVerticalAlignment.Top;
+            text.Margin = new Margin(8, 8, 8, 8);
             content.Children.Add(text);
 
             using var bg = new Rectangle();
-            bg.Margin = new Margin(2, 2, 2, 2);
+            bg.Margin = new Margin(0, 0, 0, 0);
             bg.Paint.Color = SKColors.LightGray;
             bg.Radius = new SKSize(10, 10);
 
