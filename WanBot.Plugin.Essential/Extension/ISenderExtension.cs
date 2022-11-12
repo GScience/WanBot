@@ -74,8 +74,20 @@ namespace WanBot.Plugin.Essential.Extension
                     ExtensionPlugin.Instance.waitFriendMessageHandler.TryRemove(friendSender, out var _);
                     break;
             }
-
             return messageChain;
+        }
+
+        public static async Task ReplyAsImageAsync(this ISender sender, string message, int? replyId = null)
+        {
+            try
+            {
+                await SendMessageAsImage(sender, message, replyId);
+            }
+            catch (Exception e)
+            {
+                sender.Bot.BotLogger.Warn("Failed to send message {msg} as image because {e}", message, e);
+                await sender.ReplyAsync(message, replyId);
+            }
         }
 
         /// <summary>
@@ -85,7 +97,7 @@ namespace WanBot.Plugin.Essential.Extension
         /// <param name="message"></param>
         /// <param name="replyId"></param>
         /// <returns></returns>
-        public static async Task ReplyAsImageAsync(this ISender sender, string message, int? replyId = null)
+        private static async Task SendMessageAsImage(ISender sender, string message, int? replyId = null)
         {
             if (GraphicPlugin.GlobalRenderer == null)
                 throw new Exception("GraphicPlugin.GlobalRenderer 是null！");

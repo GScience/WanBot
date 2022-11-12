@@ -26,6 +26,11 @@ namespace WanBot.Api.Mirai
         public bool IsConnected { get; private set; } = false;
 
         /// <summary>
+        /// Bot Logger
+        /// </summary>
+        public ILogger BotLogger => _logger;
+
+        /// <summary>
         /// 机器人QQ Id
         /// </summary>
         public long Id { get; private set; }

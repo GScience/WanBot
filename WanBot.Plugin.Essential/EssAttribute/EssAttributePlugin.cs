@@ -55,7 +55,7 @@ namespace WanBot.Plugin.Essential.EssAttribute
             commandEvent.Blocked = true;
 
             using var essUsr = essAttrUsrFactory!.FromSender(commandEvent.Sender);
-            await commandEvent.Sender.ReplyAsync($"你有 {essUsr.Money} 元");
+            await commandEvent.Sender.ReplyAsImageAsync($"你有 {essUsr.Money} 元");
         }
 
         [Command("状态")]
