@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WanBot.Api.Mirai;
 using WanBot.Api.Mirai.Message;
 
 namespace WanBot.Api.Message
 {
     public class ForwardMessageBuilder : IMessageBuilder
     {
-        private List<Func<MessageType, Forward.Node>> _nodeListFactory = new();
+        private List<Func<MiraiBot, MessageType, Forward.Node>> _nodeListFactory = new();
 
         /// <summary>
         /// 创建转发消息
         /// </summary>
         /// <returns></returns>
-        public ForwardMessageBuilder Forward(long sender, string senderName, IMessageBuilder msg)
+        public ForwardMessageBuilder Forward(long target, string senderName, IMessageBuilder msg)
         {
-            _nodeListFactory.Add((msgType) => new Forward.Node
+            _nodeListFactory.Add((bot, msgType) => new Forward.Node
             {
-                MessageChain = new MessageChain(msg.Build(msgType)),
-                SenderId = sender,
+                MessageChain = new MessageChain(msg.Build(bot, msgType)),
+                SenderId = target,
                 SenderName = senderName,
                 Time = (int)DateTime.Now.Ticks,
                 MessageId = null
@@ -28,18 +29,18 @@ namespace WanBot.Api.Message
             return this;
         }
 
-        public IEnumerable<BaseChain> Build(MessageType messageType)
+        public IEnumerable<BaseChain> Build(MiraiBot bot, MessageType messageType)
         {
             yield return new Forward
             {
-                NodeList = BuildNodeList(messageType).ToList()
+                NodeList = BuildNodeList(bot, messageType).ToList()
             };
         }
 
-        private IEnumerable<Forward.Node> BuildNodeList(MessageType messageType)
+        private IEnumerable<Forward.Node> BuildNodeList(MiraiBot bot, MessageType messageType)
         {
             foreach (var obj in _nodeListFactory)
-                yield return obj.Invoke(messageType);
+                yield return obj.Invoke(bot, messageType);
         }
     }
 }

@@ -13,9 +13,9 @@ namespace WanBot.Api.Message
     /// </summary>
     public class GroupSender : ISender
     {
+        public MiraiBot Bot { get; }
         public long GroupId { get; }
         public long Id { get; }
-        private MiraiBot _bot;
 
         public string InternalName { get; }
         public string DisplayName { get; }
@@ -25,33 +25,33 @@ namespace WanBot.Api.Message
             InternalName = internalName;
             DisplayName = displayName;
             GroupId = groupId;
-            _bot = bot;
+            Bot = bot;
             Id = qqId;
         }
 
         public async Task ReplyAsync(MessageChain messageChain)
         {
-            await _bot.SendGroupMessageAsync(GroupId, null, messageChain);
+            await Bot.SendGroupMessageAsync(GroupId, null, messageChain);
         }
 
         public async Task ReplyAsync(string message, int? replyId = null)
         {
-            await _bot.SendGroupMessageAsync(GroupId, replyId, message);
+            await Bot.SendGroupMessageAsync(GroupId, replyId, message);
         }
 
         public async Task ReplyAsync(IMessageBuilder messageBuilder, int? replyId = null)
         {
-            await _bot.SendGroupMessageAsync(GroupId, replyId, messageBuilder);
+            await Bot.SendGroupMessageAsync(GroupId, replyId, messageBuilder);
         }
 
         public async Task NudgeAsync()
         {
-            await _bot.SendGroupNudgeAsync(Id, GroupId);
+            await Bot.SendGroupNudgeAsync(Id, GroupId);
         }
 
         public async Task<Profile> GetProfileAsync()
         {
-            return await _bot.MemberProfileAsync(GroupId, Id);
+            return await Bot.MemberProfileAsync(GroupId, Id);
         }
 
         public override int GetHashCode()

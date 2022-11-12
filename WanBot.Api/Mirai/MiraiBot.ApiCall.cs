@@ -151,7 +151,7 @@ namespace WanBot.Api.Mirai
                     SessionKey = SessionKey,
                     Target = target,
                     Quote = quote,
-                    MessageChain = new MessageChain(messageBuilder.Build(MessageType.Group))
+                    MessageChain = new MessageChain(messageBuilder.Build(this, MessageType.Group))
                 });
 
             return result!;
@@ -196,7 +196,7 @@ namespace WanBot.Api.Mirai
                     SessionKey = SessionKey,
                     Target = target,
                     Quote = quote,
-                    MessageChain = new MessageChain(messageBuilder.Build(MessageType.Group))
+                    MessageChain = new MessageChain(messageBuilder.Build(this, MessageType.Group))
                 });
 
             return result!;
@@ -244,7 +244,7 @@ namespace WanBot.Api.Mirai
                     QQ = qq,
                     Group = group,
                     Quote = quote,
-                    MessageChain = new MessageChain(messageBuilder.Build(MessageType.Group))
+                    MessageChain = new MessageChain(messageBuilder.Build(this, MessageType.Group))
                 });
 
             return result!;

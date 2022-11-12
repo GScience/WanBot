@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 using WanBot.Api;
 using WanBot.Api.Message;
 using WanBot.Api.Mirai.Message;
+using WanBot.Graphic.UI.Layout;
+using WanBot.Graphic.UI;
+using WanBot.Plugin.Essential.Graphic;
+using WanBot.Api.Mirai;
+using SkiaSharp;
 
 namespace WanBot.Plugin.Essential.Extension
 {
@@ -71,6 +76,45 @@ namespace WanBot.Plugin.Essential.Extension
             }
 
             return messageChain;
+        }
+
+        /// <summary>
+        /// 以图像的形式回复文本
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="message"></param>
+        /// <param name="replyId"></param>
+        /// <returns></returns>
+        public static async Task ReplyAsImageAsync(this ISender sender, string message, int? replyId = null)
+        {
+            if (GraphicPlugin.GlobalRenderer == null)
+                throw new Exception("GraphicPlugin.GlobalRenderer 是null！");
+
+            using var grid = new Grid();
+
+            var content = new VerticalLayout();
+            content.Width = 180;
+
+            var text = new TextBox();
+            text.Text = message;
+            text.FontPaint.TextSize = 16;
+            text.FontPaint.TextAlign = SKTextAlign.Left;
+            text.Margin = new Margin(5, 5, 5, 5);
+            text.TextVerticalAlignment = TextVerticalAlignment.Top;
+            content.Children.Add(text);
+
+            using var bg = new Rectangle();
+            bg.Margin = new Margin(2, 2, 2, 2);
+            bg.Paint.Color = SKColors.LightGray;
+            bg.Radius = new SKSize(10, 10);
+
+            grid.Children.Add(bg);
+            grid.Children.Add(content);
+
+            using var image = GraphicPlugin.GlobalRenderer.Draw(grid);
+            var msgBuilder = new MessageBuilder().Image(image);
+
+            await sender.ReplyAsync(msgBuilder, replyId);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace WanBot.Plugin.Essential.Graphic
 {
     public partial class GraphicPlugin : WanBotPlugin, IDisposable
     {
+        internal static UIRenderer? GlobalRenderer;
+
         public override string PluginName => "Graphic";
 
         public override string PluginAuthor => "WanNeng"; 
@@ -35,7 +37,7 @@ namespace WanBot.Plugin.Essential.Graphic
         {
             base.PreInit();
             Renderer = new();
-
+            GlobalRenderer = Renderer;
             try
             {
                 Renderer.EnableGPU((str) => Logger.Info($"Vulkan: {str}"));

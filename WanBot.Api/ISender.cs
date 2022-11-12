@@ -15,6 +15,11 @@ namespace WanBot.Api
     public interface ISender
     {
         /// <summary>
+        /// Sender所在的bot
+        /// </summary>
+        public MiraiBot Bot { get; }
+
+        /// <summary>
         /// 内部名称
         /// </summary>
         public string InternalName { get; }

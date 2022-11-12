@@ -10,8 +10,8 @@ namespace WanBot.Api.Message
 {
     public class FriendSender : ISender
     {
+        public MiraiBot Bot { get; }
         public long Id { get; }
-        private MiraiBot _bot;
 
         public string InternalName { get; }
         public string DisplayName { get; }
@@ -21,32 +21,32 @@ namespace WanBot.Api.Message
             InternalName = internalName;
             DisplayName = displayName;
             Id = qqId;
-            _bot = bot;
+            Bot = bot;
         }
 
         public async Task ReplyAsync(MessageChain messageChain)
         {
-            await _bot.SendFriendMessageAsync(Id, null, messageChain);
+            await Bot.SendFriendMessageAsync(Id, null, messageChain);
         }
 
         public async Task ReplyAsync(string message, int? replyId = null)
         {
-            await _bot.SendFriendMessageAsync(Id, replyId, message);
+            await Bot.SendFriendMessageAsync(Id, replyId, message);
         }
 
         public async Task ReplyAsync(IMessageBuilder messageBuilder, int? replyId = null)
         {
-            await _bot.SendFriendMessageAsync(Id, replyId, messageBuilder);
+            await Bot.SendFriendMessageAsync(Id, replyId, messageBuilder);
         }
 
         public async Task NudgeAsync()
         {
-            await _bot.SendFriendNudgeAsync(Id);
+            await Bot.SendFriendNudgeAsync(Id);
         }
 
         public async Task<Profile> GetProfileAsync()
         {
-            return await _bot.FriendProfileAsync(Id);
+            return await Bot.FriendProfileAsync(Id);
         }
 
         public override int GetHashCode()

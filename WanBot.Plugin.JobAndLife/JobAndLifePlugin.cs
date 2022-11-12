@@ -110,7 +110,7 @@ namespace WanBot.Plugin.JobAndLife
             }
             args.Blocked = true;
             if (!await DoWork(args.Sender, false))
-                await args.Sender.ReplyAsync("你感觉很虚弱，还想干活请加班");
+                await args.Sender.ReplyAsImageAsync("你感觉很虚弱，还想干活请加班");
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace WanBot.Plugin.JobAndLife
             {
                 var costMoney = (BigInteger)(salary * 0.8);
                 usr.Money -= costMoney;
-                await sender.ReplyAsync($"完犊子了，累到脑溢血还不算工伤，亏了 {costMoney} 元");
+                await sender.ReplyAsImageAsync($"完犊子了，累到脑溢血还不算工伤，亏了 {costMoney} 元");
             }
             else if (usr.Energy < 30)
             {
@@ -160,34 +160,34 @@ namespace WanBot.Plugin.JobAndLife
                 switch (rand)
                 {
                     case 0:
-                        await sender.ReplyAsync("老板没看到你加班，不给钱");
+                        await sender.ReplyAsImageAsync("老板没看到你加班，不给钱");
                         break;
                     case 1:
                         var luckMoney1 = (BigInteger)(salary * _random.Next(1, 500) / 10.0);
                         usr.Money += luckMoney1;
-                        await sender.ReplyAsync($"你加班干了个私活，赚了 {luckMoney1} 元");
+                        await sender.ReplyAsImageAsync($"你加班干了个私活，赚了 {luckMoney1} 元");
                         break;
                     case 2:
                         var unluckMoney1 = (BigInteger)(salary * _random.Next(1, 90) / 100.0);
                         usr.Money -= unluckMoney1;
-                        await sender.ReplyAsync($"没赶上末班车，打车花了 {unluckMoney1} 元");
+                        await sender.ReplyAsImageAsync($"没赶上末班车，打车花了 {unluckMoney1} 元");
                         break;
                     case 3:
                         var unluckMoney2 = (BigInteger)(salary * _random.Next(1, 10) / 100.0);
                         usr.Money -= unluckMoney2;
-                        await sender.ReplyAsync($"钱包被人拿走了，丢了 {unluckMoney2} 元");
+                        await sender.ReplyAsImageAsync($"钱包被人拿走了，丢了 {unluckMoney2} 元");
                         break;
                     case 4:
                         var luckMoney2 = (BigInteger)(salary * _random.Next(1, 10) / 100.0);
                         usr.Money += luckMoney2;
-                        await sender.ReplyAsync($"捡走了某人的钱包，赚了 {luckMoney2} 元");
+                        await sender.ReplyAsImageAsync($"捡走了某人的钱包，赚了 {luckMoney2} 元");
                         break;
                 }
             }
             else
             {
                 usr.Money += (BigInteger)salary;
-                await sender.ReplyAsync($"今天也是辛苦的一天，赚了 {(BigInteger)salary} 元");
+                await sender.ReplyAsImageAsync($"今天也是辛苦的一天，赚了 {(BigInteger)salary} 元");
             }
 
             return true;

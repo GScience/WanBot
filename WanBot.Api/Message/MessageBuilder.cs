@@ -1,15 +1,17 @@
-﻿using System;
+﻿using SkiaSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WanBot.Api.Mirai;
 using WanBot.Api.Mirai.Message;
 
 namespace WanBot.Api.Message
 {
     public class MessageBuilder : IMessageBuilder
     {
-        private delegate BaseChain ChainGenerator(MessageType type);
+        private delegate BaseChain ChainGenerator(MiraiBot bot, MessageType type);
 
         private List<object> _chains = new();
 
@@ -47,7 +49,17 @@ namespace WanBot.Api.Message
 
         public MessageBuilder Image(MiraiImage image)
         {
-            _chains.Add((ChainGenerator)((MessageType type) => new Image { ImageId = image.GetImageIdAsync(type).Result }));
+            _chains.Add((ChainGenerator)(
+                (MiraiBot bot, MessageType type) 
+                => new Image { ImageId = image.GetImageIdAsync(type).Result }));
+            return this;
+        }
+
+        public MessageBuilder Image(SKImage image, bool autoDispose = false)
+        {
+            _chains.Add((ChainGenerator)(
+                (MiraiBot bot, MessageType type) 
+                => new Image { ImageId = new MiraiImage(bot, image, autoDispose).GetImageIdAsync(type).Result }));
             return this;
         }
 
@@ -70,14 +82,14 @@ namespace WanBot.Api.Message
         /// </summary>
         /// <param name="messageType"></param>
         /// <returns></returns>
-        public IEnumerable<BaseChain> Build(MessageType messageType)
+        public IEnumerable<BaseChain> Build(MiraiBot bot, MessageType messageType)
         {
             foreach (var obj in _chains)
             {
                 if (obj is BaseChain chain)
                     yield return chain;
                 else if (obj is ChainGenerator genFunc)
-                    yield return genFunc.Invoke(messageType);
+                    yield return genFunc.Invoke(bot, messageType);
             }
         }
     }
