@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 using WanBot.Api.Mirai.Adapter;
 using WanBot.Api.Util;
@@ -108,7 +110,7 @@ namespace WanBot.Api.Mirai.Network
                     content.Add(stringContent, name);
                 }
             }
-
+            content.Add(new StringContent(""), "__end");
             return await adapter.PostAsync(_apiName, content);
         }
     }

@@ -50,8 +50,8 @@ namespace WanBot.Api.Message
         public MessageBuilder Image(MiraiImage image)
         {
             _chains.Add((ChainGenerator)(
-                (MiraiBot bot, MessageType type) 
-                => new Image { ImageId = image.GetImageIdAsync(type).Result }));
+                (MiraiBot bot, MessageType type)
+                => TrySendImageAsync(type, image).Result));
             return this;
         }
 
@@ -59,7 +59,7 @@ namespace WanBot.Api.Message
         {
             _chains.Add((ChainGenerator)(
                 (MiraiBot bot, MessageType type) 
-                => new Image { ImageId = new MiraiImage(bot, image, autoDispose).GetImageIdAsync(type).Result }));
+                => TrySendImageAsync(type, new MiraiImage(bot, image, autoDispose)).Result));
             return this;
         }
 
@@ -91,6 +91,13 @@ namespace WanBot.Api.Message
                 else if (obj is ChainGenerator genFunc)
                     yield return genFunc.Invoke(bot, messageType);
             }
+        }
+
+        private async Task<BaseChain> TrySendImageAsync(MessageType type, MiraiImage image)
+        {
+            var imageUrl = await image.SendImageAsync(type);
+            var imageChain = new Image { ImageId = imageUrl.id };
+            return imageChain;
         }
     }
 }

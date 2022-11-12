@@ -17,7 +17,7 @@ namespace WanBot.Api.Message
     {
         private MiraiBot _bot;
         private SKImage _image;
-        private string[] _imageId = new string[3];
+        private (string url, string id)[] _imageId = new (string url, string id)[3];
 
         private bool _disposeImage;
 
@@ -29,19 +29,22 @@ namespace WanBot.Api.Message
         }
 
         /// <summary>
-        /// 获取图像Id
+        /// 获取图像Url
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GetImageIdAsync(MessageType imageType)
+        public async Task<(string url, string id)> SendImageAsync(MessageType imageType)
         {
-            if (!string.IsNullOrEmpty(_imageId[(int)imageType]))
+            if (!string.IsNullOrEmpty(_imageId[(int)imageType].id))
                 return _imageId[(int)imageType];
 
             var type = imageType.ToString().ToLower();
             using var data = _image.Encode(SKEncodedImageFormat.Png, 100);
             var uploadImageResponse = await _bot.UploadImageAsync(type, data.AsStream());
 
-            return uploadImageResponse.ImageId;
+            _imageId[(int)imageType].id = uploadImageResponse.ImageId;
+            _imageId[(int)imageType].url = uploadImageResponse.Url;
+
+            return _imageId[(int)imageType];
         }
 
         public void Dispose()
