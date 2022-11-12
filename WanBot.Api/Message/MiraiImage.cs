@@ -38,7 +38,7 @@ namespace WanBot.Api.Message
                 return _imageId[(int)imageType];
 
             var type = imageType.ToString().ToLower();
-            using var data = _image.Encode(SKEncodedImageFormat.Png, 100);
+            using var data = _image.Encode(SKEncodedImageFormat.Jpeg, 80);
             var uploadImageResponse = await _bot.UploadImageAsync(type, data.AsStream());
 
             _imageId[(int)imageType].id = uploadImageResponse.ImageId;
