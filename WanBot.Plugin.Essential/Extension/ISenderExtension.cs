@@ -115,7 +115,7 @@ namespace WanBot.Plugin.Essential.Extension
             text.Margin = new Margin(8, 8, 8, 8);
             content.Children.Add(text);
 
-            using var bg = new Rectangle();
+            var bg = new Rectangle();
             bg.Margin = new Margin(0, 0, 0, 0);
             bg.Paint.Color = SKColors.LightGray;
             bg.Radius = new SKSize(10, 10);

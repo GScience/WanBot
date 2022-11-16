@@ -171,12 +171,55 @@ namespace WanBot.Api.Mirai
 
             task.GetAwaiter().OnCompleted(() =>
             {
-                if (task.Exception != null)
-                    _logger.Error(
-                        "Error while deal with event {EventType} because of:\n {ex}\nPayload: \n{msg}",
-                        eventType,
-                        task.Exception,
-                        msg);
+                // 没有异常直接返回
+                if (task.Exception == null) return;
+
+                // 尝试调用Exception hook
+                // 要保证无论发生什么都能捕获到
+                // 不然会漏捕异常
+                Exception e = new MiraiBotEventException(
+                    msg, 
+                    "Exception when publish a mirai event",
+                    baseEvent,
+                    task.Exception);
+                Exception? hookedException = null;
+
+                // 如果有异常，则调用异常hook
+                if (e != null)
+                {
+                    try
+                    {
+                        // Hook后的异常
+                        hookedException = e.Hook(this, HookType.Exception);
+                    }
+                    catch (Exception e2)
+                    {
+                        _logger.Error(
+                            "Error while running exception hook because of:\n {ex}",
+                            e2);
+                    }
+                }
+
+                // 不管异常hook怎么处理，最后都要输出日志
+                if (e != null)
+                {
+                    if (hookedException != null && hookedException != e)
+                        // 如果hooked后有了新的异常返回则再输出一个新的异常
+                        _logger.Error(
+                            "Error while deal with event {EventType} because of:\n {ex}\nPayload: \n{msg}\nMaybe: {ex2}",
+                            eventType,
+                            e,
+                            msg,
+                            hookedException);
+                    else
+                        // 直接输出旧的异常
+                        _logger.Error(
+                            "Error while deal with event {EventType} because of:\n {ex}\nPayload: \n{msg}",
+                            eventType,
+                            e,
+                            msg);
+
+                }
             });
         }
 

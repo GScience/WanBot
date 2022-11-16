@@ -11,12 +11,12 @@ namespace WanBot.Api.Hook
     /// <summary>
     /// Hook表
     /// </summary>
-    internal class HookTable
+    public class HookTable
     {
         /// <summary>
         /// 全局Hook Table
         /// </summary>
-        internal static HookTable Instance { get; } = new();
+        public static HookTable Instance { get; } = new();
 
         /// <summary>
         /// 异常hook

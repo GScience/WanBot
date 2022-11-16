@@ -10,16 +10,16 @@ namespace WanBot.Api.Hook
 {
     internal static class HookExtension
     {
-        public static T Hook<T>(this T obj, MiraiBot bot, HookType type) where T : notnull
+        public static T Hook<T>(this T obj, MiraiBot bot, HookType type)
         {
             switch (type)
             {
                 case HookType.Event:
-                    return (T)(object)HookEvent((BlockableEventArgs)(object)obj, bot);
+                    return (T)(object)HookEvent((BlockableEventArgs)(object)obj!, bot);
                 case HookType.Exception:
-                    return ((T?)(object?)HookException((Exception)(object)obj, bot))!;
+                    return ((T?)(object?)HookException((Exception)(object)obj!, bot))!;
                 case HookType.Api:
-                    return (T)HookApi(obj, bot);
+                    return (T)HookApi(obj!, bot);
             }
             return obj;
         }
