@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WanBot.Api.Hook;
 using WanBot.Api.Message;
 using WanBot.Api.Mirai.Adapter;
 using WanBot.Api.Mirai.Event;
@@ -19,7 +20,7 @@ namespace WanBot.Api.Mirai
             var result = await adapter.SendAsync<AboutResponse, AboutRequest>(
                 new AboutRequest()
                 {
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -31,7 +32,7 @@ namespace WanBot.Api.Mirai
                 new FriendListRequest()
                 {
                     SessionKey = SessionKey
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -43,7 +44,7 @@ namespace WanBot.Api.Mirai
                 new GroupListRequest()
                 {
                     SessionKey = SessionKey
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -56,7 +57,7 @@ namespace WanBot.Api.Mirai
                 {
                     SessionKey = SessionKey,
                     Target = target
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -68,7 +69,7 @@ namespace WanBot.Api.Mirai
                 new BotProfileRequest()
                 {
                     SessionKey = SessionKey
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -81,7 +82,7 @@ namespace WanBot.Api.Mirai
                 {
                     SessionKey = SessionKey,
                     Target = target
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -95,7 +96,7 @@ namespace WanBot.Api.Mirai
                     SessionKey = SessionKey,
                     Target = target,
                     MemberId = memberId
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -108,7 +109,7 @@ namespace WanBot.Api.Mirai
                 {
                     SessionKey = SessionKey,
                     Target = target
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -122,7 +123,7 @@ namespace WanBot.Api.Mirai
                     Target = target,
                     Quote = quote,
                     MessageChain = messageChain
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -137,7 +138,7 @@ namespace WanBot.Api.Mirai
                     Target = target,
                     Quote = quote,
                     MessageChain = new MessageChain(new[] { new Plain { Text = message } })
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -152,7 +153,7 @@ namespace WanBot.Api.Mirai
                     Target = target,
                     Quote = quote,
                     MessageChain = new MessageChain(messageBuilder.Build(this, MessageType.Group))
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -167,7 +168,7 @@ namespace WanBot.Api.Mirai
                     Target = target,
                     Quote = quote,
                     MessageChain = messageChain
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -182,7 +183,7 @@ namespace WanBot.Api.Mirai
                     Target = target,
                     Quote = quote,
                     MessageChain = new MessageChain(new[] { new Plain { Text = message } })
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -197,7 +198,7 @@ namespace WanBot.Api.Mirai
                     Target = target,
                     Quote = quote,
                     MessageChain = new MessageChain(messageBuilder.Build(this, MessageType.Group))
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -213,7 +214,7 @@ namespace WanBot.Api.Mirai
                     Group = group,
                     Quote = quote,
                     MessageChain = messageChain
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -229,7 +230,7 @@ namespace WanBot.Api.Mirai
                     Group = group,
                     Quote = quote,
                     MessageChain = new MessageChain(new[] { new Plain { Text = message } })
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -245,7 +246,7 @@ namespace WanBot.Api.Mirai
                     Group = group,
                     Quote = quote,
                     MessageChain = new MessageChain(messageBuilder.Build(this, MessageType.Group))
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -260,7 +261,7 @@ namespace WanBot.Api.Mirai
                     Target = qq,
                     Subject = group,
                     Kind = "Group"
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -275,7 +276,7 @@ namespace WanBot.Api.Mirai
                     Target = qq,
                     Subject = qq,
                     Kind = "Friend"
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -290,7 +291,7 @@ namespace WanBot.Api.Mirai
                     Target = qq,
                     Subject = qq,
                     Kind = "Stranger"
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }
@@ -311,7 +312,7 @@ namespace WanBot.Api.Mirai
                     SessionKey = SessionKey,
                     Type = type,
                     Img = img
-                });
+                }.Hook(this, HookType.Api));
             _logger.Info("Image sent! Url: {url}, Id: {id}", result?.Url, result?.ImageId);
             return result!;
         }
@@ -332,7 +333,7 @@ namespace WanBot.Api.Mirai
                     GroupId = e.GroupId,
                     Operate = isDeny ? 1 : 0,
                     Message = message
-                });
+                }.Hook(this, HookType.Api));
 
             return result!;
         }

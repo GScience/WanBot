@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using WanBot.Api.Event;
+using WanBot.Api.Hook;
 using WanBot.Api.Mirai.Adapter;
 using WanBot.Api.Mirai.Event;
 using WanBot.Api.Mirai.Network;
@@ -144,6 +145,9 @@ namespace WanBot.Api.Mirai
         /// <param name="eventArgs"></param>
         public async Task PublishAsync(string eventType, BlockableEventArgs eventArgs)
         {
+            // Hook事件
+            eventArgs = eventArgs.Hook(this, HookType.Event);
+
             if (!_eventDict.TryGetValue(eventType, out var e))
                 return;
             
