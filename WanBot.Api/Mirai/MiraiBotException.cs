@@ -16,15 +16,19 @@ namespace WanBot.Api.Mirai
 
         public BaseMiraiEvent Event { get; }
 
-        public MiraiBotEventException(string payload, string message, BaseMiraiEvent e, Exception inner) : base(message, inner)
+        public MiraiBot Bot { get; }
+        public MiraiBotEventException(MiraiBot bot, string payload, string message, BaseMiraiEvent e, Exception inner) 
+            : base(message, inner)
         {
             Payload = payload;
             Event = e;
+            Bot = bot;
         }
 
         public override string ToString()
         {
-            return $"{base.ToString()}\nPayload: {Payload}";
+            var msg = $"{base.ToString()}\nPayload: {Payload}";
+            return msg.Replace(Bot.SessionKey, new string('*', Bot.SessionKey.Length));
         }
     }
 }

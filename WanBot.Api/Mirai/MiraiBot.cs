@@ -179,7 +179,8 @@ namespace WanBot.Api.Mirai
                 // 不然会漏捕异常
                 // 移除Session key
                 Exception e = new MiraiBotEventException(
-                    msg.Replace(SessionKey, new string('*', SessionKey.Length)), 
+                    this,
+                    msg, 
                     "Exception when publish a mirai event",
                     baseEvent,
                     task.Exception);
