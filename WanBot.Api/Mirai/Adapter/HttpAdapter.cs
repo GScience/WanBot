@@ -34,11 +34,18 @@ namespace WanBot.Api.Mirai.Adapter
             var socketsHandler = new SocketsHttpHandler
             {
                 AutomaticDecompression = System.Net.DecompressionMethods.All,
-                EnableMultipleHttp2Connections = true,
+                EnableMultipleHttp2Connections = false,
+                KeepAlivePingPolicy = HttpKeepAlivePingPolicy.Always,
+                KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
                 UseProxy = false,
-                KeepAlivePingPolicy = HttpKeepAlivePingPolicy.Always
+                Proxy = null
             };
-            _httpClient = new HttpClient(socketsHandler);
+
+            _httpClient = new HttpClient(socketsHandler)
+            {
+                DefaultRequestVersion = new Version(1, 1),
+                DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher
+            };
         }
 
         public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)
