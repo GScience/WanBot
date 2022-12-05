@@ -351,7 +351,32 @@ namespace WanBot.Plugin.RandomStuff
         /// <returns></returns>
         public async Task SendFood(ISender sender)
         {
-            var food = _foodGenerator.GenFood();
+            // 可能会没饭吃
+            if (_random.Next(0, 5) == 1)
+            {
+                await sender.ReplyAsync($"没饭吃真惨");
+                return;
+            }
+
+            string food;
+            // 可能会吃群友
+            if (_random.Next(0, 5) == 1 && sender is GroupSender groupSender)
+            {
+                var groupMemberList = await sender.Bot.MemberListAsync(groupSender.GroupId);
+
+                if (groupMemberList == null || groupMemberList.Data == null)
+                {
+                    Logger.Error("Failed to get member list of group {groupId}", groupSender.GroupId);
+                    await sender.ReplyAsync("你想吃群友但是没吃到");
+                    return;
+                }
+                var index = _random.Next(0, groupMemberList.Data.Count);
+                food = groupMemberList.Data[index].MemberName;
+            }
+            // 正常食物
+            else
+                food = _foodGenerator.GenFood();
+
             Logger.Info($"Send a food call {food}");
             await (_random.Next(0, 5) switch
             {
