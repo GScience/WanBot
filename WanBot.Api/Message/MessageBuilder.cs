@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api.Mirai;
@@ -41,9 +42,21 @@ namespace WanBot.Api.Message
             return this;
         }
 
+        /// <summary>
+        /// 上传指定path的文件
+        /// </summary>
+        /// <param name="path">只允许绝对路径</param>
+        /// <returns></returns>
         public MessageBuilder ImageByPath(string path)
         {
-            _chains.Add(new Image { Path = path });
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                _chains.Add(new Image { Path = path });
+            else
+            {
+                _chains.Add((ChainGenerator)(
+                    (MiraiBot bot, MessageType type)
+                    => TrySendImageAsync(type, bot, path).Result));
+            }
             return this;
         }
 
@@ -97,6 +110,15 @@ namespace WanBot.Api.Message
         {
             var imageUrl = await image.SendImageAsync(type);
             var imageChain = new Image { ImageId = imageUrl.id };
+            return imageChain;
+        }
+
+        private async Task<BaseChain> TrySendImageAsync(MessageType type, MiraiBot bot, string imagePath)
+        {
+            using var imageFileStream = System.IO.File.OpenRead(imagePath); 
+            var typeStr = type.ToString().ToLower();
+            var uploadResponse = await bot.UploadImageAsync(typeStr, imageFileStream);
+            var imageChain = new Image { ImageId = uploadResponse.ImageId };
             return imageChain;
         }
     }
