@@ -32,7 +32,7 @@ namespace WanBot.Api.Mirai.Message
 
         public MessageChain(IEnumerable<BaseChain> chain)
         {
-            Chain = chain;
+            Chain = chain.ToArray();
         }
 
         public MessageChain()
