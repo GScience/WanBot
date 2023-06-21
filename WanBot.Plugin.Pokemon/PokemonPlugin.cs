@@ -125,6 +125,9 @@ namespace WanBot.Plugin.Pokemon
                 newPokemonName = pokemonA.Name[0] + pokemonB.Name;
             else
                 newPokemonName = pokemonA.Name[0] + pokemonB.Name[1..];
+
+            Logger.Info($"Fusion pokemon {fullPath}");
+
             if (System.IO.File.Exists(fullPath))
                 await args.Sender.ReplyAsync(new MessageBuilder().Text(newPokemonName).ImageByPath(fullPath));
             else
