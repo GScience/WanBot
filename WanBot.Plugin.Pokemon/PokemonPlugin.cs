@@ -32,8 +32,9 @@ namespace WanBot.Plugin.Pokemon
         {
             this.GetBotHelp()
                 .Category("宝可梦")
-                .Command("#宝可梦 Id或名称", "查找宝可梦")
                 .Command("#来只宝可梦", "随机抽一只宝可梦")
+                .Command("#来只融合宝可梦", "随机抽一只???")
+                .Command("#宝可梦 Id或名称", "查找宝可梦")
                 .Command("#融合宝可梦", "随机让两只宝可梦合体（？")
                 .Info("融合出噩梦不要怪我x");
 
@@ -79,6 +80,55 @@ namespace WanBot.Plugin.Pokemon
             // 随机模式
             var randomPokemon = _pokeDatabase.Pokemons[new Random().Next(0, _pokeDatabase.Pokemons.Length)];
             await SendPokemon(args.Sender, randomPokemon);
+        }
+
+        [Command("来只融合宝可梦")]
+        public async Task OnRandomFusionPokemon(MiraiBot bot, CommandEventArgs args)
+        {
+            if (!args.Sender.HasCommandPermission(this, "Random"))
+                return;
+
+            if (!args.Sender.HasCommandPermission(this, "Fusion"))
+                return;
+
+            if (_pokeDatabase == null || _pokeDatabase.Pokemons.Length == 0)
+                return;
+
+            var fusionDir = Path.Combine(GetConfigPath(), "fusion");
+            var dirs = Directory.GetDirectories(fusionDir);
+            var dir = dirs[new Random().Next(0, dirs.Length)];
+
+            var files = Directory.GetFiles(dir);
+            var fullPath = files[new Random().Next(0, files.Length)];
+            var fileNameArgs = Path.GetFileName(fullPath).Split('.');
+            var idA = int.Parse(fileNameArgs[0]);
+            var idB = int.Parse(fileNameArgs[1]);
+            var pokemonA = _pokeDatabase.Search(idA.ToString("D4"));
+            var pokemonB = _pokeDatabase.Search(idB.ToString("D4"));
+
+            if (pokemonA == null)
+            {
+                await args.Sender.ReplyAsync($"随机到了漏洞");
+                return;
+            }
+            if (pokemonB == null)
+            {
+                await args.Sender.ReplyAsync($"随机到了漏洞");
+                return;
+            }
+
+            string newPokemonName;
+            if (pokemonA == pokemonB)
+                newPokemonName = pokemonA.Name[0] + pokemonB.Name;
+            else
+                newPokemonName = pokemonA.Name[0] + pokemonB.Name[1..];
+
+            Logger.Info($"Fusion pokemon {fullPath}");
+
+            if (System.IO.File.Exists(fullPath))
+                await args.Sender.ReplyAsync(new MessageBuilder().Text($"{newPokemonName} ({idA}.{idB})").ImageByPath(fullPath));
+            else
+                await args.Sender.ReplyAsync($"坏了，{newPokemonName}还没出生");
         }
 
         [Command("融合宝可梦")]
@@ -129,7 +179,7 @@ namespace WanBot.Plugin.Pokemon
             Logger.Info($"Fusion pokemon {fullPath}");
 
             if (System.IO.File.Exists(fullPath))
-                await args.Sender.ReplyAsync(new MessageBuilder().Text(newPokemonName).ImageByPath(fullPath));
+                await args.Sender.ReplyAsync(new MessageBuilder().Text($"{newPokemonName} ({topId}.{buttomId})").ImageByPath(fullPath));
             else
                 await args.Sender.ReplyAsync($"坏了，{newPokemonName}还没出生");
         }
