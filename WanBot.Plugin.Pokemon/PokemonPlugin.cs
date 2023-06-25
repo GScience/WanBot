@@ -126,7 +126,7 @@ namespace WanBot.Plugin.Pokemon
             Logger.Info($"Fusion pokemon {fullPath}");
 
             if (System.IO.File.Exists(fullPath))
-                await args.Sender.ReplyAsync(new MessageBuilder().Text($"{newPokemonName} ({idA}.{idB})").ImageByPath(fullPath));
+                await args.Sender.ReplyAsync(new MessageBuilder().Text($"你将 {pokemonA.Name} 和 {pokemonB.Name} 放到了一起，然后生出了 {newPokemonName} ({idA}.{idB})").ImageByPath(fullPath));
             else
                 await args.Sender.ReplyAsync($"坏了，{newPokemonName}还没出生");
         }
@@ -169,17 +169,19 @@ namespace WanBot.Plugin.Pokemon
             }
             var topId = pokemonA.Id;
             var buttomId = pokemonB.Id;
-            var fullPath = Path.Combine(GetConfigPath(), "fusion", topId.ToString(), $"{topId}.{buttomId}.png");
+            var fullPathWithoutExtension = Path.Combine(GetConfigPath(), "fusion", topId.ToString(), $"{topId}.{buttomId}");
             string newPokemonName;
             if (pokemonA == pokemonB)
                 newPokemonName = pokemonA.Name[0] + pokemonB.Name;
             else
                 newPokemonName = pokemonA.Name[0] + pokemonB.Name[1..];
 
-            Logger.Info($"Fusion pokemon {fullPath}");
+            Logger.Info($"Fusion pokemon {fullPathWithoutExtension}");
 
-            if (System.IO.File.Exists(fullPath))
-                await args.Sender.ReplyAsync(new MessageBuilder().Text($"{newPokemonName} ({topId}.{buttomId})").ImageByPath(fullPath));
+            if (System.IO.File.Exists(fullPathWithoutExtension + ".gif"))
+                await args.Sender.ReplyAsync(new MessageBuilder().Text($"{newPokemonName} ({topId}.{buttomId})").ImageByPath(fullPathWithoutExtension + ".gif"));
+            else if (System.IO.File.Exists(fullPathWithoutExtension + ".png"))
+                await args.Sender.ReplyAsync(new MessageBuilder().Text($"{newPokemonName} ({topId}.{buttomId})").ImageByPath(fullPathWithoutExtension + ".png"));
             else
                 await args.Sender.ReplyAsync($"坏了，{newPokemonName}还没出生");
         }
