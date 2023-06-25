@@ -52,7 +52,8 @@ namespace WanBot.Plugin.Pokemon
             // 构建索引
             foreach (var pokemon in database.Pokemons)
             {
-                database.NameIndex[pokemon.Name] = pokemon;
+                var nameKey = pokemon.Name + (pokemon.SubId == 0 ? "" : $"_{pokemon.SubId}");
+                database.NameIndex[nameKey] = pokemon;
                 string strId;
                 if (pokemon.SubId == 0)
                     strId = pokemon.Id;
