@@ -229,7 +229,8 @@ namespace WanBot.Plugin.Pokemon
 
             var msg = new MessageBuilder()
                 .At(sender)
-                .Text("\n" + pokemon.DisplayName)
+                // 动态宝可梦不用DisplayName
+                .Text("\n" + (isDynamic ? pokemon.Name : pokemon.DisplayName))
                 .ImageByUrl(url)
                 .Text($"Id {pokemon.Id}");
                 
