@@ -35,7 +35,7 @@ namespace WanBot.Plugin.Pokemon
                 .Command("#来只宝可梦", "随机抽一只宝可梦")
                 .Command("#来只融合宝可梦", "随机抽一只???")
                 .Command("#宝可梦 Id或名称", "查找宝可梦")
-                .Command("#动态宝可梦 Id或名称", "查找宝可梦，并尝试发送动图")
+                .Command("#动态宝可梦 Id或名称", "查找宝可梦，并尝试发送动图。若想看背面则可输入#动态宝可梦 皮卡丘的背面")
                 .Command("#融合宝可梦", "随机让两只宝可梦合体（？")
                 .Info("融合出噩梦不要怪我x");
 
@@ -83,9 +83,12 @@ namespace WanBot.Plugin.Pokemon
             if (remain != null && remain.Length == 1 && remain[0] is Plain plain)
             {
                 var searchKey = plain.Text;
+                var isBack = searchKey.EndsWith("的背面");
+                if (isBack)
+                    searchKey = searchKey[..^3];
                 var pokemon = _pokeDatabase.Search(searchKey);
                 if (pokemon != null)
-                    await SendPokemon(args.Sender, pokemon, true);
+                    await SendPokemon(args.Sender, pokemon, true, isBack);
                 else
                     await args.Sender.ReplyAsync(new MessageBuilder().At(args.Sender).Text($"\n找不到宝可梦 {searchKey} 哦"));
                 return;
@@ -214,14 +217,14 @@ namespace WanBot.Plugin.Pokemon
                 await args.Sender.ReplyAsync($"坏了，{newPokemonName}还没出生");
         }
 
-        private async Task SendPokemon(ISender sender, PokemonElement pokemon, bool isDynamic = false)
+        private async Task SendPokemon(ISender sender, PokemonElement pokemon, bool isDynamic = false, bool isBack = false)
         {
             if (!int.TryParse(pokemon.Id, out var id) ||
                 id > 649)
                 isDynamic = false;
 
             var url = isDynamic ?
-                $"https://s1.52poke.wiki/assets/sprite/gen5/{id:D3}.gif" :
+                $"https://s1.52poke.wiki/assets/sprite/gen5/{id:D3}{(isBack?"b":"")}.gif" :
                 pokemon.ImageUrl;
 
             var msg = new MessageBuilder()
