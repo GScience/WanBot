@@ -120,6 +120,8 @@ namespace WanBot.Plugin.Pokemon
             if (_pokeDatabase == null || _pokeDatabase.Pokemons.Length == 0)
                 return;
 
+            args.Blocked = true;
+
             var fusionDir = Path.Combine(GetConfigPath(), "fusion");
             var dirs = Directory.GetDirectories(fusionDir);
             var dir = dirs[new Random().Next(0, dirs.Length)];
@@ -225,7 +227,7 @@ namespace WanBot.Plugin.Pokemon
             var msg = new MessageBuilder()
                 .At(sender)
                 .Text("\n" + pokemon.DisplayName)
-                .ImageByUrl($"{pokemon.ImageUrl}")
+                .ImageByUrl(url)
                 .Text($"Id {pokemon.Id}");
                 
             await sender.ReplyAsync(msg);
