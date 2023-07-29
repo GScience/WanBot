@@ -31,10 +31,20 @@ namespace WanBot.Plugin.LuaScript
 
         private object Run(string script, CancellationToken ct)
         {
+            var debugger = new LuaDebugger(ct);
             var compileOption = new LuaCompileOptions()
             {
                 ClrEnabled = false,
-                DebugEngine = new LuaDebugger(ct),
+                DebugEngine = debugger,
+                DynamicSandbox = (obj) =>
+                {
+                    if (obj is LuaMethod luaMethod)
+                    {
+                        if (luaMethod.Method == typeof(object).GetMethod("GetType"))
+                            return "<GetType is Blocked>";
+                    }
+                    return obj;
+                }
             };
 
             dynamic env = new LuaTable();
@@ -70,15 +80,15 @@ namespace WanBot.Plugin.LuaScript
             {
                 return "运行超时";
             }
-            catch (LuaException e)
+            catch (Exception e)
             {
                 string errLineInfo;
-                if (e.Line == 0)
+                if (debugger.CurrentLine == 0)
                     errLineInfo = "未知行";
                 else
                 {
                     var lines = script.Split('\n');
-                    errLineInfo = $"{e.Line} => {lines[e.Line - 1]}";
+                    errLineInfo = $"{debugger.CurrentLine} => {lines[debugger.CurrentLine - 1]}";
                 }
                 return $"Lua运行错误，因为{e.Message}\n\t行：{errLineInfo}";
             }
