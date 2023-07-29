@@ -20,6 +20,7 @@ namespace WanBot.Plugin.LuaScript
             typeof(string),
             typeof(MessageBuilder),
 
+            typeof(LuaResult),
             typeof(LuaTable),
             typeof(LuaType),
             typeof(LuaMethod),
