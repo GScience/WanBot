@@ -37,7 +37,7 @@ namespace WanBot.Plugin.Essential
             this.GetBotHelp()
                 .Category("不喜欢完犊子了？")
                 .Command("#滚蛋", "让完犊子退群，需要管理员执行此命令")
-                .Info("准不准另说（");
+                .Info("我滚，我滚，我滚");
 
             base.Start();
         }
