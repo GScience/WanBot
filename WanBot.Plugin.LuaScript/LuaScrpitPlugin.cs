@@ -34,7 +34,7 @@ namespace WanBot.Plugin.LuaScript
         {
             this.GetBotHelp()
                 .Category("运行Lua")
-                .Command("#lua <脚本>", "执行黑暗魔法")
+                .Command("#lua <脚本>", "执行黑暗魔法，可通过sys调用C#类型")
                 .Info("别企图炸服...");
 
             base.Start();

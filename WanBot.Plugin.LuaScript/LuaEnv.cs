@@ -22,6 +22,10 @@ namespace WanBot.Plugin.LuaScript
             typeof(Math),
             typeof(Random),
             typeof(MessageBuilder),
+            typeof(LuaTable),
+            typeof(LuaType),
+            typeof(LuaMethod),
+            typeof(LuaOverloadedMethod)
         };
 
         /// <summary>
@@ -47,11 +51,11 @@ namespace WanBot.Plugin.LuaScript
                 DebugEngine = debugger,
                 DynamicSandbox = (obj) =>
                 {
-                    if (obj is LuaType luaType)
-                    {
-                        if (!_whitelistType.Contains(luaType.Type))
-                            return $"<{luaType.FullName} is Blocked>";
-                    }
+                    if (obj == null)
+                        return null;
+                    var type = obj.GetType();
+                    if (!_whitelistType.Contains(type) && !type.IsValueType)
+                        throw new AccessViolationException($"Type {type.FullName} is Blocked");
                     return obj;
                 }
             };
