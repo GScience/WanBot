@@ -342,5 +342,23 @@ namespace WanBot.Api.Mirai
 
             return result!;
         }
+
+        /// <summary>
+        /// 退出群聊
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public async Task<QuitResponse> Quit(long groupId)
+        {
+            var adapter = _adapterDict[typeof(HttpAdapter)];
+            var result = await adapter.SendAsync<QuitResponse, QuitRequest>(
+                new QuitRequest()
+                {
+                    SessionKey = SessionKey,
+                    Target = groupId
+                }.Hook(this, HookType.Api));
+
+            return result!;
+        }
     }
 }

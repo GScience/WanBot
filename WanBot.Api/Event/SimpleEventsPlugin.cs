@@ -33,6 +33,8 @@ namespace WanBot.Api.Event
 
         private CommandEventConfig _config = null!;
 
+        public string CommandPrefix => _config.CommandPrefix;
+
         public override void PreInit()
         {
             base.PreInit();
@@ -59,7 +61,6 @@ namespace WanBot.Api.Event
             // 命令
             if (e.MessageChain.StartsWith(_config.CommandPrefix))
             {
-
                 var sender = new StrangerSender(
                     bot,
                     "[Temp]" + e.Sender.GetFormatedName(),
@@ -142,7 +143,8 @@ namespace WanBot.Api.Event
                     "[Group]" + e.Sender.GetFormatedName(),
                     e.Sender.MemberName,
                     e.Sender.Group.Id,
-                    e.Sender.Id);
+                    e.Sender.Id,
+                    e.Sender.Permission);
 
                 await OnCommandMessage(bot, sender, e.MessageChain);
                 e.Blocked = true;
@@ -162,7 +164,8 @@ namespace WanBot.Api.Event
                             "[Group]" + e.Sender.GetFormatedName(),
                             e.Sender.MemberName,
                             e.Sender.Group.Id,
-                            e.Sender.Id),
+                            e.Sender.Id,
+                            e.Sender.Permission),
                     e.MessageChain));
                 e.Blocked = true;
                 return;
@@ -178,7 +181,8 @@ namespace WanBot.Api.Event
                             "[Group]" + e.Sender.GetFormatedName(),
                             e.Sender.MemberName,
                             e.Sender.Group.Id,
-                            e.Sender.Id),
+                            e.Sender.Id,
+                            e.Sender.Permission),
                     e.MessageChain,
                     matchRegex);
                 await bot.PublishAsync(
@@ -204,7 +208,7 @@ namespace WanBot.Api.Event
                     break;
 
                 case "Group":
-                    sender = new GroupSender(bot, "", "", e.Subject.Id, e.FromId);
+                    sender = new GroupSender(bot, "", "", e.Subject.Id, e.FromId, "MEMBER");
                     break;
 
                 case "Stranger":

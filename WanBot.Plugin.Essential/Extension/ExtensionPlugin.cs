@@ -58,7 +58,7 @@ namespace WanBot.Plugin.Essential.Extension
         [MiraiEvent<GroupMessage>(Priority.Highest + 10)]
         public Task OnMiraiGroupMessage(MiraiBot bot, GroupMessage args)
         {
-            var sender = new GroupSender(bot, "", "", args.Sender.Group.Id, args.Sender.Id);
+            var sender = new GroupSender(bot, "", "", args.Sender.Group.Id, args.Sender.Id, args.Sender.Permission);
             if (waitGroupMessageHandler.TryRemove(sender, out var action))
                 action(args);
             return Task.CompletedTask;

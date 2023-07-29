@@ -20,13 +20,16 @@ namespace WanBot.Api.Message
         public string InternalName { get; }
         public string DisplayName { get; }
 
-        public GroupSender(MiraiBot bot, string internalName, string displayName, long groupId, long qqId)
+        public string GroupPermission { get; }
+
+        public GroupSender(MiraiBot bot, string internalName, string displayName, long groupId, long qqId, string groupPermission)
         {
             InternalName = internalName;
             DisplayName = displayName;
             GroupId = groupId;
             Bot = bot;
             Id = qqId;
+            GroupPermission = groupPermission;
         }
 
         public async Task ReplyAsync(MessageChain messageChain)

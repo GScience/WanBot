@@ -90,17 +90,22 @@ namespace WanBot.Plugin.Essential.Permission
             {
                 case GroupSender groupSender:
                     return
-                        config.Admin.Contains(groupSender.Id) ||
+                        IsAdmin(groupSender.Id) ||
                         CheckGroup(groupSender.GroupId, permission);
                 case StrangerSender strangerSender:
                     return
-                        config.Admin.Contains(strangerSender.Id) ||
+                        IsAdmin(strangerSender.Id) ||
                         CheckGroup(strangerSender.GroupId, permission);
                 case FriendSender friendSender:
-                    return config.Admin.Contains(friendSender.Id);
+                    return IsAdmin(friendSender.Id);
                 default:
                     return false;
             }
+        }
+
+        public static bool IsAdmin(long id)
+        {
+            return config.Admin.Contains(id);
         }
 
         internal static string GetCommandPermission(BasePlugin plugin, string cmdName, params string[] args)

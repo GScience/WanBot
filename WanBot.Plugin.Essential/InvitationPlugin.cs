@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using WanBot.Api;
 using WanBot.Api.Event;
+using WanBot.Api.Message;
 using WanBot.Api.Mirai;
 using WanBot.Api.Mirai.Event;
+using WanBot.Plugin.Essential.Extension;
 
 namespace WanBot.Plugin.Essential
 {
@@ -28,6 +30,41 @@ namespace WanBot.Plugin.Essential
         {
             Logger.Info($"Invited to group [{e.GroupName}({e.GroupId})] by {e.Nick}({e.FromId})");
             await bot.ResponseBotInvitedJoinGroupRequestEventAsync(e, false);
+        }
+
+        public override void Start()
+        {
+            this.GetBotHelp()
+                .Category("不喜欢完犊子了？")
+                .Command("#滚蛋", "让完犊子退群，需要管理员执行此命令")
+                .Info("准不准另说（");
+
+            base.Start();
+        }
+
+        [Command("滚蛋")]
+        public async Task OnLeaveCommand(MiraiBot bot, CommandEventArgs args)
+        {
+            if (args.Sender is not GroupSender groupSender)
+                return;
+            args.Blocked = true;
+            if (groupSender.GroupPermission == "MEMBER" ||
+                !Permission.Permission.IsAdmin(args.Sender.Id))
+            {
+                await groupSender.ReplyAsync("请让本群管理员或群主执行此命令");
+                return;
+            }
+            await groupSender.ReplyAsync("好的，我滚");
+            Logger.Info($"Leaving group {groupSender.GroupId}");
+
+            try
+            {
+                await bot.Quit(groupSender.GroupId);
+            }
+            catch (Exception ex)
+            {
+                await groupSender.ReplyAsync($"坏了，滚不了，因为{ex.Message}");
+            }
         }
     }
 }
