@@ -55,7 +55,7 @@ namespace WanBot.Plugin.LuaScript
             }
             var luaCode = plain.Text;
             Logger.Info($"Run lua: \n{luaCode}");
-            var resultObj = await _luaEnv.RunAsync(luaCode);
+            var resultObj = await _luaEnv.RunAsync(luaCode, TimeSpan.FromSeconds(0.5f));
             if (resultObj is string resultStr)
             {
                 await args.Sender.ReplyAsync(GetLimitedString(resultStr, 10, 200));

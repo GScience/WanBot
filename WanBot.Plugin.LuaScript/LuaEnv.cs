@@ -17,26 +17,48 @@ namespace WanBot.Plugin.LuaScript
 
         private HashSet<Type> _whitelistType = new()
         {
-            typeof(DateTime),
-            typeof(TimeSpan),
-            typeof(Math),
-            typeof(Random),
+            typeof(string),
             typeof(MessageBuilder),
+
             typeof(LuaTable),
             typeof(LuaType),
             typeof(LuaMethod),
-            typeof(LuaOverloadedMethod)
+            typeof(LuaOverloadedMethod),
+
+            typeof(LuaLibraryBit32),
+            typeof(LuaLibraryMath),
+            typeof(LuaLibraryString),
+        };
+
+        private List<string> _blocked = new()
+        {
+            "load",
+            "loadfile",
+            "require",
+            "import",
+
+            "dochunk",
+            "dofile",
+
+            "collectgarbage",
+            "print",
+
+            "coroutine",
+            "debug",
+            "io",
+            "package",
+            "os"
         };
 
         /// <summary>
         /// 运行Lua代码，并返回结果
         /// </summary>
         /// <param name="script"></param>
-        public async Task<object> RunAsync(string script)
+        public async Task<object> RunAsync(string script, TimeSpan timeout)
         {
             using var cancellToken = new CancellationTokenSource();
             using var runLuaTask = Task.Run(() => Run(script, cancellToken.Token), cancellToken.Token);
-            cancellToken.CancelAfter(100);
+            cancellToken.CancelAfter(timeout);
             var result = await runLuaTask;
             return result;
 
@@ -60,14 +82,17 @@ namespace WanBot.Plugin.LuaScript
                 }
             };
 
-            dynamic env = new LuaTable();
+            var env = new LuaGlobal(_l);
+            dynamic dEnv = env;
             dynamic sys = new LuaTable();
-            sys.time = LuaType.GetType(typeof(DateTime));
-            sys.math = LuaType.GetType(typeof(Math));
+            
             sys.msgBuilder = LuaType.GetType(typeof(MessageBuilder));
-            sys.rnd = LuaType.GetType(typeof(Random));
-            env.sys = sys;
-            env.result = null;
+            sys.time = LuaType.GetType(typeof(DateTime));
+            dEnv.sys = sys;
+            dEnv.result = null;
+
+            foreach (var blocked in _blocked)
+                env.Remove(blocked, out _);
 
             LuaChunk luaChunk;
             try
@@ -109,9 +134,11 @@ namespace WanBot.Plugin.LuaScript
 
             try
             {
-                if (env.result is MessageBuilder messageBuilder)
+                if (dEnv.result is MessageBuilder messageBuilder)
                     return messageBuilder;
-                return LuaValueToString(env.result);
+                else if (dEnv.result == null)
+                    return "<null>";
+                return LuaValueToString(dEnv.result);
             }
             catch (Exception e)
             {
