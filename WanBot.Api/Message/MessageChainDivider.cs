@@ -81,7 +81,7 @@ namespace WanBot.Api.Message
 
                 foreach (var c in text)
                 {
-                    if (c == ' ' && !_readAll)
+                    if ((c == ' ' || c == '\r' || c == '\n') && !_readAll)
                     {
                         if (!string.IsNullOrWhiteSpace(buffer))
                             yield return buffer;

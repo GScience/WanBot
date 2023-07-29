@@ -39,6 +39,7 @@ namespace WanBot.Plugin.LuaScript
             sys.time = LuaType.GetType(typeof(DateTime));
             sys.math = LuaType.GetType(typeof(Math));
             env.sys = sys;
+            env.result = null;
 
             LuaChunk luaChunk;
             try
@@ -47,8 +48,15 @@ namespace WanBot.Plugin.LuaScript
             }
             catch (LuaParseException e)
             {
-                var lines = script.Split('\n');
-                return $"Lua编译错误，因为{e.Message}\n\t行：{e.Line} => {lines[e.Line]}";
+                string errLineInfo;
+                if (e.Line == 0)
+                    errLineInfo = "未知行";
+                else
+                {
+                    var lines = script.Split('\n');
+                    errLineInfo = $"{e.Line} => {lines[e.Line - 1]}";
+                }
+                return $"Lua编译错误，因为{e.Message}\n\t行：{errLineInfo}";
             }
             try
             {
@@ -56,8 +64,15 @@ namespace WanBot.Plugin.LuaScript
             }
             catch (LuaException e)
             {
-                var lines = script.Split('\n');
-                return $"Lua运行错误，因为{e.Message}\n\t行：{e.Line} => {lines[e.Line]}";
+                string errLineInfo;
+                if (e.Line == 0)
+                    errLineInfo = "未知行";
+                else
+                {
+                    var lines = script.Split('\n');
+                    errLineInfo = $"{e.Line} => {lines[e.Line - 1]}";
+                }
+                return $"Lua运行错误，因为{e.Message}\n\t行：{errLineInfo}";
             }
 
             try

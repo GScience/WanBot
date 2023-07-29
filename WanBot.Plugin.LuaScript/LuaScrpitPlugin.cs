@@ -54,6 +54,8 @@ namespace WanBot.Plugin.LuaScript
             }
 
             var result = await _luaEnv.RunAsync(plain.Text);
+            if (result == null || result == "")
+                result = "<Empty>";
             // 限制200长度
             // 限制10行
             var endIndex = result.Length;
