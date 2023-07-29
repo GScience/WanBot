@@ -117,8 +117,17 @@ namespace WanBot.Api.Message
         {
             using var imageFileStream = System.IO.File.OpenRead(imagePath); 
             var typeStr = type.ToString().ToLower();
-            var uploadResponse = await bot.UploadImageAsync(typeStr, imageFileStream);
-            var imageChain = new Image { ImageId = uploadResponse.ImageId };
+            BaseChain imageChain;
+            try
+            {
+                var uploadResponse = await bot.UploadImageAsync(typeStr, imageFileStream);
+                imageChain = new Image { ImageId = uploadResponse.ImageId };
+            }
+            catch (Exception ex)
+            {
+                imageChain = new Plain { Text = $"<Img:{ex.Message}>" };
+                bot._logger.Warn($"Failed to send image because {ex}");
+            }
             return imageChain;
         }
     }
