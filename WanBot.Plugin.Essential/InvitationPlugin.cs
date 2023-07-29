@@ -42,13 +42,13 @@ namespace WanBot.Plugin.Essential
             base.Start();
         }
 
-        [Command("滚蛋")]
+        [Command("滚蛋")] 
         public async Task OnLeaveCommand(MiraiBot bot, CommandEventArgs args)
         {
             if (args.Sender is not GroupSender groupSender)
                 return;
             args.Blocked = true;
-            if (groupSender.GroupPermission == "MEMBER" ||
+            if (groupSender.GroupPermission == "MEMBER" &&
                 !Permission.Permission.IsAdmin(args.Sender.Id))
             {
                 await groupSender.ReplyAsync("请让本群管理员或群主执行此命令");
