@@ -58,7 +58,14 @@ namespace WanBot.Plugin.LuaScript
             var resultObj = await _luaEnv.RunAsync(luaCode, TimeSpan.FromSeconds(0.5f));
             if (resultObj is string resultStr)
             {
-                await args.Sender.ReplyAsync(GetLimitedString(resultStr, 10, 200));
+                var endPos = GetLimitedStringEndPos(resultStr, 10, 200);
+                if (resultStr.Length == endPos)
+                    await args.Sender.ReplyAsync(resultStr);
+                else if (resultStr.Length <= endPos * 3)
+                    await args.Sender.ReplyAsImageAsync(resultStr);
+                else
+                    await args.Sender.ReplyAsImageAsync(resultStr[..(endPos * 3)] + "...");
+
             }
             else if (resultObj is MessageBuilder resultMessageBuilder)
             {
@@ -88,8 +95,15 @@ namespace WanBot.Plugin.LuaScript
                 await args.Sender.ReplyAsync(new MessageChain(messageChain!));
             }
         }
-
         private string GetLimitedString(string str, int lineCount = 10, int length = 200)
+        {
+            var endPos = GetLimitedStringEndPos(str, lineCount, length);
+            if (str.Length > endPos)
+                str = str[..endPos] + "...";
+            return str;
+        }
+
+        private int GetLimitedStringEndPos(string str, int lineCount = 10, int length = 200)
         {
             if (str == null || str == "")
                 str = "<Empty>";
@@ -112,10 +126,7 @@ namespace WanBot.Plugin.LuaScript
                     break;
                 }
             }
-            if (str.Length > endIndex)
-                str = str[..endIndex] + "...";
-
-            return str;
+            return endIndex;
         }
     }
 }
