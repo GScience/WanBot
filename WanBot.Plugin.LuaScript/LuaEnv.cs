@@ -54,17 +54,17 @@ namespace WanBot.Plugin.LuaScript
         /// 运行Lua代码，并返回结果
         /// </summary>
         /// <param name="script"></param>
-        public async Task<object> RunAsync(string script, TimeSpan timeout)
+        public async Task<object> RunAsync(string script, TimeSpan timeout, params object[] callArgs)
         {
             using var cancellToken = new CancellationTokenSource();
-            using var runLuaTask = Task.Run(() => Run(script, cancellToken.Token), cancellToken.Token);
+            using var runLuaTask = Task.Run(() => Run(script, cancellToken.Token, callArgs), cancellToken.Token);
             cancellToken.CancelAfter(timeout);
             var result = await runLuaTask;
             return result;
 
         }
 
-        private object Run(string script, CancellationToken ct)
+        private object Run(string script, CancellationToken ct, params object[] callArgs)
         {
             var debugger = new LuaDebugger(ct);
             var compileOption = new LuaCompileOptions()
@@ -113,6 +113,7 @@ namespace WanBot.Plugin.LuaScript
             }
             try
             {
+                env.SetValue("arg", LuaTable.pack(callArgs));
                 luaChunk.Run(env);
             }
             catch (OperationCanceledException)
