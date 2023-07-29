@@ -21,17 +21,19 @@ namespace WanBot.Plugin.LuaScript
         public async Task<string> RunAsync(string script)
         {
             using var cancellToken = new CancellationTokenSource();
-            using var runLuaTask = Task.Run(() => Run(script), cancellToken.Token);
-            cancellToken.CancelAfter(500);
+            using var runLuaTask = Task.Run(() => Run(script, cancellToken.Token), cancellToken.Token);
+            cancellToken.CancelAfter(100);
             var result = await runLuaTask;
             return result.ToString();
+
         }
 
-        private string Run(string script)
+        private string Run(string script, CancellationToken ct)
         {
             var compileOption = new LuaCompileOptions()
             {
-                ClrEnabled = false
+                ClrEnabled = false,
+                DebugEngine = new LuaDebugger(ct),
             };
 
             dynamic env = new LuaTable();
@@ -61,6 +63,10 @@ namespace WanBot.Plugin.LuaScript
             try
             {
                 luaChunk.Run(env);
+            }
+            catch (OperationCanceledException)
+            {
+                return "运行超时";
             }
             catch (LuaException e)
             {
