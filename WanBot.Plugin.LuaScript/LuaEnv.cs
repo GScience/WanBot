@@ -15,6 +15,15 @@ namespace WanBot.Plugin.LuaScript
     {
         private Lua _l = new();
 
+        private HashSet<Type> _whitelistType = new()
+        {
+            typeof(DateTime),
+            typeof(TimeSpan),
+            typeof(Math),
+            typeof(Random),
+            typeof(MessageBuilder),
+        };
+
         /// <summary>
         /// 运行Lua代码，并返回结果
         /// </summary>
@@ -38,10 +47,10 @@ namespace WanBot.Plugin.LuaScript
                 DebugEngine = debugger,
                 DynamicSandbox = (obj) =>
                 {
-                    if (obj is LuaMethod luaMethod)
+                    if (obj is LuaType luaType)
                     {
-                        if (luaMethod.Method == typeof(object).GetMethod("GetType"))
-                            return "<GetType is Blocked>";
+                        if (!_whitelistType.Contains(luaType.Type))
+                            return $"<{luaType.FullName} is Blocked>";
                     }
                     return obj;
                 }
@@ -52,6 +61,7 @@ namespace WanBot.Plugin.LuaScript
             sys.time = LuaType.GetType(typeof(DateTime));
             sys.math = LuaType.GetType(typeof(Math));
             sys.msgBuilder = LuaType.GetType(typeof(MessageBuilder));
+            sys.rnd = LuaType.GetType(typeof(Random));
             env.sys = sys;
             env.result = null;
 

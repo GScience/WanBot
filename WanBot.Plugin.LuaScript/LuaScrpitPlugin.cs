@@ -53,8 +53,9 @@ namespace WanBot.Plugin.LuaScript
                 await args.Sender.ReplyAsync("请输入脚本");
                 return;
             }
-
-            var resultObj = await _luaEnv.RunAsync(plain.Text);
+            var luaCode = plain.Text;
+            Logger.Info($"Run lua: \n{luaCode}");
+            var resultObj = await _luaEnv.RunAsync(luaCode);
             if (resultObj is string resultStr)
             {
                 await args.Sender.ReplyAsync(GetLimitedString(resultStr, 10, 200));
