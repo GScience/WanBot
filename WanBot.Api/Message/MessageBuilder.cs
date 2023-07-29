@@ -95,15 +95,21 @@ namespace WanBot.Api.Message
         /// </summary>
         /// <param name="messageType"></param>
         /// <returns></returns>
-        public IEnumerable<BaseChain> Build(MiraiBot bot, MessageType messageType)
+        public IEnumerable<BaseChain> Build(MiraiBot bot, MessageType messageType, bool useChainGenerator)
         {
             foreach (var obj in _chains)
             {
                 if (obj is BaseChain chain)
                     yield return chain;
-                else if (obj is ChainGenerator genFunc)
+                else if (obj is ChainGenerator genFunc && useChainGenerator)
                     yield return genFunc.Invoke(bot, messageType);
             }
+        }
+
+        public IEnumerable<BaseChain> Build(MiraiBot bot, MessageType messageType)
+        {
+            foreach (var obj in Build(bot, messageType, true))
+                yield return obj;
         }
 
         private async Task<BaseChain> TrySendImageAsync(MessageType type, MiraiImage image)

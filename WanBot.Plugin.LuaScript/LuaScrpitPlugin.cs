@@ -5,6 +5,7 @@ using WanBot.Api.Mirai;
 using WanBot.Plugin.Essential.Permission;
 using WanBot.Plugin.Essential.Extension;
 using WanBot.Api.Mirai.Message;
+using WanBot.Api.Message;
 
 namespace WanBot.Plugin.LuaScript
 {
@@ -53,28 +54,67 @@ namespace WanBot.Plugin.LuaScript
                 return;
             }
 
-            var result = await _luaEnv.RunAsync(plain.Text);
-            if (result == null || result == "")
-                result = "<Empty>";
+            var resultObj = await _luaEnv.RunAsync(plain.Text);
+            if (resultObj is string resultStr)
+            {
+                await args.Sender.ReplyAsync(GetLimitedString(resultStr, 10, 200));
+            }
+            else if (resultObj is MessageBuilder resultMessageBuilder)
+            {
+                BaseChain?[] messageChain;
+                if (args.Sender is GroupSender)
+                    messageChain = resultMessageBuilder.Build(bot, MessageType.Group, false).Take(3).ToArray();
+                else if (args.Sender is FriendSender)
+                    messageChain = resultMessageBuilder.Build(bot, MessageType.Friend, false).Take(3).ToArray();
+                else if (args.Sender is StrangerSender)
+                    messageChain = resultMessageBuilder.Build(bot, MessageType.Temp, false).Take(3).ToArray();
+                else
+                    return;
+
+                // 只允许纯文本和At
+                for (var i = 0; i < messageChain.Length; i++)
+                {
+                    var chain = messageChain[i];
+                    if (chain is Plain plainChain)
+                        plainChain.Text = GetLimitedString(plainChain.Text, 2, 20);
+                    else if (chain is At atChain)
+                    {
+                    }
+                    else
+                        messageChain[i] = null;
+                }
+                messageChain = messageChain.Where(x => x != null).ToArray();
+                await args.Sender.ReplyAsync(new MessageChain(messageChain!));
+            }
+        }
+
+        private string GetLimitedString(string str, int lineCount = 10, int length = 200)
+        {
+            if (str == null || str == "")
+                str = "<Empty>";
             // 限制200长度
             // 限制10行
-            var endIndex = result.Length;
+            var endIndex = str.Length;
             var lineIndex = 0;
-            for (var i = 0; i < result.Length; i++)
+            for (var i = 0; i < str.Length; i++)
             {
-                if (result[i] == '\n')
+                if (str[i] == '\n')
                     ++lineIndex;
-                if (lineIndex == 10)
+                if (lineIndex == lineCount)
                 {
                     endIndex = i;
                     break;
                 }
-                if (i == 200)
+                if (i == length)
+                {
                     endIndex = i;
+                    break;
+                }
             }
-            if (result.Length > endIndex)
-                result = result[..endIndex] + "...";
-            await args.Sender.ReplyAsync(result);
+            if (str.Length > endIndex)
+                str = str[..endIndex] + "...";
+
+            return str;
         }
     }
 }

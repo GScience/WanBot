@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WanBot.Api.Message;
 
 namespace WanBot.Plugin.LuaScript
 {
@@ -18,17 +19,17 @@ namespace WanBot.Plugin.LuaScript
         /// 运行Lua代码，并返回结果
         /// </summary>
         /// <param name="script"></param>
-        public async Task<string> RunAsync(string script)
+        public async Task<object> RunAsync(string script)
         {
             using var cancellToken = new CancellationTokenSource();
             using var runLuaTask = Task.Run(() => Run(script, cancellToken.Token), cancellToken.Token);
             cancellToken.CancelAfter(100);
             var result = await runLuaTask;
-            return result.ToString();
+            return result;
 
         }
 
-        private string Run(string script, CancellationToken ct)
+        private object Run(string script, CancellationToken ct)
         {
             var compileOption = new LuaCompileOptions()
             {
@@ -40,6 +41,7 @@ namespace WanBot.Plugin.LuaScript
             dynamic sys = new LuaTable();
             sys.time = LuaType.GetType(typeof(DateTime));
             sys.math = LuaType.GetType(typeof(Math));
+            sys.msgBuilder = LuaType.GetType(typeof(MessageBuilder));
             env.sys = sys;
             env.result = null;
 
@@ -83,6 +85,8 @@ namespace WanBot.Plugin.LuaScript
 
             try
             {
+                if (env.result is MessageBuilder messageBuilder)
+                    return messageBuilder;
                 return LuaValueToString(env.result);
             }
             catch (Exception e)
