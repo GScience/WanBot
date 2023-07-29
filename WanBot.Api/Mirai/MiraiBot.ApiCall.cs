@@ -14,6 +14,8 @@ namespace WanBot.Api.Mirai
 {
     public partial class MiraiBot
     {
+        private HttpClient _httpClient = new();
+
         public async Task<AboutResponse> AboutAsync()
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
@@ -314,6 +316,9 @@ namespace WanBot.Api.Mirai
                     Img = img
                 }.Hook(this, HookType.Api));
             _logger.Info("Image sent! Url: {url}, Id: {id}", result?.Url, result?.ImageId);
+            var sendResult = await _httpClient.GetAsync(result?.Url);
+            if (sendResult.StatusCode != System.Net.HttpStatusCode.OK)
+                throw new Exception("Image is expired");
             return result!;
         }
 
