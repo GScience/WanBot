@@ -217,7 +217,14 @@ namespace WanBot.Plugin.LuaScript
                         messageChain[i] = null;
                 }
                 messageChain = messageChain.Where(x => x != null).ToArray();
-                await sender.ReplyAsync(new MessageChain(messageChain!));
+                try
+                {
+                    await sender.ReplyAsync(new MessageChain(messageChain!));
+                }
+                catch (Exception e)
+                {
+                    await sender.ReplyAsync($"消息发送失败，因为{e.Message}");
+                }
             }
         }
 

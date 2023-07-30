@@ -2,7 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Reflection.Metadata;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WanBot.Api.Message;
 
@@ -86,9 +89,15 @@ namespace WanBot.Plugin.LuaScript
             var env = new LuaGlobal(_l);
             dynamic dEnv = env;
             dynamic sys = new LuaTable();
-            
             sys.msgBuilder = LuaType.GetType(typeof(MessageBuilder));
             sys.time = LuaType.GetType(typeof(DateTime));
+            dynamic http = new LuaTable();
+
+            // 手动注册
+            var myLuaApi = new LuaCancellableApi(ct);
+            http.get = new LuaMethod(myLuaApi, myLuaApi.GetType().GetMethod("LuaHttpGet"));
+
+            dEnv.http = http;
             dEnv.sys = sys;
             dEnv.result = null;
 
