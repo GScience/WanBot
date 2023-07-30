@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Neo.IronLua;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace WanBot.Plugin.LuaScript
@@ -27,6 +29,11 @@ namespace WanBot.Plugin.LuaScript
                     throw new TimeoutException($"Timeout while get {url}");
                 throw;
             }
+        }
+
+        public LuaTable LuaJsonRead(string json)
+        {
+            return LuaTable.FromJson(json);
         }
 
         private string InnerHttpGet(string url)

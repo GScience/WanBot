@@ -91,13 +91,16 @@ namespace WanBot.Plugin.LuaScript
             dynamic sys = new LuaTable();
             sys.msgBuilder = LuaType.GetType(typeof(MessageBuilder));
             sys.time = LuaType.GetType(typeof(DateTime));
-            dynamic http = new LuaTable();
 
             // 手动注册
-            var myLuaApi = new LuaCancellableApi(ct);
+            var myLuaApi = new LuaCancellableApi(ct); 
+            dynamic http = new LuaTable();
             http.get = new LuaMethod(myLuaApi, myLuaApi.GetType().GetMethod("LuaHttpGet"));
+            dynamic json = new LuaTable();
+            json.read = new LuaMethod(myLuaApi, myLuaApi.GetType().GetMethod("LuaJsonRead"));
 
             dEnv.http = http;
+            dEnv.json = json;
             dEnv.sys = sys;
             dEnv.result = null;
 
