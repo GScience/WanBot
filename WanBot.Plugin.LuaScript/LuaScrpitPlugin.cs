@@ -67,7 +67,7 @@ namespace WanBot.Plugin.LuaScript
             if (!Directory.Exists(groupScriptPath))
                 Directory.CreateDirectory(groupScriptPath);
 
-            if (Directory.GetFiles(groupScriptPath).Length >= 3)
+            if (Directory.GetFiles(groupScriptPath).Length >= 10)
             {
                 await args.Sender.ReplyAsync("脚本数量超过上限，请删除不需要的脚本");
                 return;
