@@ -146,12 +146,14 @@ namespace WanBot.Api.Mirai
         public async Task PublishAsync(string eventType, BlockableEventArgs eventArgs)
         {
             // Hook事件
-            eventArgs = eventArgs.Hook(this, HookType.Event);
+            var hookedArgs = await eventArgs.HookAsync(this, HookType.Event);
+            if (hookedArgs == null)
+                return;
 
             if (!_eventDict.TryGetValue(eventType, out var e))
                 return;
             
-            await e.InvokeAsync(this, eventArgs);
+            await e.InvokeAsync(this, hookedArgs);
         }
 
         /// <summary>
@@ -192,7 +194,7 @@ namespace WanBot.Api.Mirai
                     try
                     {
                         // Hook后的异常
-                        hookedException = e.Hook(this, HookType.Exception);
+                        hookedException = e.HookAsync(this, HookType.Exception).Result;
                     }
                     catch (Exception e2)
                     {

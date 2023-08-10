@@ -10,35 +10,39 @@ namespace WanBot.Api.Hook
 {
     internal static class HookExtension
     {
-        public static T Hook<T>(this T obj, MiraiBot bot, HookType type)
+        public async static Task<T?> HookAsync<T>(this T obj, MiraiBot bot, HookType type)
         {
             switch (type)
             {
                 case HookType.Event:
-                    return (T)(object)HookEvent((BlockableEventArgs)(object)obj!, bot);
+                    return (T?)(object?)await HookEventAsync((BlockableEventArgs)(object)obj!, bot);
                 case HookType.Exception:
-                    return ((T?)(object?)HookException((Exception)(object)obj!, bot))!;
+                    return ((T?)(object?)await HookExceptionAsync((Exception)(object)obj!, bot))!;
                 case HookType.Api:
-                    return (T)HookApi(obj!, bot);
+                    return (T?)await HookApiAsync(obj!, bot);
             }
             return obj;
         }
 
-        private static object HookApi(object obj, MiraiBot bot)
+        private async static Task<object?> HookApiAsync(object obj, MiraiBot bot)
         {
-            return HookTable.Instance.ApiHook?.Invoke(bot, obj) ?? obj;
+            if (HookTable.Instance.ApiHook == null)
+                return obj;
+            return await HookTable.Instance.ApiHook.Invoke(bot, obj);
         }
 
-        private static Exception? HookException(Exception e, MiraiBot bot)
+        private async static Task<Exception?> HookExceptionAsync(Exception e, MiraiBot bot)
         {
             if (HookTable.Instance.ExceptionHook == null)
                 return e;
-            return HookTable.Instance.ExceptionHook.Invoke(bot, e);
+            return await HookTable.Instance.ExceptionHook.Invoke(bot, e);
         }
 
-        private static BlockableEventArgs HookEvent(BlockableEventArgs e, MiraiBot bot)
+        private async static Task<BlockableEventArgs?> HookEventAsync(BlockableEventArgs e, MiraiBot bot)
         {
-            return HookTable.Instance.EventHook?.Invoke(bot, e) ?? e;
+            if (HookTable.Instance.EventHook == null)
+                return e;
+            return await HookTable.Instance.EventHook.Invoke(bot, e);
         }
     }
 }

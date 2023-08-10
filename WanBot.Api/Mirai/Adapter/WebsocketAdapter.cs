@@ -186,10 +186,13 @@ namespace WanBot.Api.Mirai.Adapter
             IsConnected = true;
         }
 
-        public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)
+        public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload? request)
             where RequestPayload : class
             where ResponsePayload : IResponse
         {
+            if (request == null)
+                return default;
+
             // 等待连接
             var syncId = SyncIdHelper.Next();
 

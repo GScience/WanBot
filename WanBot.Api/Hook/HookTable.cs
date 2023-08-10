@@ -21,16 +21,16 @@ namespace WanBot.Api.Hook
         /// <summary>
         /// 异常hook
         /// </summary>
-        public Func<MiraiBot, Exception, Exception?>? ExceptionHook { get; set; }
+        public Func<MiraiBot, Exception, Task<Exception?>>? ExceptionHook { get; set; }
 
         /// <summary>
         /// 事件Hook
         /// </summary>
-        public Func<MiraiBot, BlockableEventArgs, BlockableEventArgs>? EventHook { get; set; }
+        public Func<MiraiBot, BlockableEventArgs, Task<BlockableEventArgs?>>? EventHook { get; set; }
 
         /// <summary>
         /// Api Hook
         /// </summary>
-        public Func<MiraiBot, object, object>? ApiHook { get; set; }
+        public Func<MiraiBot, object, Task<object?>>? ApiHook { get; set; }
     }
 }

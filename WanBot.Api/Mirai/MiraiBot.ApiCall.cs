@@ -20,9 +20,9 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<AboutResponse, AboutRequest>(
-                new AboutRequest()
+                await new AboutRequest()
                 {
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -31,10 +31,10 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<FriendListResponse, FriendListRequest>(
-                new FriendListRequest()
+                await new FriendListRequest()
                 {
                     SessionKey = SessionKey
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -43,10 +43,10 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<GroupListResponse, GroupListRequest>(
-                new GroupListRequest()
+                await new GroupListRequest()
                 {
                     SessionKey = SessionKey
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -55,11 +55,11 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<MemberListResponse, MemberListRequest>(
-                new MemberListRequest()
+                await new MemberListRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -68,10 +68,10 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<BotProfileResponse, BotProfileRequest>(
-                new BotProfileRequest()
+                await new BotProfileRequest()
                 {
                     SessionKey = SessionKey
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -80,11 +80,11 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<FriendProfileResponse, FriendProfileRequest>(
-                new FriendProfileRequest()
+                await new FriendProfileRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -93,12 +93,12 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<MemberProfileResponse, MemberProfileRequest>(
-                new MemberProfileRequest()
+                await new MemberProfileRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target,
                     MemberId = memberId
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -107,11 +107,11 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<UserProfileResponse, UserProfileRequest>(
-                new UserProfileRequest()
+                await new UserProfileRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -119,13 +119,13 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendGroupMessageResponse, SendGroupMessageRequest>(
-                new SendGroupMessageRequest()
+                await new SendGroupMessageRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target,
                     Quote = quote,
                     MessageChain = messageChain
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -134,13 +134,13 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendGroupMessageResponse, SendGroupMessageRequest>(
-                new SendGroupMessageRequest()
+                await new SendGroupMessageRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target,
                     Quote = quote,
                     MessageChain = new MessageChain(new[] { new Plain { Text = message } })
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -149,13 +149,13 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendGroupMessageResponse, SendGroupMessageRequest>(
-                new SendGroupMessageRequest()
+                await new SendGroupMessageRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target,
                     Quote = quote,
                     MessageChain = new MessageChain(messageBuilder.Build(this, MessageType.Group))
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -164,13 +164,13 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendFriendMessageResponse, SendFriendMessageRequest>(
-                new SendFriendMessageRequest()
+                await new SendFriendMessageRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target,
                     Quote = quote,
                     MessageChain = messageChain
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -179,13 +179,13 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendFriendMessageResponse, SendFriendMessageRequest>(
-                new SendFriendMessageRequest()
+                await new SendFriendMessageRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target,
                     Quote = quote,
                     MessageChain = new MessageChain(new[] { new Plain { Text = message } })
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -194,13 +194,13 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendFriendMessageResponse, SendFriendMessageRequest>(
-                new SendFriendMessageRequest()
+                await new SendFriendMessageRequest()
                 {
                     SessionKey = SessionKey,
                     Target = target,
                     Quote = quote,
                     MessageChain = new MessageChain(messageBuilder.Build(this, MessageType.Group))
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -209,14 +209,14 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendTempMessageResponse, SendTempMessageRequest>(
-                new SendTempMessageRequest()
+                await new SendTempMessageRequest()
                 {
                     SessionKey = SessionKey,
                     QQ = qq,
                     Group = group,
                     Quote = quote,
                     MessageChain = messageChain
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -225,14 +225,14 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendTempMessageResponse, SendTempMessageRequest>(
-                new SendTempMessageRequest()
+                await new SendTempMessageRequest()
                 {
                     SessionKey = SessionKey,
                     QQ = qq,
                     Group = group,
                     Quote = quote,
                     MessageChain = new MessageChain(new[] { new Plain { Text = message } })
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -241,14 +241,14 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendTempMessageResponse, SendTempMessageRequest>(
-                new SendTempMessageRequest()
+                await new SendTempMessageRequest()
                 {
                     SessionKey = SessionKey,
                     QQ = qq,
                     Group = group,
                     Quote = quote,
                     MessageChain = new MessageChain(messageBuilder.Build(this, MessageType.Group))
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -257,13 +257,13 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendNudgeResponse, SendNudgeRequest>(
-                new SendNudgeRequest()
+                await new SendNudgeRequest()
                 {
                     SessionKey = SessionKey,
                     Target = qq,
                     Subject = group,
                     Kind = "Group"
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -272,13 +272,13 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendNudgeResponse, SendNudgeRequest>(
-                new SendNudgeRequest()
+                await new SendNudgeRequest()
                 {
                     SessionKey = SessionKey,
                     Target = qq,
                     Subject = qq,
                     Kind = "Friend"
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -287,13 +287,13 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<SendNudgeResponse, SendNudgeRequest>(
-                new SendNudgeRequest()
+                await new SendNudgeRequest()
                 {
                     SessionKey = SessionKey,
                     Target = qq,
                     Subject = qq,
                     Kind = "Stranger"
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -309,12 +309,12 @@ namespace WanBot.Api.Mirai
             var adapter = _adapterDict[typeof(HttpAdapter)];
             _logger.Info("Sending image...");
             var result = await adapter.SendAsync<UploadImageResponse, UploadImageRequest>(
-                new UploadImageRequest()
+                await new UploadImageRequest()
                 {
                     SessionKey = SessionKey,
                     Type = type,
                     Img = img
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
             _logger.Info("Image sent! Url: {url}, Id: {id}", result?.Url, result?.ImageId);
             var sendResult = await _httpClient.GetAsync(result?.Url);
             if (sendResult.StatusCode != System.Net.HttpStatusCode.OK)
@@ -330,7 +330,7 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<ResponseBotInvitedJoinGroupRequestEventResponse, ResponseBotInvitedJoinGroupRequestEventRequest>(
-                new ResponseBotInvitedJoinGroupRequestEventRequest()
+                await new ResponseBotInvitedJoinGroupRequestEventRequest()
                 {
                     SessionKey = SessionKey,
                     EventId = e.EventId,
@@ -338,7 +338,7 @@ namespace WanBot.Api.Mirai
                     GroupId = e.GroupId,
                     Operate = isDeny ? 1 : 0,
                     Message = message
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }
@@ -352,11 +352,11 @@ namespace WanBot.Api.Mirai
         {
             var adapter = _adapterDict[typeof(HttpAdapter)];
             var result = await adapter.SendAsync<QuitResponse, QuitRequest>(
-                new QuitRequest()
+                await new QuitRequest()
                 {
                     SessionKey = SessionKey,
                     Target = groupId
-                }.Hook(this, HookType.Api));
+                }.HookAsync(this, HookType.Api));
 
             return result!;
         }

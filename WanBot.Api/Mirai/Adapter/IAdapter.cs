@@ -27,7 +27,7 @@ namespace WanBot.Api.Mirai.Adapter
         /// <typeparam name="ResponsePayload"></typeparam>
         /// <param name="request"></param>
         /// <returns></returns>
-        public Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)
+        public Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload? request)
             where RequestPayload : class
             where ResponsePayload : IResponse;
 

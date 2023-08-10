@@ -48,10 +48,13 @@ namespace WanBot.Api.Mirai.Adapter
             };
         }
 
-        public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload request)
+        public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload? request)
             where RequestPayload : class
             where ResponsePayload : IResponse
         {
+            if (request == null)
+                return default;
+
             using var httpResponse = await HttpRequestHelper<RequestPayload>.SendHandleAsync(this, request);
 
             if (!httpResponse.IsSuccessStatusCode)

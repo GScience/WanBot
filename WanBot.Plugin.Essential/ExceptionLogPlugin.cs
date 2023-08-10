@@ -36,7 +36,7 @@ namespace WanBot.Plugin.Essential
 
         public override void Start()
         {
-            HookTable.Instance.ExceptionHook = SendExceptionAsImage;
+            HookTable.Instance.ExceptionHook = SendExceptionAsImageAsync;
         }
 
         [Command("来个报错")]
@@ -48,7 +48,7 @@ namespace WanBot.Plugin.Essential
             throw new Exception("你有病病");
         }
 
-        private Exception SendExceptionAsImage(MiraiBot bot, Exception e)
+        private async Task<Exception?> SendExceptionAsImageAsync(MiraiBot bot, Exception e)
         {
             if (e is not MiraiBotEventException miraiException) return e;
 
@@ -65,7 +65,7 @@ namespace WanBot.Plugin.Essential
                     using var grid = GenExceptionUI(e);
                     using var image = GraphicPlugin.GlobalRenderer.Draw(grid);
                     var msgBuilder = new MessageBuilder().Image(image);
-                    bot.SendGroupMessageAsync(groupMsg.Sender.Group.Id, null, msgBuilder).Wait();
+                    await bot.SendGroupMessageAsync(groupMsg.Sender.Group.Id, null, msgBuilder);
                 }
             }
             else if (miraiException.Event is TempMessage tempMsg)
@@ -76,7 +76,7 @@ namespace WanBot.Plugin.Essential
                     using var grid = GenExceptionUI(e);
                     using var image = GraphicPlugin.GlobalRenderer.Draw(grid);
                     var msgBuilder = new MessageBuilder().Image(image);
-                    bot.SendTempMessageAsync(tempMsg.Sender.Id, tempMsg.Sender.Group.Id, null, msgBuilder).Wait();
+                    await bot.SendTempMessageAsync(tempMsg.Sender.Id, tempMsg.Sender.Group.Id, null, msgBuilder);
                 }
             }
             else if (miraiException.Event is FriendMessage friendMsg)
@@ -84,7 +84,7 @@ namespace WanBot.Plugin.Essential
                 using var grid = GenExceptionUI(e);
                 using var image = GraphicPlugin.GlobalRenderer.Draw(grid);
                 var msgBuilder = new MessageBuilder().Image(image);
-                bot.SendFriendMessageAsync(friendMsg.Sender.Id, null, msgBuilder).Wait();
+                await bot.SendFriendMessageAsync(friendMsg.Sender.Id, null, msgBuilder);
             }
 
             return e;

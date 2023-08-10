@@ -97,10 +97,25 @@ namespace WanBot.Api.Message
         /// <returns></returns>
         public IEnumerable<BaseChain> Build(MiraiBot bot, MessageType messageType, bool useChainGenerator)
         {
-            foreach (var obj in _chains)
+            for (var i = 0; i < _chains.Count; ++i)
             {
-                if (obj is BaseChain chain)
+                var obj = _chains[i];
+
+                if (obj is Plain plain)
+                {
+                    while(i + 1 < _chains.Count)
+                    {
+                        if (_chains[i + 1] is not Plain subPlain)
+                            break;
+                        plain.Text += subPlain.Text;
+                        ++i;
+                    }
+                    yield return plain;
+                }
+
+                else if (obj is BaseChain chain)
                     yield return chain;
+
                 else if (obj is ChainGenerator genFunc && useChainGenerator)
                     yield return genFunc.Invoke(bot, messageType);
             }
