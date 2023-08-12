@@ -89,7 +89,7 @@ namespace WanBot.Plugin.Jrrp
                     $"——{tipMsg}";
             }
 
-            await args.Sender.ReplyAsImageAsync(msg, args.GetMessageId());
+            await args.Sender.ReplyAsync(msg, args.GetMessageId());
         }
 
         [Command("我应该")]
