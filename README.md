@@ -24,3 +24,5 @@ Run command ``docker build -t wanbot/wanbot .``
 Clone the repo and open the solution. Select WanBot and just build it.
 ## Custom plugin
 Follow the instruction in WanBot.Plugin.HelloWorld
+## Contact
+QQ group: 207276833
