@@ -132,7 +132,7 @@ namespace WanBot.Plugin.RandomStuff
 
             if (args.Sender is not GroupSender groupSender)
                 return;
-
+            var rand = new Random($"{args.Sender.Id}{DateTime.Now.Date:d}".GetHashCode());
             var groupMemberList = await bot.MemberListAsync(groupSender.GroupId);
 
             if (groupMemberList == null || groupMemberList.Data == null)
@@ -142,17 +142,17 @@ namespace WanBot.Plugin.RandomStuff
                 return;
             }
 
-            if (_random.Next(0, 5) == 1)
+            if (rand.Next(0, 5) == 1)
             {
                 var msgBuilder = new MessageBuilder();
-                msgBuilder.At(groupSender).Text(" 你没有对象");
+                msgBuilder.At(groupSender).Text(" 你今天没有对象");
                 await groupSender.ReplyAsync(msgBuilder);
             }
             else
             {
-                var index = _random.Next(0, groupMemberList.Data.Count);
+                var index = rand.Next(0, groupMemberList.Data.Count);
                 var msgBuilder = new MessageBuilder();
-                msgBuilder.At(groupSender).Text(" 你的对象是：").Text(groupMemberList.Data[index].MemberName);
+                msgBuilder.At(groupSender).Text(" 你今天的对象是：").Text(groupMemberList.Data[index].MemberName);
                 await groupSender.ReplyAsync(msgBuilder);
             }
             args.Blocked = true;
