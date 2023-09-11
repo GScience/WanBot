@@ -47,6 +47,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.Pokemon", "Wa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.LuaScript", "WanBot.Plugin.LuaScript\WanBot.Plugin.LuaScript.csproj", "{64A60648-1F52-45E1-AF26-C1445B9D559A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.JavaScript", "WanBot.Plugin.JavaScript\WanBot.Plugin.JavaScript.csproj", "{BF76D3A6-D448-4364-BF2B-4BC8DB6C333B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,10 @@ Global
 		{64A60648-1F52-45E1-AF26-C1445B9D559A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64A60648-1F52-45E1-AF26-C1445B9D559A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64A60648-1F52-45E1-AF26-C1445B9D559A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF76D3A6-D448-4364-BF2B-4BC8DB6C333B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF76D3A6-D448-4364-BF2B-4BC8DB6C333B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF76D3A6-D448-4364-BF2B-4BC8DB6C333B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF76D3A6-D448-4364-BF2B-4BC8DB6C333B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
