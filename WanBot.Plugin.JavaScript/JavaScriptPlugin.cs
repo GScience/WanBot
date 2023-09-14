@@ -26,8 +26,7 @@ public class JavaScriptPlugin : WanBotPlugin, IDisposable
     {
         this.GetBotHelp()
             .Category("运行 JavaScript ")
-            .Command("#js <脚本>", "执行黑暗魔法，上下文保存 1 小时")
-            .Command("#jsf5", "重设 js 上下文")
+            .Command("#js <脚本>", "执行黑暗魔法")
             // .Command("#jss <脚本名称> <脚本>", "保存黑魔法，每个群最多只能保存3个")
             // .Command("#jsd <脚本名称>", "删除黑魔法")
             // .Command("#jsl", "获取黑魔法列表")
@@ -36,18 +35,7 @@ public class JavaScriptPlugin : WanBotPlugin, IDisposable
 
         base.Start();
     }
-
-    [Command("jsf5")]
-    public async Task OnJsReset(MiraiBot bot, CommandEventArgs args)
-    {
-        if (!args.Sender.HasCommandPermission(this, "js"))
-            return;
-
-        var sender = args.Sender;
-        _jsEnv.Reset($"{sender.Id}");
-        await sender.ReplyAsync($"已重设 js 上下文");
-    }
-
+    
     [Command("js")]
     public async Task OnJs(MiraiBot bot, CommandEventArgs args)
     {
@@ -68,7 +56,7 @@ public class JavaScriptPlugin : WanBotPlugin, IDisposable
     private async Task RunJs(string jsCode, MiraiBot bot, ISender sender, params object[] callArgs)
     {
         Logger.Info($"Run js: \n{jsCode}");
-        var resultObj = await _jsEnv.RunAsync($"{sender.Id}", jsCode, TimeSpan.FromSeconds(0.5f), callArgs);
+        var resultObj = await _jsEnv.RunAsync(jsCode, TimeSpan.FromSeconds(0.5f), callArgs);
         if (resultObj is string resultStr)
         {
             var endPos = GetLimitedStringEndPos(resultStr, 10, 200);

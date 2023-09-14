@@ -7,77 +7,22 @@ namespace WanBot.Plugin.JavaScript;
 
 public class JsEnv : IDisposable
 {
-    private readonly MemoryCache engineCache = new("JavaScriptEngineCache");
+    public void Dispose() { }
 
-    private readonly TimeSpan expiration = new(0, 1, 0, 0);
-
-    private sealed record CacheStub(string session) : IDisposable
-    {
-        private readonly object locker = new();
-        private V8ScriptEngine? engine;
-
-        public V8ScriptEngine Get()
-        {
-            lock (locker)
-            {
-                if (engine == null)
-                {
-                    engine = new V8ScriptEngine(
-                        session,
-                        V8ScriptEngineFlags.EnableTaskPromiseConversion
-                        | V8ScriptEngineFlags.EnableValueTaskPromiseConversion
-                        | V8ScriptEngineFlags.MarshalAllLongAsBigInt
-                        | V8ScriptEngineFlags.EnableDateTimeConversion
-                        | V8ScriptEngineFlags.DisableGlobalMembers
-                        | V8ScriptEngineFlags.EnableStringifyEnhancements
-                    )
-                    {
-                        AllowReflection = false
-                    };
-                    engine.AddHostType(typeof(MessageBuilder));
-                }
-                return engine;
-            }
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            var engine = Interlocked.Exchange(ref this.engine, null);
-            engine?.Dispose();
-        }
-
-        ~CacheStub() => Dispose();
-    }
-
-    public void Dispose()
-    {
-        engineCache.Dispose();
-    }
-
-    private CacheStub GetEngine(string session)
-    {
-        var obj = engineCache.Get(session);
-        if (obj != null!) return (CacheStub)obj;
-        var stub = new CacheStub(session);
-        return (CacheStub?)engineCache.AddOrGetExisting(session, stub, DateTimeOffset.Now + expiration) ?? stub;
-    }
-
-    public void Reset(string session)
-    {
-        engineCache.Remove(session);
-    }
-
-    public async Task<object> RunAsync(string session, string script, TimeSpan timeout, params object[] callArgs)
+    public async Task<object> RunAsync(string script, TimeSpan timeout, params object[] callArgs)
     {
         using var cancelToken = new CancellationTokenSource();
         using var runLuaTask =
-            Task.Run(() => RunAsync(session, script, cancelToken.Token, callArgs), cancelToken.Token);
+            Task.Run(() => RunAsync(script, cancelToken.Token, callArgs), cancelToken.Token);
         cancelToken.CancelAfter(timeout);
         try
         {
             var result = await runLuaTask;
             return result;
+        }
+        catch (ScriptInterruptedException)
+        {
+            return "运行超时或执行中断";
         }
         catch (OperationCanceledException)
         {
@@ -89,11 +34,25 @@ public class JsEnv : IDisposable
         }
     }
 
-    public async Task<object> RunAsync(string session, string script, CancellationToken ct, params object[] callArgs)
+    public async Task<object> RunAsync(string script, CancellationToken ct, params object[] callArgs)
     {
         try
         {
-            var engine = GetEngine(session).Get();
+            using var engine = new V8ScriptEngine(
+                $"{Guid.NewGuid():N}",
+                V8ScriptEngineFlags.EnableTaskPromiseConversion // 启用 Task Promise(js) 互转
+                | V8ScriptEngineFlags.EnableValueTaskPromiseConversion // 启用 ValueTask Promise(js) 互转
+                | V8ScriptEngineFlags.MarshalAllLongAsBigInt // long 作为 BigInt(js)
+                | V8ScriptEngineFlags.EnableDateTimeConversion // 启用 DateTime Date(js) 互转
+                | V8ScriptEngineFlags.EnableStringifyEnhancements // 启用 c# 类型的 json 序列化
+            )
+            {
+                AllowReflection = false // 禁用反射
+            };
+            engine.AddHostType(typeof(MessageBuilder));
+
+            engine.ContinuationCallback = () => !ct.IsCancellationRequested;
+            ct.Register(() => engine.Interrupt());
 
             var result = engine.Evaluate(script);
 
