@@ -22,15 +22,6 @@ public class JavaScriptPlugin : WanBotPlugin, IDisposable
         _jsEnv.Dispose();
     }
 
-    public JavaScriptPlugin()
-    {
-        var v8proxyType = typeof(Microsoft.ClearScript.V8.V8Runtime).Assembly.GetType("Microsoft.ClearScript.V8.V8Proxy");
-        var getPathsMethod = v8proxyType.GetMethod("GetDirPaths", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-        IEnumerable<string>  paths = (IEnumerable<string>)getPathsMethod.Invoke(null, new object[] { "win", "x64" });
-        var pa = paths.ToArray();
-        var location = v8proxyType.Assembly.Location;
-        var result = _jsEnv.RunAsync("\"Hello\"", CancellationToken.None).Result;
-    }
     public override void Start()
     {
         this.GetBotHelp()
