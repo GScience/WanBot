@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ClearScript" Version="7.4.3" />
+    <PackageReference Include="Microsoft.ClearScript.V8.Native.linux-x64" Version="7.4.3" />
     <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
   </ItemGroup>
 
