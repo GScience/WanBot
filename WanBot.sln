@@ -14,6 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot", "WanBot\WanBot.csp
 		{5D6F9BDB-7C20-427B-8CE2-CC30EB550BD2} = {5D6F9BDB-7C20-427B-8CE2-CC30EB550BD2}
 		{64A60648-1F52-45E1-AF26-C1445B9D559A} = {64A60648-1F52-45E1-AF26-C1445B9D559A}
 		{9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9} = {9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9}
+		{BF76D3A6-D448-4364-BF2B-4BC8DB6C333B} = {BF76D3A6-D448-4364-BF2B-4BC8DB6C333B}
 		{CD4BDCDA-4218-450C-80F3-C83D19E77D3F} = {CD4BDCDA-4218-450C-80F3-C83D19E77D3F}
 	EndProjectSection
 EndProject
@@ -45,9 +46,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.WanCoin", "Wa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.Pokemon", "WanBot.Plugin.Pokemon\WanBot.Plugin.Pokemon.csproj", "{3B06C0BE-5AFF-476D-A53C-4EAAF1AA85FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.LuaScript", "WanBot.Plugin.LuaScript\WanBot.Plugin.LuaScript.csproj", "{64A60648-1F52-45E1-AF26-C1445B9D559A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.LuaScript", "WanBot.Plugin.LuaScript\WanBot.Plugin.LuaScript.csproj", "{64A60648-1F52-45E1-AF26-C1445B9D559A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.JavaScript", "WanBot.Plugin.JavaScript\WanBot.Plugin.JavaScript.csproj", "{BF76D3A6-D448-4364-BF2B-4BC8DB6C333B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.JavaScript", "WanBot.Plugin.JavaScript\WanBot.Plugin.JavaScript.csproj", "{BF76D3A6-D448-4364-BF2B-4BC8DB6C333B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,11 @@ namespace WanBot
 {
     public class PluginLoadContext : AssemblyLoadContext
     {
-        public PluginLoadContext() : base(true)
+        public BotDomain BotDomain { get; }
+
+        public PluginLoadContext(BotDomain botDomain) : base(true)
         {
+            BotDomain = botDomain;
         }
 
         protected override Assembly? Load(AssemblyName assemblyName)
@@ -22,12 +26,48 @@ namespace WanBot
                 return null;
             return base.Load(assemblyName);
         }
+
+        protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
+        {
+            string platform, architecture;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                platform = "win";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                platform = "linux";
+            }
+            else throw new PlatformNotSupportedException("Unsupported OS platform");
+
+            if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            {
+                architecture = "x64";
+            }
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
+            {
+                architecture = "x86";
+            }
+            else throw new PlatformNotSupportedException("Unsupported OS platform");
+
+            var cwd = Path.Combine(Environment.CurrentDirectory, unmanagedDllName);
+            var pluginDir = Path.Combine(BotDomain.CurrentApplication.PluginPath, unmanagedDllName);
+            var runtimeDir = Path.Combine(BotDomain.CurrentApplication.PluginPath, "runtimes", $"{platform}-{architecture}" , "native", unmanagedDllName);
+
+            if (File.Exists(runtimeDir))
+                return NativeLibrary.Load(runtimeDir);
+            else if (File.Exists(pluginDir))
+                return NativeLibrary.Load(pluginDir);
+            else if (File.Exists(cwd))
+                return NativeLibrary.Load(cwd);
+            else return base.LoadUnmanagedDll(unmanagedDllName);
+        }
     }
 
     public class PluginManager : IPluginManager, IDisposable
     {
         private BotDomain _domain;
-        private PluginLoadContext _pluginLoadContext = new();
+        private PluginLoadContext _pluginLoadContext;
         private ILogger _logger = new Logger("PluginManager");
 
         private PluginChangeListener? _pluginChangeListener;
@@ -45,7 +85,7 @@ namespace WanBot
         public PluginManager(BotDomain domain)
         {
             _domain = domain;
-
+            _pluginLoadContext = new(domain);
             try
             {
                 LoadInternalDeps();
@@ -111,7 +151,7 @@ namespace WanBot
                 _logger.Warn("Unload plugin context can cause memory problem");
 
                 _pluginLoadContext.Unload();
-                _pluginLoadContext = new PluginLoadContext();
+                _pluginLoadContext = new PluginLoadContext(_domain);
             }
         }
 
