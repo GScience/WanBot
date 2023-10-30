@@ -128,12 +128,13 @@ namespace WanBot.Plugin.RandomStuff
         {
             return members
                 // get total days
-                .Select(m => (m, d:(int)((DateTime.Now - new DateTime(1970,1,1,0,0,0,0) - TimeSpan.FromSeconds(m.LastSpeakTimestamp)).TotalDays)))
+                .Select(m => (m, d:(int)((DateTime.Now - DateTimeOffset.FromUnixTimeSeconds(m.LastSpeakTimestamp)).TotalDays)))
                 // get scaled days as weight_1
                 .Select(pair => (pair.m, w:1.0 / (pair.d + 1)))
                 // weight_1 + weight_2
                 .Select(pair => pair.w + new Random((int)pair.m.Id).Next(0, 1))
-                .Select(w => Math.Max(0.001, w))
+                // weight is between 10 to 0.001
+                .Select(w => Math.Min(10, Math.Max(0.001, w)))
                 .ToList();
         }
 
@@ -167,7 +168,7 @@ namespace WanBot.Plugin.RandomStuff
                 var totalWeight = weights.Sum();
                 var index = -1;
                 var currentWeight = 0.0;
-                var randWeight = rand.Next() * totalWeight;
+                var randWeight = rand.NextDouble() * totalWeight;
                 for (var i = 0; i < weights.Count; ++i)
                 {
                     currentWeight += weights[i];
