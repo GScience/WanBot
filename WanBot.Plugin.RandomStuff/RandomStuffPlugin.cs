@@ -128,11 +128,11 @@ namespace WanBot.Plugin.RandomStuff
         {
             return members
                 // get total days
-                .Select(m => (m, d:(int)(DateTime.FromFileTime(m.LastSpeakTimestamp) - DateTime.MinValue).TotalDays))
+                .Select(m => (m, d:(int)((DateTime.Now - new DateTime(1970,1,1,0,0,0,0) - TimeSpan.FromSeconds(m.LastSpeakTimestamp)).TotalDays)))
                 // get scaled days as weight_1
                 .Select(pair => (pair.m, w:1.0 / (pair.d + 1)))
                 // weight_1 + weight_2
-                .Select(pair => pair.w + new Random((int)pair.m.Id).Next(-1, 1))
+                .Select(pair => pair.w + new Random((int)pair.m.Id).Next(0, 1))
                 .Select(w => Math.Max(0.001, w))
                 .ToList();
         }
