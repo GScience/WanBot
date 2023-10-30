@@ -124,6 +124,19 @@ namespace WanBot.Plugin.RandomStuff
             await args.Sender.ReplyAsync(new MessageChain(msgChain));
         }
 
+        private List<double> GenerateMemberWeight(List<Member> members)
+        {
+            return members
+                // get total days
+                .Select(m => (m, d:(int)(DateTime.FromFileTime(m.LastSpeakTimestamp) - DateTime.MinValue).TotalDays))
+                // get scaled days as weight_1
+                .Select(pair => (pair.m, w:1.0 / (pair.d + 1)))
+                // weight_1 + weight_2
+                .Select(pair => pair.w + new Random((int)pair.m.Id).Next(-1, 1))
+                .Select(w => Math.Max(0.001, w))
+                .ToList();
+        }
+
         [Command("随机对象")]
         public async Task OnRandomCp(MiraiBot bot, CommandEventArgs args)
         {
@@ -141,6 +154,7 @@ namespace WanBot.Plugin.RandomStuff
                 await args.Sender.ReplyAsync("完犊子了，不知道你群里都有谁");
                 return;
             }
+            var weights = GenerateMemberWeight(groupMemberList.Data);
 
             if (rand.Next(0, 5) == 1)
             {
@@ -150,9 +164,24 @@ namespace WanBot.Plugin.RandomStuff
             }
             else
             {
-                var index = rand.Next(0, groupMemberList.Data.Count);
+                var totalWeight = weights.Sum();
+                var index = -1;
+                var currentWeight = 0.0;
+                var randWeight = rand.Next() * totalWeight;
+                for (var i = 0; i < weights.Count; ++i)
+                {
+                    currentWeight += weights[i];
+                    if (currentWeight > randWeight)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
                 var msgBuilder = new MessageBuilder();
-                msgBuilder.At(groupSender).Text(" 你今天的对象是：").Text(groupMemberList.Data[index].MemberName);
+                if (index == -1)
+                    msgBuilder.At(groupSender).Text(" 很奇怪，你本来应该有对象的");
+                else
+                    msgBuilder.At(groupSender).Text(" 你今天的对象是：").Text(groupMemberList.Data[index].MemberName);
                 await groupSender.ReplyAsync(msgBuilder);
             }
             args.Blocked = true;
