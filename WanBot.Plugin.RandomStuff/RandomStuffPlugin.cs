@@ -184,7 +184,7 @@ namespace WanBot.Plugin.RandomStuff
                 else
                 {
                     var member = groupMemberList.Data[index];
-                    var memberProfile = await bot.MemberProfileAsync(member.Group.Id, member.Id);
+                    var memberProfile = await bot.MemberProfileAsync(groupSender.GroupId, member.Id);
                     var memberDisplayName = 
                         string.IsNullOrEmpty(memberProfile.Nickname) ? 
                         groupMemberList.Data[index].MemberName : 
