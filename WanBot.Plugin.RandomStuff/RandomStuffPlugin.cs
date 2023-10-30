@@ -148,7 +148,7 @@ namespace WanBot.Plugin.RandomStuff
                 return;
             var rand = new Random($"{args.Sender.Id}{DateTime.Now.Date:d}".GetHashCode());
             var groupMemberList = await bot.MemberListAsync(groupSender.GroupId);
-
+            
             if (groupMemberList == null || groupMemberList.Data == null)
             {
                 Logger.Error("Failed to get member list of group {groupId}", groupSender.GroupId);
@@ -182,7 +182,15 @@ namespace WanBot.Plugin.RandomStuff
                 if (index == -1)
                     msgBuilder.At(groupSender).Text(" 很奇怪，你本来应该有对象的");
                 else
-                    msgBuilder.At(groupSender).Text(" 你今天的对象是：").Text(groupMemberList.Data[index].MemberName);
+                {
+                    var member = groupMemberList.Data[index];
+                    var memberProfile = await bot.MemberProfileAsync(member.Group.Id, member.Id);
+                    var memberDisplayName = 
+                        string.IsNullOrEmpty(memberProfile.Nickname) ? 
+                        groupMemberList.Data[index].MemberName : 
+                        memberProfile.Nickname;
+                    msgBuilder.At(groupSender).Text(" 你今天的对象是：").Text(memberDisplayName);
+                }
                 await groupSender.ReplyAsync(msgBuilder);
             }
             args.Blocked = true;
