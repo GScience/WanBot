@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Net;
 using System.Text.Json;
 using WanBot.Api;
 using WanBot.Api.Event;
@@ -165,7 +167,8 @@ namespace WanBot.Plugin.RandomStuff
             }
             else
             {
-                var totalWeight = weights.Sum();
+                // 随机
+                /*var totalWeight = weights.Sum();
                 var index = -1;
                 var currentWeight = 0.0;
                 var randWeight = rand.NextDouble() * totalWeight;
@@ -177,9 +180,17 @@ namespace WanBot.Plugin.RandomStuff
                         index = i;
                         break;
                     }
-                }
+                }*/
+                // 配对
+                var senderIndex = groupMemberList.Data
+                    .Select((member, index) => (member, index))
+                    .OrderBy(pair => weights[pair.index])
+                    .Where(pair => pair.member.Id == groupSender.Id)
+                    .FirstOrDefault()
+                    .index;
+                var index = (senderIndex % 2 == 0) ? senderIndex + 1 : senderIndex - 1;
                 var msgBuilder = new MessageBuilder();
-                if (index == -1)
+                if (index < 0 || index >= groupMemberList.Data.Count)
                     msgBuilder.At(groupSender).Text(" 很奇怪，你本来应该有对象的");
                 else
                 {
