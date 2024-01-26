@@ -162,8 +162,9 @@ namespace WanBot.Plugin.RandomStuff
                     await args.Sender.ReplyAsync("完犊子了，不知道你群里都有谁");
                     return;
                 }
-                var member = groupMemberList.Data.Where(m => m.Id == at.Target).FirstOrDefault();
-                if (member.Id != at.Target)
+                Logger.Info($"Requiring member {at.Target} weight");
+                var members = groupMemberList.Data.Where(m => m.Id == at.Target);
+                if (!members.Any())
                 {
                     var msgBuilder = new MessageBuilder();
                     msgBuilder.At(groupSender).Text(" 你At了一个不存在的人！！！");
@@ -171,6 +172,7 @@ namespace WanBot.Plugin.RandomStuff
                 }
                 else
                 {
+                    var member = members.First();
                     var weight = GenerateMemberWeight(member);
                     var msgBuilder = new MessageBuilder();
                     msgBuilder.At(groupSender).Text($" 他的对象权重为：{weight}");
@@ -183,6 +185,7 @@ namespace WanBot.Plugin.RandomStuff
                 msgBuilder.Text("你问的谁？请输入#对象权重 @群成员");
                 await groupSender.ReplyAsync(msgBuilder);
             }
+            args.Blocked = true;
         }
 
         [Command("随机对象")]
