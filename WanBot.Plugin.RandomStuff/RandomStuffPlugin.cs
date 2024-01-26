@@ -126,18 +126,63 @@ namespace WanBot.Plugin.RandomStuff
             await args.Sender.ReplyAsync(new MessageChain(msgChain));
         }
 
+        private double GenerateMemberWeight(in Member m)
+        {
+            var d = (int)((DateTime.Now.Date - DateTimeOffset.FromUnixTimeSeconds(m.LastSpeakTimestamp)).TotalDays);
+            var w1 = 1.0 / Math.Max(1, d);
+            var w2 = new Random((int)m.Id).Next(0, 1);
+            var w = Math.Min(10, Math.Max(0.001, w1 + w2));
+            return w;
+        }
+
         private List<double> GenerateMemberWeight(List<Member> members)
         {
             return members
                 // get total days
-                .Select(m => (m, d:(int)((DateTime.Now.Date - DateTimeOffset.FromUnixTimeSeconds(m.LastSpeakTimestamp)).TotalDays)))
-                // get scaled days as weight_1
-                .Select(pair => (pair.m, w:1.0 / Math.Max(1, pair.d)))
-                // weight_1 + weight_2
-                .Select(pair => pair.w + new Random((int)pair.m.Id).Next(0, 1))
-                // weight is between 10 to 0.001
-                .Select(w => Math.Min(10, Math.Max(0.001, w)))
+                .Select(m => GenerateMemberWeight(m))
                 .ToList();
+        }
+
+        [Command("对象权重")]
+        public async Task OnRandomCpWeight(MiraiBot bot, CommandEventArgs args)
+        {
+            if (!args.Sender.HasCommandPermission(this, "cp"))
+                return;
+
+            if (args.Sender is not GroupSender groupSender)
+                return;
+
+            try
+            {
+                var at = args.GetNextArgs<At>();
+                var groupMemberList = await bot.MemberListAsync(groupSender.GroupId);
+                if (groupMemberList == null || groupMemberList.Data == null)
+                {
+                    Logger.Error("Failed to get member list of group {groupId}", groupSender.GroupId);
+                    await args.Sender.ReplyAsync("完犊子了，不知道你群里都有谁");
+                    return;
+                }
+                var member = groupMemberList.Data.Where(m => m.Id == at.Target).FirstOrDefault();
+                if (member.Id != at.Target)
+                {
+                    var msgBuilder = new MessageBuilder();
+                    msgBuilder.At(groupSender).Text(" 你At了一个不存在的人！！！");
+                    await groupSender.ReplyAsync(msgBuilder);
+                }
+                else
+                {
+                    var weight = GenerateMemberWeight(member);
+                    var msgBuilder = new MessageBuilder();
+                    msgBuilder.At(groupSender).Text($" 他的对象权重为：{weight}");
+                    await groupSender.ReplyAsync(msgBuilder);
+                }
+            }
+            catch (Exception)
+            {
+                var msgBuilder = new MessageBuilder();
+                msgBuilder.Text("你问的谁？请输入#对象权重 @群成员");
+                await groupSender.ReplyAsync(msgBuilder);
+            }
         }
 
         [Command("随机对象")]
