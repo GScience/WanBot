@@ -41,6 +41,16 @@ namespace WanBot.Plugin.AI
             }
         }
 
+        [Command("ai_reload")]
+        public async Task OnReloadAI(MiraiBot bot, CommandEventArgs commandEvent)
+        {
+            if (!commandEvent.Sender.HasPermission(this, "ai_reload"))
+                return;
+            commandEvent.Blocked = true;
+            _config = GetConfig<AIConfig>();
+            await commandEvent.Sender.ReplyAsync("重载成功");
+        }
+
         [Command("你怎么看")]
         public async Task OnWhatYouThink(MiraiBot bot, CommandEventArgs commandEvent)
         {
