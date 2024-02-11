@@ -152,40 +152,62 @@ namespace WanBot.Plugin.RandomStuff
             if (args.Sender is not GroupSender groupSender)
                 return;
 
-            try
+            args.Blocked = true;
+            long targetId = -1;
+            var nextArg = args.GetNextArgs<object>();
+
+            if (nextArg is At at)
             {
-                var at = args.GetNextArgs<At>();
-                var groupMemberList = await bot.MemberListAsync(groupSender.GroupId);
-                if (groupMemberList == null || groupMemberList.Data == null)
+                targetId = at.Target;
+            }
+            else if (nextArg is string str)
+            {
+                if (!long.TryParse(str, out targetId))
                 {
-                    Logger.Error("Failed to get member list of group {groupId}", groupSender.GroupId);
-                    await args.Sender.ReplyAsync("完犊子了，不知道你群里都有谁");
+                    var msgBuilder = new MessageBuilder();
+                    msgBuilder.Text($"{str}不是一个有效的QQ号哦，请输入#对象权重 @群成员");
+                    await groupSender.ReplyAsync(msgBuilder);
                     return;
                 }
-                Logger.Info($"Requiring member {at.Target} weight");
-                var members = groupMemberList.Data.Where(m => m.Id == at.Target);
-                if (!members.Any())
-                {
-                    var msgBuilder = new MessageBuilder();
-                    msgBuilder.At(groupSender).Text(" 你At了一个不存在的人！！！");
-                    await groupSender.ReplyAsync(msgBuilder);
-                }
-                else
-                {
-                    var member = members.First();
-                    var weight = CalculateMemberWeight(member);
-                    var msgBuilder = new MessageBuilder();
-                    msgBuilder.At(groupSender).Text($" {at.Display} 的对象权重为：{weight}");
-                    await groupSender.ReplyAsync(msgBuilder);
-                }
             }
-            catch (Exception)
+            else
             {
                 var msgBuilder = new MessageBuilder();
                 msgBuilder.Text("你问的谁？请输入#对象权重 @群成员");
                 await groupSender.ReplyAsync(msgBuilder);
+                return;
             }
-            args.Blocked = true;
+            var groupMemberList = await bot.MemberListAsync(groupSender.GroupId);
+            if (groupMemberList == null || groupMemberList.Data == null)
+            {
+                Logger.Error("Failed to get member list of group {groupId}", groupSender.GroupId);
+                await args.Sender.ReplyAsync("完犊子了，不知道你群里都有谁");
+                return;
+            }
+            var members = groupMemberList.Data.Where(m => m.Id == targetId);
+            if (!members.Any())
+            {
+                var msgBuilder = new MessageBuilder();
+                msgBuilder.At(groupSender).Text(" 你At了一个不存在的人！！！");
+                await groupSender.ReplyAsync(msgBuilder);
+            }
+            else
+            {
+                var member = members.First();
+                var weight = CalculateMemberWeight(member);
+                var rateMessage = weight switch
+                {
+                    > 0.9 => "是非常常见的对象呢",
+                    > 0.75 => "是比较常见的对象呢",
+                    > 0.5 => "是一般常见的对象呢",
+                    > 0.25 => "是比较少见的对象呢",
+                    > 0.1 => "是非常罕见的对象呢",
+                    _ => "是几乎不可能出现的对象呢",
+                };
+                var msgBuilder = new MessageBuilder();
+                msgBuilder.At(groupSender).Text($" TA的对象权重为：{weight:0.00}，{rateMessage}");
+                await groupSender.ReplyAsync(msgBuilder);
+            }
         }
 
         [Command("随机对象")]
