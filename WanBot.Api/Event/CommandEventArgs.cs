@@ -37,6 +37,7 @@ namespace WanBot.Api.Event
         public T GetNextArgs<T>()
         {
             var next = _divider.ReadNext();
+            if (next == null) return default(T);
             if (next is not T nextT)
                 throw new InvalidOperationException($"{next} is not {typeof(T)}");
             return nextT;

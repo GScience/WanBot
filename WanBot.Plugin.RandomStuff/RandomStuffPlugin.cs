@@ -269,7 +269,7 @@ namespace WanBot.Plugin.RandomStuff
                     //var memberProfile = await bot.MemberProfileAsync(groupSender.GroupId, member.Id);
                     var memberDisplayName = member.MemberName;
                     var rateMessage = GetMemberWeightDescription(weights[index]);
-                    msgBuilder.At(groupSender).Text(" 你今天的对象是：").Text(memberDisplayName).Text(rateMessage);
+                    msgBuilder.At(groupSender).Text($" 你今天的对象是：{memberDisplayName}\n{rateMessage}");
                 }
                 await groupSender.ReplyAsync(msgBuilder);
             }
