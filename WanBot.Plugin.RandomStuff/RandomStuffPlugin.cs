@@ -143,6 +143,17 @@ namespace WanBot.Plugin.RandomStuff
                 .ToList();
         }
 
+        private static string GetMemberWeightDescription(double weight)
+            => weight switch
+            {
+                > 0.9 => "是非常常见的对象呢",
+                > 0.75 => "是比较常见的对象呢",
+                > 0.5 => "是一般常见的对象呢",
+                > 0.25 => "是比较少见的对象呢",
+                > 0.1 => "是非常罕见的对象呢",
+                _ => "是几乎不可能出现的对象呢",
+            };
+
         [Command("对象权重")]
         public async Task OnRandomCpWeight(MiraiBot bot, CommandEventArgs args)
         {
@@ -165,7 +176,7 @@ namespace WanBot.Plugin.RandomStuff
                 if (!long.TryParse(str, out targetId))
                 {
                     var msgBuilder = new MessageBuilder();
-                    msgBuilder.Text($"{str}不是一个有效的QQ号哦，请输入#对象权重 @群成员");
+                    msgBuilder.Text($"八嘎！\"{str}\"不是QQ号，请输入#对象权重 @群成员");
                     await groupSender.ReplyAsync(msgBuilder);
                     return;
                 }
@@ -188,24 +199,16 @@ namespace WanBot.Plugin.RandomStuff
             if (!members.Any())
             {
                 var msgBuilder = new MessageBuilder();
-                msgBuilder.At(groupSender).Text(" 你At了一个不存在的人！！！");
+                msgBuilder.At(groupSender).Text(" 你问了一个不存在的人！！！");
                 await groupSender.ReplyAsync(msgBuilder);
             }
             else
             {
                 var member = members.First();
                 var weight = CalculateMemberWeight(member);
-                var rateMessage = weight switch
-                {
-                    > 0.9 => "是非常常见的对象呢",
-                    > 0.75 => "是比较常见的对象呢",
-                    > 0.5 => "是一般常见的对象呢",
-                    > 0.25 => "是比较少见的对象呢",
-                    > 0.1 => "是非常罕见的对象呢",
-                    _ => "是几乎不可能出现的对象呢",
-                };
+                var rateMessage = GetMemberWeightDescription(weight);
                 var msgBuilder = new MessageBuilder();
-                msgBuilder.At(groupSender).Text($" TA的对象权重为：{weight:0.00}，{rateMessage}");
+                msgBuilder.At(groupSender).Text($" {member.MemberName} 的对象权重为：{weight:0.00}，{rateMessage}");
                 await groupSender.ReplyAsync(msgBuilder);
             }
         }
@@ -232,7 +235,13 @@ namespace WanBot.Plugin.RandomStuff
             if (rand.Next(0, 5) == 1)
             {
                 var msgBuilder = new MessageBuilder();
-                msgBuilder.At(groupSender).Text(" 你今天没有对象");
+                msgBuilder.At(groupSender).Text(" 八嘎！你今天没有对象");
+                await groupSender.ReplyAsync(msgBuilder);
+            }
+            if (rand.Next(0, 20) == 1)
+            {
+                var msgBuilder = new MessageBuilder();
+                msgBuilder.At(groupSender).Text(" 今天陪我可以吗？");
                 await groupSender.ReplyAsync(msgBuilder);
             }
             else
@@ -257,12 +266,10 @@ namespace WanBot.Plugin.RandomStuff
                 else
                 {
                     var member = groupMemberList.Data[index];
-                    var memberProfile = await bot.MemberProfileAsync(groupSender.GroupId, member.Id);
-                    var memberDisplayName = 
-                        string.IsNullOrEmpty(memberProfile.Nickname) ? 
-                        groupMemberList.Data[index].MemberName : 
-                        memberProfile.Nickname;
-                    msgBuilder.At(groupSender).Text(" 你今天的对象是：").Text(memberDisplayName);
+                    //var memberProfile = await bot.MemberProfileAsync(groupSender.GroupId, member.Id);
+                    var memberDisplayName = member.MemberName;
+                    var rateMessage = GetMemberWeightDescription(weights[index]);
+                    msgBuilder.At(groupSender).Text(" 你今天的对象是：").Text(memberDisplayName).Text(rateMessage);
                 }
                 await groupSender.ReplyAsync(msgBuilder);
             }
