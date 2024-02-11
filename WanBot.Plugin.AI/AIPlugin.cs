@@ -61,7 +61,7 @@ namespace WanBot.Plugin.AI
                     await commandEvent.Sender.ReplyAsync("看什么？");
                 else
                 {
-                    var groupChatHistory = _chatHistory.GetFormatedChatHistory(groupSender.GroupId, '\u0000');
+                    var groupChatHistory = _chatHistory.GetFormatedChatHistory(groupSender.GroupId, '\u0000', 30);
                     var aiResponse = await _aiAdapter.ProcessAsync(
                         _config.SystemPrompt, 
                         groupChatHistory + $"<{commandEvent.Sender.DisplayName}>:{nextCommandString}");
