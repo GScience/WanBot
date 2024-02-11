@@ -238,7 +238,7 @@ namespace WanBot.Plugin.RandomStuff
                 msgBuilder.At(groupSender).Text(" 八嘎！你今天没有对象");
                 await groupSender.ReplyAsync(msgBuilder);
             }
-            if (rand.Next(0, 20) == 1)
+            else if (rand.Next(0, 20) == 1)
             {
                 var msgBuilder = new MessageBuilder();
                 msgBuilder.At(groupSender).Text(" 今天陪我可以吗？");
