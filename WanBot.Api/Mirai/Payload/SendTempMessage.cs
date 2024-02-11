@@ -14,7 +14,7 @@ namespace WanBot.Api.Mirai.Payload
     /// </summary>
     [HttpApi("sendTempMessage", HttpAdapterMethod.PostJson)]
     [WsApi("sendTempMessage")]
-    public class SendTempMessageRequest
+    public class SendTempMessageRequest : Request
     {
         /// <summary>
         /// 已经激活的Session

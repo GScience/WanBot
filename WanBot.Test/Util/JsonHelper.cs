@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WanBot.Api.Mirai.Event;
+using WanBot.Api.Mirai.Message;
 using WanBot.Api.Util;
 
 namespace WanBot.Test.Util
@@ -13,12 +15,32 @@ namespace WanBot.Test.Util
     {
         public static void TestJsonSerialization<T>(string json) where T : class
         {
+            if (typeof(T).IsAssignableTo(typeof(BaseMiraiEvent)))
+                TestJsonSerializationEvent<T>(json);
+            else if (typeof(T).IsAssignableTo(typeof(BaseChain)))
+                TestJsonSerializationMessage<T>(json);
+            else
+                TestJsonSerializationEvent<T, object>(json);
+        }
+
+        public static void TestJsonSerializationEvent<T, TBase>(string json)
+        {
             var obj
-                = JsonSerializer.Deserialize<T>(json, MiraiJsonContext.Default.Options);
+                = JsonSerializer.Deserialize<TBase>(json, MiraiJsonContext.Default.Options);
             var serializedJson = JsonSerializer.Serialize(obj, MiraiJsonContext.Default.Options);
 
             if (!IsJsonSame(serializedJson, json))
                 Assert.Fail($"Failed while check {typeof(T).Name} protocol");
+        }
+
+        public static void TestJsonSerializationEvent<T>(string json)
+        {
+            TestJsonSerializationEvent<T, BaseMiraiEvent>(json);
+        }
+
+        public static void TestJsonSerializationMessage<T>(string json)
+        {
+            TestJsonSerializationEvent<T, BaseChain>(json);
         }
 
         public static bool IsJsonSame(string a, string b)

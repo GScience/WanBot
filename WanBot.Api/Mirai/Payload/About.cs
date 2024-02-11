@@ -10,7 +10,7 @@ namespace WanBot.Api.Mirai.Payload
 {
     [HttpApi("about")]
     [WsApi("about")]
-    public class AboutRequest
+    public class AboutRequest : Request
     {
     }
 

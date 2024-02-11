@@ -11,7 +11,7 @@ namespace WanBot.Api.Mirai.Event
     /// </summary>
     public class NudgeEvent : BaseMiraiEvent
     {
-        public class Source
+        public class NugetSource
         {
             /// <summary>
             /// 来源的QQ号（好友）或群号
@@ -32,7 +32,7 @@ namespace WanBot.Api.Mirai.Event
         /// <summary>
         /// 来源
         /// </summary>
-        public Source Subject { get; set; } = new();
+        public NugetSource Subject { get; set; } = new();
 
         /// <summary>
         /// 动作类型

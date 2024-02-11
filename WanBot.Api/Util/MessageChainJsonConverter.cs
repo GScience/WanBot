@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace WanBot.Api.Util
     {
         public override MessageChain? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var messageChainArray = JsonSerializer.Deserialize<BaseChain[]>(ref reader, options);
+            var messageChainArray = JsonSerializer.Deserialize<IEnumerable<BaseChain>>(ref reader, options);
             if (messageChainArray == null)
                 return null;
             return new MessageChain(messageChainArray);

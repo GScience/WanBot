@@ -14,7 +14,7 @@ namespace WanBot.Api.Mirai.Payload
     /// </summary>
     [HttpApi("sendNudge", HttpAdapterMethod.PostJson)]
     [WsApi("sendNudge")]
-    public class SendNudgeRequest
+    public class SendNudgeRequest : Request
     {
         /// <summary>
         /// 已经激活的Session

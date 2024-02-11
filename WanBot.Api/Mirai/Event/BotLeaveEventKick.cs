@@ -19,6 +19,6 @@ namespace WanBot.Api.Mirai.Event
         /// <summary>
         /// Bot被踢后获取操作人的 Member 对象
         /// </summary>
-        public Member Operator { get; set; } = new();
+        public Member? Operator { get; set; } = new();
     }
 }

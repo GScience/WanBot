@@ -8,16 +8,28 @@ using WanBot.Api.Util;
 
 namespace WanBot.Api.Mirai.Message
 {
-    [JsonConverter(typeof(PolymorphicJsonConverter<BaseChain>))]
-    public abstract class BaseChain : ISerializablePolymorphic
+    [JsonDerivedType(typeof(App), nameof(App))]
+    [JsonDerivedType(typeof(At), nameof(At))]
+    [JsonDerivedType(typeof(AtAll), nameof(AtAll))]
+    [JsonDerivedType(typeof(BaseChain), nameof(BaseChain))]
+    [JsonDerivedType(typeof(Dice), nameof(Dice))]
+    [JsonDerivedType(typeof(Face), nameof(Face))]
+    [JsonDerivedType(typeof(File), nameof(File))]
+    [JsonDerivedType(typeof(FlashImage), nameof(FlashImage))]
+    [JsonDerivedType(typeof(Forward), nameof(Forward))]
+    [JsonDerivedType(typeof(Image), nameof(Image))]
+    [JsonDerivedType(typeof(Json), nameof(Json))]
+    [JsonDerivedType(typeof(MarketFace), nameof(MarketFace))]
+    [JsonDerivedType(typeof(MiraiCode), nameof(MiraiCode))]
+    [JsonDerivedType(typeof(MusicShare), nameof(MusicShare))]
+    [JsonDerivedType(typeof(Plain), nameof(Plain))]
+    [JsonDerivedType(typeof(Poke), nameof(Poke))]
+    [JsonDerivedType(typeof(Quote), nameof(Quote))]
+    [JsonDerivedType(typeof(Source), nameof(Source))]
+    [JsonDerivedType(typeof(Voice), nameof(Voice))]
+    [JsonDerivedType(typeof(Xml), nameof(Xml))]
+    [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
+    public class BaseChain
     {
-        [JsonPropertyOrder(int.MinValue)]
-        public string Type => GetType().Name;
-
-        /// <summary>
-        /// 获取消息的HashCode
-        /// </summary>
-        /// <returns></returns>
-        public abstract override int GetHashCode();
     }
 }

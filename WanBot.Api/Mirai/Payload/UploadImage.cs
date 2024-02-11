@@ -9,7 +9,7 @@ using WanBot.Api.Mirai.Network;
 namespace WanBot.Api.Mirai.Payload
 {
     [HttpApi("uploadImage", HttpAdapterMethod.PostMultipart)]
-    public class UploadImageRequest
+    public class UploadImageRequest : Request
     {
         public string SessionKey { get; set; } = string.Empty;
         

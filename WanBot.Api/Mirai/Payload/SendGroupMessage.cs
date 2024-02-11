@@ -14,7 +14,7 @@ namespace WanBot.Api.Mirai.Payload
     /// </summary>
     [HttpApi("sendGroupMessage", HttpAdapterMethod.PostJson)]
     [WsApi("sendGroupMessage")]
-    public class SendGroupMessageRequest
+    public class SendGroupMessageRequest : Request
     {
         /// <summary>
         /// 已经激活的Session

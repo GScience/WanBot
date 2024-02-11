@@ -51,9 +51,9 @@ namespace WanBot.Test
 
             Debug.WriteLine("Create MessageChain for testing");
             var forwardMessage = new Forward();
-            var nodeList = new List<Forward.Node>();
+            var nodeList = new List<Forward.ForwardNode>();
             forwardMessage.NodeList = nodeList;
-            nodeList.Add(new Forward.Node()
+            nodeList.Add(new Forward.ForwardNode()
             {
                 MessageChain = new MessageChain(
                     new BaseChain[]

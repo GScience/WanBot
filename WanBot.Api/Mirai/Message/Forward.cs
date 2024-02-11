@@ -16,7 +16,7 @@ namespace WanBot.Api.Mirai.Message
         /// <summary>
         /// 消息节点
         /// </summary>
-        public class Node
+        public class ForwardNode
         {
             /// <summary>
             /// 发送人QQ号
@@ -56,7 +56,7 @@ namespace WanBot.Api.Mirai.Message
         /// <summary>
         /// 消息节点
         /// </summary>
-        public List<Node>? NodeList { get; set; } = null;
+        public List<ForwardNode>? NodeList { get; set; } = null;
 
         public override int GetHashCode()
         {

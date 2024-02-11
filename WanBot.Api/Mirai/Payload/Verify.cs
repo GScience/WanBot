@@ -9,7 +9,7 @@ using WanBot.Api.Mirai.Network;
 namespace WanBot.Api.Mirai.Payload
 {
     [HttpApi("verify")]
-    public class VerifyRequest
+    public class VerifyRequest : Request
     {
         public int Code { get; set; }
         public string Session { get; set; } = string.Empty;

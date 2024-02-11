@@ -10,7 +10,7 @@ namespace WanBot.Api.Message
 {
     public class ForwardMessageBuilder : IMessageBuilder
     {
-        private List<Func<MiraiBot, MessageType, Forward.Node>> _nodeListFactory = new();
+        private List<Func<MiraiBot, MessageType, Forward.ForwardNode>> _nodeListFactory = new();
 
         /// <summary>
         /// 创建转发消息
@@ -18,7 +18,7 @@ namespace WanBot.Api.Message
         /// <returns></returns>
         public ForwardMessageBuilder Forward(long target, string senderName, IMessageBuilder msg)
         {
-            _nodeListFactory.Add((bot, msgType) => new Forward.Node
+            _nodeListFactory.Add((bot, msgType) => new Forward.ForwardNode
             {
                 MessageChain = new MessageChain(msg.Build(bot, msgType)),
                 SenderId = target,
@@ -37,7 +37,7 @@ namespace WanBot.Api.Message
             };
         }
 
-        private IEnumerable<Forward.Node> BuildNodeList(MiraiBot bot, MessageType messageType)
+        private IEnumerable<Forward.ForwardNode> BuildNodeList(MiraiBot bot, MessageType messageType)
         {
             foreach (var obj in _nodeListFactory)
                 yield return obj.Invoke(bot, messageType);

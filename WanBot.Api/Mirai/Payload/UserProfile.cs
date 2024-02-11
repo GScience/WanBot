@@ -10,7 +10,7 @@ namespace WanBot.Api.Mirai.Payload
 {
     [HttpApi("userProfile")]
     [WsApi("userProfile")]
-    public class UserProfileRequest
+    public class UserProfileRequest : Request
     {
         public string SessionKey { get; set; } = string.Empty;
         public long Target { get; set; }

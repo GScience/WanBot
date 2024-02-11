@@ -10,7 +10,7 @@ namespace WanBot.Api.Mirai.Payload
 {
     [HttpApi("quit", HttpAdapterMethod.PostJson)]
     [WsApi("quit")]
-    public class QuitRequest
+    public class QuitRequest : Request
     {
         public string SessionKey { get; set; } = string.Empty;
         public long Target { get; set; }

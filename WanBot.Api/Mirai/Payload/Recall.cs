@@ -14,7 +14,7 @@ namespace WanBot.Api.Mirai.Payload
     /// </summary>
     [HttpApi("recall", HttpAdapterMethod.PostJson)]
     [WsApi("recall")]
-    public class RecallRequest
+    public class RecallRequest : Request
     {
         /// <summary>
         /// 已经激活的Session

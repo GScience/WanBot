@@ -12,7 +12,7 @@ namespace WanBot.Api.Mirai.Payload
 {
     [HttpApi("messageFromId")]
     [WsApi("messageFromId")]
-    public class MessageFromIdRequest
+    public class MessageFromIdRequest : Request
     {
         public string SessionKey { get; set; } = string.Empty;
 

@@ -10,7 +10,7 @@ namespace WanBot.Api.Mirai.Payload
 {
     [HttpApi("memberList")]
     [WsApi("memberList")]
-    public class MemberListRequest
+    public class MemberListRequest : Request
     {
         public string SessionKey { get; set; } = string.Empty;
         public long Target { get; set; }

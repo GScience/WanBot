@@ -14,7 +14,7 @@ namespace WanBot.Api.Mirai.Payload
     /// </summary>
     [HttpApi("sendFriendMessage", HttpAdapterMethod.PostJson)]
     [WsApi("sendFriendMessage")]
-    public class SendFriendMessageRequest
+    public class SendFriendMessageRequest : Request
     {
         /// <summary>
         /// 已经激活的Session

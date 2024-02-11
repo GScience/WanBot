@@ -13,7 +13,7 @@ namespace WanBot.Api.Mirai.Payload
     /// </summary>
     [HttpApi("resp/botInvitedJoinGroupRequestEvent", HttpAdapterMethod.PostJson)]
     [WsApi("resp_botInvitedJoinGroupRequestEvent")]
-    public class ResponseBotInvitedJoinGroupRequestEventRequest
+    public class ResponseBotInvitedJoinGroupRequestEventRequest : Request
     {
         /// <summary>
         /// 已经激活的Session

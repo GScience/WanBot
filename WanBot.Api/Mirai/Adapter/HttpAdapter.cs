@@ -49,7 +49,7 @@ namespace WanBot.Api.Mirai.Adapter
         }
 
         public async Task<ResponsePayload?> SendAsync<ResponsePayload, RequestPayload>(RequestPayload? request)
-            where RequestPayload : class
+            where RequestPayload : IRequest
             where ResponsePayload : IResponse
         {
             if (request == null)
