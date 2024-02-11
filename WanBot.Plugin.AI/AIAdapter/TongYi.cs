@@ -29,20 +29,24 @@ namespace WanBot.Plugin.AI.AIAdapter
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
             _model = model;
         }
-        public async Task<string> ProcessAsync(string systemMessage, string userMessage)
+        public async Task<string> ProcessAsync(string systemMessage, IEnumerable<GroupChat> chats)
         {
+            var tongYiChats = new List<TongYiHttpPostMessage>
+            {
+                new(
+                    "system",
+                    systemMessage),
+            };
+            foreach (var chat in chats)
+            {
+                var role = chat.IsBotMessage ? "assistant" : "user";
+                var chatContent = chat.Content.Length >= 100 ? chat.Content[..100] : chat.Content;
+                tongYiChats.Add(new(role, chatContent));
+            }
             var postPayload = new TongYiHttpPost(
                 _model,
                 new TongYiHttpPostInput(
-                    new TongYiHttpPostMessage[]
-                    {
-                        new TongYiHttpPostMessage(
-                            "system",
-                            systemMessage),
-                        new TongYiHttpPostMessage(
-                            "user",
-                            userMessage)
-                    },
+                    tongYiChats,
                     new TongYiHttpPostParams(
                         "text",
                         true)
@@ -50,34 +54,32 @@ namespace WanBot.Plugin.AI.AIAdapter
                 );
             var content = JsonContent.Create(postPayload, options : _serializerOptions);
             var response = await _httpClient.PostAsync(TongYiUrl, content);
-            var responsePayload = 
-                await response.Content.ReadFromJsonAsync<TongYiHttpResponse>(_serializerOptions) 
-                ?? throw new Exception("Failed to get http response");
+            var responsePayload = await response.Content.ReadFromJsonAsync<TongYiHttpResponse>(_serializerOptions);
             return responsePayload.Output.Text;
         }
     }
 
-    internal record TongYiHttpPost(
+    internal record struct TongYiHttpPost(
         string Model,
         TongYiHttpPostInput Input);
 
-    internal record TongYiHttpPostInput(
+    internal record struct TongYiHttpPostInput(
         IEnumerable<TongYiHttpPostMessage> Messages,
         TongYiHttpPostParams Parameters);
 
-    internal record TongYiHttpPostMessage(
+    internal record struct TongYiHttpPostMessage(
         string Role,
         string Content);
 
-    internal record TongYiHttpPostParams(
+    internal record struct TongYiHttpPostParams(
         string ResultFormat,
         bool EnableSearch);
 
-    internal record TongYiHttpResponseOutput(
+    internal record struct TongYiHttpResponseOutput(
         string Text,
         string FinishReason);
 
-    internal record TongYiHttpResponse(
+    internal record struct TongYiHttpResponse(
         string Code,
         TongYiHttpResponseOutput Output);
 }

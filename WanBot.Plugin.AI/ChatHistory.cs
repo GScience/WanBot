@@ -12,7 +12,7 @@ namespace WanBot.Plugin.AI
     {
         private ConcurrentDictionary<long, GroupChatHistory> _chatDict = new();
 
-        public void LogChat(long groupId, string chatStr)
+        public void LogChat(long groupId, string chatStr, bool isBot)
         {
             if (!_chatDict.TryGetValue(groupId, out var chatHistory))
             {
@@ -21,33 +21,26 @@ namespace WanBot.Plugin.AI
             }
             lock (chatHistory.Chats)
             {
-                chatHistory.Chats.Add(chatStr);
+                chatHistory.Chats.Add(new(chatStr, isBot));
                 if (chatHistory.Chats.Count > 20)
                     chatHistory.Chats.RemoveAt(0);
             }
         }
 
-        public string GetFormatedChatHistory(long groupId, char lineSplit, int maxLength)
+        public GroupChat[] GetChatHistory(long groupId)
         {
             if (!_chatDict.TryGetValue(groupId, out var chatHistory))
-                return "";
-            var result = "";
+                return Array.Empty<GroupChat>();
             lock (chatHistory.Chats)
             {
-                foreach (var chat in chatHistory.Chats)
-                {
-                    if (chat.Length > maxLength)
-                        result += chat[..maxLength] + lineSplit;
-                    else
-                        result += chat + lineSplit;
-                }
+                return chatHistory.Chats.ToArray();
             }
-            return result;
         }
     }
 
+    public record struct GroupChat(string Content, bool IsBotMessage);
     public class GroupChatHistory
     {
-        public List<string> Chats = new();
+        public List<GroupChat> Chats = new();
     }
 }

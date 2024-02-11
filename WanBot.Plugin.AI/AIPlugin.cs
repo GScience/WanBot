@@ -56,17 +56,12 @@ namespace WanBot.Plugin.AI
             }
             try
             {
-                var nextArgs = commandEvent.GetNextArgs<object>();
-                if (nextArgs is not string nextCommandString)
-                    await commandEvent.Sender.ReplyAsync("看什么？");
-                else
-                {
-                    var groupChatHistory = _chatHistory.GetFormatedChatHistory(groupSender.GroupId, '\u0000', 30);
-                    var aiResponse = await _aiAdapter.ProcessAsync(
-                        _config.SystemPrompt, 
-                        groupChatHistory + $"<{commandEvent.Sender.DisplayName}>:{nextCommandString}");
-                    await commandEvent.Sender.ReplyAsync(aiResponse);
-                }
+                var groupChatHistory = _chatHistory.GetChatHistory(groupSender.GroupId);
+                var aiResponse = await _aiAdapter.ProcessAsync(
+                    _config.SystemPrompt,
+                    groupChatHistory);
+                await commandEvent.Sender.ReplyAsync(aiResponse);
+                _chatHistory.LogChat(groupSender.GroupId, aiResponse, true);
             }
             catch (Exception ex)
             {
@@ -79,7 +74,7 @@ namespace WanBot.Plugin.AI
         public async Task OnGroupMessage(MiraiBot bot, GroupMessage e)
         {
             var chatStr = await FormatMessageChainAsync(bot, e.Sender.Group.Id, e.Sender.MemberName, e.MessageChain);
-            _chatHistory.LogChat(e.Sender.Group.Id, chatStr);
+            _chatHistory.LogChat(e.Sender.Group.Id, chatStr, false);
         }
 
         [Regex("完犊子")]
@@ -98,12 +93,13 @@ namespace WanBot.Plugin.AI
             try
             {
                 var chatStr = await FormatMessageChainAsync(bot, groupSender.GroupId, atEvent.Sender.DisplayName, atEvent.Chain);
-                _chatHistory.LogChat(groupSender.GroupId, chatStr);
-                var groupChatHistory = _chatHistory.GetFormatedChatHistory(groupSender.GroupId, '\n', 50);
+                _chatHistory.LogChat(groupSender.GroupId, chatStr, false);
+                var groupChatHistory = _chatHistory.GetChatHistory(groupSender.GroupId);
                 var aiResponse = await _aiAdapter.ProcessAsync(
                     _config.SystemPrompt,
                     groupChatHistory);
                 await atEvent.Sender.ReplyAsync(aiResponse);
+                _chatHistory.LogChat(groupSender.GroupId, aiResponse, true);
             }
             catch (Exception ex)
             {

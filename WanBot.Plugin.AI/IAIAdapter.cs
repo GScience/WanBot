@@ -8,6 +8,6 @@ namespace WanBot.Plugin.AI
 {
     internal interface IAIAdapter
     {
-        public Task<string> ProcessAsync(string systemMessage, string userMessage);
+        public Task<string> ProcessAsync(string systemMessage, IEnumerable<GroupChat> chats);
     }
 }
