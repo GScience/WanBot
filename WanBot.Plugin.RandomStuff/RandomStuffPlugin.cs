@@ -129,9 +129,9 @@ namespace WanBot.Plugin.RandomStuff
         private static double CalculateMemberWeight(in Member m)
         {
             var d = (int)((DateTime.Now.Date - DateTimeOffset.FromUnixTimeSeconds(m.LastSpeakTimestamp)).TotalDays);
-            var w1 = 1.0f / Math.Max(1, d);
-            var w2 = ((((m.Id * m.Id) >> 16) % 4096) + 1) / 4096f;
-            var w = Math.Min(1, Math.Max(0.001, w1 + w2));
+            var w1 = 1.0 / Math.Max(1, d);
+            var w2 = ((((m.Id * m.Id) >> 16) % 4096) + 1) / 8192.0 + 0.5;
+            var w = Math.Min(1, Math.Max(0.001, w1 * w2));
             return w;
         }
 
