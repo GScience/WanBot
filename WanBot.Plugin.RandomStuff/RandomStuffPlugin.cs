@@ -126,12 +126,12 @@ namespace WanBot.Plugin.RandomStuff
             await args.Sender.ReplyAsync(new MessageChain(msgChain));
         }
 
-        private double GenerateMemberWeight(in Member m)
+        private static double CalculateMemberWeight(in Member m)
         {
             var d = (int)((DateTime.Now.Date - DateTimeOffset.FromUnixTimeSeconds(m.LastSpeakTimestamp)).TotalDays);
-            var w1 = 1.0 / Math.Max(1, d);
-            var w2 = new Random((int)m.Id).Next(0, 1);
-            var w = Math.Min(10, Math.Max(0.001, w1 + w2));
+            var w1 = 1.0f / Math.Max(1, d);
+            var w2 = ((((m.Id * m.Id) >> 16) % 4096) + 1) / 4096f;
+            var w = Math.Min(1, Math.Max(0.001, w1 + w2));
             return w;
         }
 
@@ -139,7 +139,7 @@ namespace WanBot.Plugin.RandomStuff
         {
             return members
                 // get total days
-                .Select(m => GenerateMemberWeight(m))
+                .Select(m => CalculateMemberWeight(m))
                 .ToList();
         }
 
@@ -173,9 +173,9 @@ namespace WanBot.Plugin.RandomStuff
                 else
                 {
                     var member = members.First();
-                    var weight = GenerateMemberWeight(member);
+                    var weight = CalculateMemberWeight(member);
                     var msgBuilder = new MessageBuilder();
-                    msgBuilder.At(groupSender).Text($" 他的对象权重为：{weight}");
+                    msgBuilder.At(groupSender).Text($" {at.Display} 的对象权重为：{weight}");
                     await groupSender.ReplyAsync(msgBuilder);
                 }
             }
