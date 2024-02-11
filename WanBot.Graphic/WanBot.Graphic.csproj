@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="SharpVk" Version="0.4.2" />
-    <PackageReference Include="SkiaSharp" Version="2.88.1" />
-    <PackageReference Include="SkiaSharp.Vulkan.SharpVk" Version="2.88.1" />
+    <PackageReference Include="SkiaSharp" Version="2.88.7" />
+    <PackageReference Include="SkiaSharp.Vulkan.SharpVk" Version="2.88.7" />
   </ItemGroup>
 
 </Project>
