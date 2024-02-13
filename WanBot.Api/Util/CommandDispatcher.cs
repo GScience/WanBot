@@ -24,6 +24,7 @@ namespace WanBot.Api.Util
             try
             {
                 subCmd = commandEvent.GetNextArgs<string>();
+                if (subCmd == null) return false;
             }
             catch (Exception)
             {
