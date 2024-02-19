@@ -37,11 +37,6 @@ namespace WanBot.Plugin.JobAndLife
         private string[] _withdrawalLevel = new[]
         {
             "提现",
-            "苹果",
-            "香蕉",
-            "车厘子",
-            "西瓜",
-            "榴莲",
             "金元宝",
             "铂金",
             "钻石",
@@ -50,6 +45,7 @@ namespace WanBot.Plugin.JobAndLife
             "宇宙飞船",
             "调试控制台",
             "DotNet",
+            "完犊子"
         };
 
         public override void Start()
