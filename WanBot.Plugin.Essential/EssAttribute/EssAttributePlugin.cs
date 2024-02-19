@@ -84,6 +84,7 @@ namespace WanBot.Plugin.Essential.EssAttribute
 
         public void Dispose()
         {
+            essAttrUsrFactory?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

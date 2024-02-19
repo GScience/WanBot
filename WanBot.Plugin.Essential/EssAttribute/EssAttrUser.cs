@@ -134,7 +134,6 @@ namespace WanBot.Plugin.Essential.EssAttribute
         public void Dispose()
         {
             _db.SaveChanges();
-            _db.Dispose();
             GC.SuppressFinalize(this);
         }
     }

@@ -8,7 +8,7 @@ using WanBot.Api;
 
 namespace WanBot.Plugin.Essential.EssAttribute
 {
-    public class EssAttrUserFactory
+    public class EssAttrUserFactory : IDisposable
     {
         private string _dbPath;
 
@@ -18,6 +18,11 @@ namespace WanBot.Plugin.Essential.EssAttribute
         {
             _dbPath = dbPath;
             _db = new EssAttributeDatabaseContext(_dbPath);
+        }
+
+        public void Dispose()
+        {
+            _db.Dispose();
         }
 
         public EssAttrUser FromSender(ISender sender)
