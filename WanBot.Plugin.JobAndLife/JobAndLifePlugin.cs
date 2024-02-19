@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Reflection;
 using WanBot.Api;
 using WanBot.Api.Event;
 using WanBot.Api.Mirai;
@@ -159,11 +160,15 @@ namespace WanBot.Plugin.JobAndLife
                     await args.Sender.ReplyAsync(
                         $"太遗憾了，没找到{_withdrawalLevel[_withdrawalLevel.Length - 1]}，继续努力哦~");
                 else if (currentLevel == newLevel)
+                {
+                    BigInteger money = 0;
+                    using (var usr = _attrUsr.FromSender(args.Sender)) money = usr.Money;
                     await args.Sender.ReplyAsync(
-                        $"当前已收集{_withdrawalCount % 5 + 1}个\"{_withdrawalLevel[currentLevel]}\"");
+                        $"当前已收集{_withdrawalCount % 5}/5个\"{_withdrawalLevel[currentLevel]}\"加油，马上就能拿{money}！");
+                }
                 else
                     await args.Sender.ReplyAsync(
-                        $"太难收集了？送你1个{_withdrawalLevel[newLevel]}，收集5个获得{_withdrawalLevel[currentLevel]}");
+                        $"太难收集了？送你1个\"{_withdrawalLevel[newLevel]}\"，收集5个获得\"{_withdrawalLevel[currentLevel]}\"");
             }
         }
 
