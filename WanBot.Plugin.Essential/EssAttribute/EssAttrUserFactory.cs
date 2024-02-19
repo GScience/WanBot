@@ -12,15 +12,17 @@ namespace WanBot.Plugin.Essential.EssAttribute
     {
         private string _dbPath;
 
+        private EssAttributeDatabaseContext _db;
+
         public EssAttrUserFactory(string dbPath)
         {
             _dbPath = dbPath;
+            _db = new EssAttributeDatabaseContext(_dbPath);
         }
 
         public EssAttrUser FromSender(ISender sender)
         {
-            var db = new EssAttributeDatabaseContext(_dbPath);
-            return new EssAttrUser(sender.Id, db);
+            return new EssAttrUser(sender.Id, _db);
         }
     }
 }
