@@ -208,7 +208,7 @@ namespace WanBot.Plugin.RandomStuff
                 var weight = CalculateMemberWeight(member);
                 var rateMessage = GetMemberWeightDescription(weight);
                 var msgBuilder = new MessageBuilder();
-                msgBuilder.At(groupSender).Text($" {member.MemberName} 的对象权重为：{weight:0.00}，{rateMessage}");
+                msgBuilder.At(groupSender).Text($" {member.MemberName} 的对象权重为：{weight * 100:0.0}%，{rateMessage}");
                 await groupSender.ReplyAsync(msgBuilder);
             }
         }
