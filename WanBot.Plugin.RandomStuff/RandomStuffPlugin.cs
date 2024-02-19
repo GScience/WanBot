@@ -129,13 +129,13 @@ namespace WanBot.Plugin.RandomStuff
         private static double CalculateMemberWeight(in Member m)
         {
             var d = (int)((DateTime.Now.Date - DateTimeOffset.FromUnixTimeSeconds(m.LastSpeakTimestamp)).TotalDays);
-            var w1 = 1.0 / Math.Max(1, d);
+            var w1 = 1 - 1.0 / Math.Max(1, d);
             var w2 = ((((m.Id * m.Id) >> 16) % 4096) + 1) / 8192.0 + 0.5;
             var w = Math.Min(1, Math.Max(0.001, w1 * w2));
             return w;
         }
 
-        private List<double> GenerateMemberWeight(List<Member> members)
+        private List<double> CalculateMemberWeight(List<Member> members)
         {
             return members
                 // get total days
@@ -230,7 +230,7 @@ namespace WanBot.Plugin.RandomStuff
                 await args.Sender.ReplyAsync("完犊子了，不知道你群里都有谁");
                 return;
             }
-            var weights = GenerateMemberWeight(groupMemberList.Data);
+            var weights = CalculateMemberWeight(groupMemberList.Data);
 
             if (rand.Next(0, 5) == 1)
             {
