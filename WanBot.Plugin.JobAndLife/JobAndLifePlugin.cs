@@ -28,6 +28,29 @@ namespace WanBot.Plugin.JobAndLife
         private EssAttrUserFactory _attrUsr = null!;
         private JrrpAddition? _jrrpAddition;
 
+        /// <summary>
+        /// 提现量表
+        /// </summary>
+        private int _withdrawalCount;
+
+        private string[] _withdrawalLevel = new[]
+        {
+            "提现",
+            "苹果",
+            "香蕉",
+            "车厘子",
+            "西瓜",
+            "榴莲",
+            "金元宝",
+            "铂金",
+            "钻石",
+            "矿场",
+            "银行",
+            "宇宙飞船",
+            "调试控制台",
+            "DotNet",
+        };
+
         public override void Start()
         {
             this.GetBotHelp()
@@ -111,6 +134,37 @@ namespace WanBot.Plugin.JobAndLife
             args.Blocked = true;
             if (!await DoWork(args.Sender, false))
                 await args.Sender.ReplyAsync("你感觉很虚弱，还想干活请加班");
+        }
+
+        [Command("提现")]
+        public async Task OnWithdrawalCommand(MiraiBot bot, CommandEventArgs args)
+        {
+            if (!args.Sender.HasPermission(this, "User"))
+            {
+                await args.Sender.ReplyAsync("完犊子，你没有 提现 的权限");
+                return;
+            }
+            args.Blocked = true;
+            if (_withdrawalCount == 0)
+            {
+                await args.Sender.ReplyAsync($"已超时，重置助力次数，请输入5次{_withdrawalLevel[0]}");
+                _withdrawalCount = 1;
+            }
+            else
+            {
+                var currentLevel = _withdrawalCount / 5;
+                ++_withdrawalCount;
+                var newLevel = _withdrawalCount / 5;
+                if (newLevel >= _withdrawalLevel.Length)
+                    await args.Sender.ReplyAsync(
+                        $"太遗憾了，没找到{_withdrawalLevel[_withdrawalLevel.Length - 1]}，继续努力哦~");
+                else if (currentLevel == newLevel)
+                    await args.Sender.ReplyAsync(
+                        $"当前已收集{_withdrawalCount % 5 + 1}个\"{_withdrawalLevel[currentLevel]}\"");
+                else
+                    await args.Sender.ReplyAsync(
+                        $"太难收集了？送你1个{_withdrawalLevel[newLevel]}，收集5个获得{_withdrawalLevel[currentLevel]}");
+            }
         }
 
         /// <summary>
