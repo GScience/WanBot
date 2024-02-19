@@ -148,7 +148,7 @@ namespace WanBot.Plugin.JobAndLife
             args.Blocked = true;
             if (_withdrawalCount == 0)
             {
-                await args.Sender.ReplyAsync($"已超时，重置助力次数，请输入5次{_withdrawalLevel[0]}");
+                await args.Sender.ReplyAsync($"已超时，重置助力次数，请输入5次{_withdrawalLevel[0]}，已输入1次");
                 _withdrawalCount = 1;
             }
             else
