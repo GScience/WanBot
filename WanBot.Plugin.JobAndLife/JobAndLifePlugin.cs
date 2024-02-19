@@ -168,7 +168,7 @@ namespace WanBot.Plugin.JobAndLife
                 }
                 else
                     await args.Sender.ReplyAsync(
-                        $"太难收集了？送你1个\"{_withdrawalLevel[newLevel]}\"，收集5个获得\"{_withdrawalLevel[currentLevel]}\"");
+                        $"太难收集了？收集概率更大的\"{_withdrawalLevel[newLevel]}\"吧，满5个可换1个\"{_withdrawalLevel[currentLevel]}\"");
             }
         }
 
