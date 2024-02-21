@@ -31,7 +31,7 @@ namespace WanBot.Plugin.Kemono
                 .Category("奇怪小功能")
                 .Command("#查作者 <作者名> [服务]", "查询你想要的作者")
                 .Command("#查内容 <作者名> <查询内容> [服务]", "查看他发了什么")
-                .Command("#查最新 <作者名> [服务]", "查看他最新发了什么");
+                .Command("#查最新 <作者名> [第几篇] [服务]", "查看他最新发了什么");
             RefreshAsync().Wait();
         }
 
@@ -140,6 +140,7 @@ namespace WanBot.Plugin.Kemono
             {
                 if (!args.Sender.HasPermission(this, "Search")) return;
                 var createrKeyword = args.GetNextArgs<string>();
+                var postIdStr = args.GetNextArgs<string>();
                 var serverKeyword = args.GetNextArgs<string>();
                 var creator = SearchCreator(createrKeyword, serverKeyword);
                 if (string.IsNullOrEmpty(creator.Name))
@@ -153,7 +154,16 @@ namespace WanBot.Plugin.Kemono
                     await args.Sender.ReplyAsync($"坏了，啥也没找到", args.GetMessageId());
                     return;
                 }
-                await SendPostAsync(args.Sender, posts[0], args.GetMessageId());
+                var postId = 0;
+                if (postIdStr != null)
+                {
+                    if (!int.TryParse(postIdStr, out postId))
+                        await args.Sender.ReplyAsync($"{postIdStr}不是数字哦~");
+                }
+                if (postId >= posts.Length)
+                    await args.Sender.ReplyAsync($"没发那么多哦~");
+                else
+                    await SendPostAsync(args.Sender, posts[postId], args.GetMessageId());
             }
             finally
             {

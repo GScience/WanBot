@@ -105,7 +105,7 @@ namespace WanBot.Plugin.Essential.Extension
             using var grid = new Grid();
 
             var content = new VerticalLayout();
-            content.Width = 180;
+            content.Width = 720;
 
             var text = new TextBox();
             text.Height = 60;
