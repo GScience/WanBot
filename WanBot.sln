@@ -17,6 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot", "WanBot\WanBot.csp
 		{9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9} = {9EAEFE5E-AE11-496F-BCA9-55F8DAC3B8A9}
 		{BF76D3A6-D448-4364-BF2B-4BC8DB6C333B} = {BF76D3A6-D448-4364-BF2B-4BC8DB6C333B}
 		{CD4BDCDA-4218-450C-80F3-C83D19E77D3F} = {CD4BDCDA-4218-450C-80F3-C83D19E77D3F}
+		{E8D1E11D-89FD-4CED-BBCD-2D32A86CFAFA} = {E8D1E11D-89FD-4CED-BBCD-2D32A86CFAFA}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Api", "WanBot.Api\WanBot.Api.csproj", "{8362D4AF-1295-4AE4-A3B7-17E11429940E}"
@@ -51,7 +52,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.LuaScript", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.JavaScript", "WanBot.Plugin.JavaScript\WanBot.Plugin.JavaScript.csproj", "{BF76D3A6-D448-4364-BF2B-4BC8DB6C333B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.AI", "WanBot.Plugin.AI\WanBot.Plugin.AI.csproj", "{753C92E2-2881-4722-81DE-7CECD67DD9FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WanBot.Plugin.AI", "WanBot.Plugin.AI\WanBot.Plugin.AI.csproj", "{753C92E2-2881-4722-81DE-7CECD67DD9FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Plugin.Kemono", "WanBot.Plugin.Kemono\WanBot.Plugin.Kemono.csproj", "{E8D1E11D-89FD-4CED-BBCD-2D32A86CFAFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +134,10 @@ Global
 		{753C92E2-2881-4722-81DE-7CECD67DD9FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{753C92E2-2881-4722-81DE-7CECD67DD9FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{753C92E2-2881-4722-81DE-7CECD67DD9FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8D1E11D-89FD-4CED-BBCD-2D32A86CFAFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8D1E11D-89FD-4CED-BBCD-2D32A86CFAFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8D1E11D-89FD-4CED-BBCD-2D32A86CFAFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8D1E11D-89FD-4CED-BBCD-2D32A86CFAFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
