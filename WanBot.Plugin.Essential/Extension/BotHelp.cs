@@ -53,7 +53,7 @@ namespace WanBot.Plugin.Essential.Extension
         public SKImage GetHelpImage(UIRenderer renderer)
         {
             if (_helpCache == null)
-                _helpCache = GenHelp(renderer, 1000, 300, 3);
+                _helpCache = GenHelp(renderer, 1000, 1000, 3);
             return _helpCache;
         }
 
