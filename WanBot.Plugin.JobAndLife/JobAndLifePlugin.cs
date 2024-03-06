@@ -150,6 +150,8 @@ namespace WanBot.Plugin.JobAndLife
             else
             {
                 var currentLevel = _withdrawalCount / 5;
+                var currentPercent = (float)_withdrawalCount / _withdrawalLevel.Length / 5;
+                var mappedPercent = Math.Min(0.99, 1 - (1 - currentPercent) * (1 - currentPercent));
                 ++_withdrawalCount;
                 var newLevel = _withdrawalCount / 5;
                 if (newLevel >= _withdrawalLevel.Length)
@@ -160,7 +162,7 @@ namespace WanBot.Plugin.JobAndLife
                     BigInteger money = 0;
                     using (var usr = _attrUsr.FromSender(args.Sender)) money = usr.Money;
                     await args.Sender.ReplyAsync(
-                        $"当前已收集{_withdrawalCount % 5}/5个\"{_withdrawalLevel[currentLevel]}\"加油，马上就能拿{money}！");
+                        $"当前已收集{_withdrawalCount % 5}/5个\"{_withdrawalLevel[currentLevel]}\"加油，距离拿到{money}已经到达{mappedPercent*100:0.00}%！");
                 }
                 else
                     await args.Sender.ReplyAsync(
