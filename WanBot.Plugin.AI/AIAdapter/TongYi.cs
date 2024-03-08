@@ -55,6 +55,8 @@ namespace WanBot.Plugin.AI.AIAdapter
             var content = JsonContent.Create(postPayload, options : _serializerOptions);
             var response = await _httpClient.PostAsync(TongYiUrl, content);
             var responsePayload = await response.Content.ReadFromJsonAsync<TongYiHttpResponse>(_serializerOptions);
+            if (!string.IsNullOrEmpty(responsePayload.Code) || !string.IsNullOrEmpty(responsePayload.Message))
+                return $"八嘎！本完犊子又{responsePayload.Message}啦。";
             return responsePayload.Output.Text;
         }
     }
@@ -81,5 +83,6 @@ namespace WanBot.Plugin.AI.AIAdapter
 
     internal record struct TongYiHttpResponse(
         string Code,
+        string Message,
         TongYiHttpResponseOutput Output);
 }
