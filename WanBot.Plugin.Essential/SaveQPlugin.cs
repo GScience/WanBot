@@ -147,6 +147,7 @@ namespace WanBot.Plugin.Essential
         {
             try
             {
+                if (msg == null) return "";
                 msg = _wordSearch.Replace(msg, '*');
                 return msg;
             }
