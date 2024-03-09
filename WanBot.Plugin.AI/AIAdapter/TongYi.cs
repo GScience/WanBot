@@ -41,7 +41,10 @@ namespace WanBot.Plugin.AI.AIAdapter
             {
                 var role = chat.IsBotMessage ? "assistant" : "user";
                 var chatContent = chat.Content.Length >= 100 ? chat.Content[..100] : chat.Content;
-                tongYiChats.Add(new(role, chatContent));
+                if (tongYiChats[^1].Role == role)
+                    tongYiChats[^1] = new(tongYiChats[^1].Content + "\n" + chatContent, role);
+                else
+                    tongYiChats.Add(new(role, chatContent));
             }
             var postPayload = new TongYiHttpPost(
                 _model,
