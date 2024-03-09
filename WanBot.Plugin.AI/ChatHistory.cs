@@ -21,7 +21,6 @@ namespace WanBot.Plugin.AI
             }
             lock (chatHistory.Chats)
             {
-                if (chatStr.Length > 50) chatStr = chatStr[..50];
                 chatHistory.Chats.Add(new(chatStr, isBot));
                 if (chatHistory.Chats.Count > 15)
                     chatHistory.Chats.RemoveAt(0);

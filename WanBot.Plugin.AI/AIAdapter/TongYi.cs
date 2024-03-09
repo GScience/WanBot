@@ -55,8 +55,12 @@ namespace WanBot.Plugin.AI.AIAdapter
             var content = JsonContent.Create(postPayload, options : _serializerOptions);
             var response = await _httpClient.PostAsync(TongYiUrl, content);
             var responsePayload = await response.Content.ReadFromJsonAsync<TongYiHttpResponse>(_serializerOptions);
-            if (!string.IsNullOrEmpty(responsePayload.Code) || !string.IsNullOrEmpty(responsePayload.Message))
-                return $"八嘎！本完犊子又{responsePayload.Message}啦。";
+            if (string.IsNullOrEmpty(responsePayload.Output.Text))
+            {
+                if (!string.IsNullOrEmpty(responsePayload.Message))
+                    return $"八嘎！本完犊子又{responsePayload.Message}啦。";
+                return "出现了奇怪的错误";
+            }
             return responsePayload.Output.Text;
         }
     }
