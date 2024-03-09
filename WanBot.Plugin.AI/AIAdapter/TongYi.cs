@@ -42,7 +42,7 @@ namespace WanBot.Plugin.AI.AIAdapter
                 var role = chat.IsBotMessage ? "assistant" : "user";
                 var chatContent = chat.Content.Length >= 100 ? chat.Content[..100] : chat.Content;
                 if (tongYiChats[^1].Role == role)
-                    tongYiChats[^1] = new(tongYiChats[^1].Content + "\n" + chatContent, role);
+                    tongYiChats[^1] = new(role, tongYiChats[^1].Content + "\n" + chatContent);
                 else
                     tongYiChats.Add(new(role, chatContent));
             }
