@@ -251,8 +251,8 @@ namespace WanBot.Plugin.WanCoin
                     GetCurrentPrice(serverUser.CoinCount - 1);
 
                 await args.Sender.ReplyAsync(
-                    $"您有 {user.CoinCount} 枚虚犊新币\n" +
-                    $"当前币价：卖({sellPrice}) 买({buyPrice?.ToString() ?? "没币了"})", args.GetMessageId());
+                    $"您有 {user.CoinCount:N} 枚虚犊新币\n" +
+                    $"当前币价：卖({sellPrice:N}) 买({buyPrice?.ToString("N") ?? "没币了"})", args.GetMessageId());
             }
         }
 
@@ -321,7 +321,7 @@ namespace WanBot.Plugin.WanCoin
             var serverUser = GetWanCoinUser(wanCoinDb, ServerQQId);
 
             if (serverUser.CoinCount < buyCount)
-                await args.Sender.ReplyAsync($"完犊子了，服务器的币只有{serverUser.CoinCount}了", args.GetMessageId());
+                await args.Sender.ReplyAsync($"完犊子了，服务器的币只有{serverUser.CoinCount:N}了", args.GetMessageId());
             else
             {
                 // 记录是否购买成功
@@ -408,7 +408,7 @@ namespace WanBot.Plugin.WanCoin
             var user = GetWanCoinUser(wanCoinDb, args.Sender.Id);
 
             if (user.CoinCount < sellCount)
-                await args.Sender.ReplyAsync($"完犊子了，你的币只有{user.CoinCount}了");
+                await args.Sender.ReplyAsync($"完犊子了，你的币只有{user.CoinCount:N}了");
             else
             {
                 BigInteger totalSellPrice = 0;
@@ -443,7 +443,7 @@ namespace WanBot.Plugin.WanCoin
 
                     wanCoinDb.SaveChanges();
                 }
-                await args.Sender.ReplyAsync($"你卖了{sellCount}枚虚犊币，赚了{totalSellPrice}钱！均价{totalSellPrice / sellCount}", args.GetMessageId());
+                await args.Sender.ReplyAsync($"你卖了{sellCount:N}枚虚犊币，赚了{totalSellPrice:N}钱！均价{(totalSellPrice / sellCount):N}", args.GetMessageId());
             }
 
             return true;
