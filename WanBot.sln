@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Agent.QQLagrange", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot", "WanBot\WanBot.csproj", "{BD419EBE-72FF-4551-9EF2-2FBAE92F7FA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanBot.Api", "WanBot.Api\WanBot.Api.csproj", "{97EBEA1D-0D87-4014-B97E-C689643E40B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{BD419EBE-72FF-4551-9EF2-2FBAE92F7FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD419EBE-72FF-4551-9EF2-2FBAE92F7FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD419EBE-72FF-4551-9EF2-2FBAE92F7FA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97EBEA1D-0D87-4014-B97E-C689643E40B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97EBEA1D-0D87-4014-B97E-C689643E40B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97EBEA1D-0D87-4014-B97E-C689643E40B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97EBEA1D-0D87-4014-B97E-C689643E40B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

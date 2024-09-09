@@ -26,7 +26,8 @@ message MessageBlock {
 		string nickname = 2;
 	}
 	message ImageMessageBlock {
-		string image_url = 1;
+		optional string image_url = 1;
+		optional bytes image_data = 2;
 	}
 	message FaceMessageBlock {
 		uint32 face_id = 1;
