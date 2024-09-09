@@ -1,0 +1,61 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+enum Agent {
+	unknown = 0;
+	qq = 1;
+	wechat = 2;
+}
+
+message Group {
+	Agent agent = 1;
+	uint32 id = 2;
+}
+message User {
+	Agent agent = 1;
+	uint32 id = 2;
+	optional Group group = 3;
+}
+// message block
+message MessageBlock {
+	message TextMessageBlock {
+		string text = 1;
+	}
+	message MentionMessageBlock {
+		User user = 1;
+		string nickname = 2;
+	}
+	message ImageMessageBlock {
+		string image_url = 1;
+	}
+	message FaceMessageBlock {
+		uint32 face_id = 1;
+	}
+	message ForwardMessageBlock {
+		ChatMessage msg = 1;
+	}
+	message MultiForwardMessageBlock {
+		repeated ChatMessage msgs = 2;
+	}
+	message AdvanceMessageBlock {
+		uint32 message_type = 1;
+		string advance_message = 2;
+	}
+	oneof result {
+		TextMessageBlock text = 1;
+		MentionMessageBlock mention = 2;
+		ImageMessageBlock image = 3;
+		FaceMessageBlock face = 4;
+		ForwardMessageBlock forward = 5;
+		MultiForwardMessageBlock multi_forward = 6;
+
+		AdvanceMessageBlock advance = 99;
+	}
+}
+
+message ChatMessage {
+	uint64 msg_id = 1;
+	google.protobuf.Timestamp timestamp = 2;
+	User sender = 3;
+	repeated MessageBlock chain = 4;
+}

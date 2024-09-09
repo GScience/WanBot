@@ -1,0 +1,19 @@
+syntax = "proto3";
+import "Protos/ChatMessage.proto";
+
+service WanBotAgent {
+  rpc GetVersion (GetVersionRequest) returns (GetVersionReply);
+  rpc PostChatMessage (PostChatMessageRequest) returns (PostChatMessageReply);
+}
+
+message GetVersionRequest {
+}
+message GetVersionReply {
+  string version = 1;
+}
+
+message PostChatMessageRequest {
+	ChatMessage chatMessage = 1;
+}
+message PostChatMessageReply {
+}
