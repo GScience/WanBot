@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "WanBot": {
-      "commandName": "Project",
-      "commandLineArgs": "-config \"$(SolutionDir)Bin/Config/\" -plugin \"$(SolutionDir)Bin/Plugin/$(Configuration)/$(TargetFramework)\""
-    }
-  }
-}
