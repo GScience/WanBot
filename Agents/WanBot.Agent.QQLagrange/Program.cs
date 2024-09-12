@@ -1,22 +1,31 @@
-﻿using Grpc.Net.Client;
+﻿using Grpc.Core;
+using Grpc.Net.Client;
+using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using System.Security.Claims;
 using WanBot.Agent;
+using WanBot.Agent.gRPC;
+
 
 var channel = GrpcChannel.ForAddress("http://localhost:5000");
 var chatClient = new ChatAgentClient(channel);
+
 var version = chatClient.GetVersion(new GetVersionRequest());
-var post = new PostChatMessageRequest
-{
-    ChatMessage = new ChatMessage
-    {
-    }
-};
-post.ChatMessage.Chain.Add([
+ChatMessage msg = new();
+msg.Chain.Add([
     new MessageBlock { Text = new MessageBlock.Types.TextMessageBlock { Text = "Hello World" } },
     new MessageBlock { Mention = new MessageBlock.Types.MentionMessageBlock { Nickname = "123" } },
     new MessageBlock { Advance = new MessageBlock.Types.AdvanceMessageBlock { AdvanceMessage = "Message1111111111111111111111111" } },
 ]);
+
 int count = 0;
 var time = DateTime.Now;
+var token = "DEFAULT_TOKEN";
+var sessionId = await chatClient.LoginAsync(Agent.Qq, 12345, token);
+
+var metadata = new Metadata();
+metadata.Add("Authorization", $"Bearer {sessionId.AccessToken}");
+var s = chatClient.CreateChatStream(metadata);
 while (true)
 {
     var now = DateTime.Now;
@@ -29,7 +38,7 @@ while (true)
     ++count;
     try
     {
-        chatClient.PostChatMessage(post);
+        s.RequestStream.WriteAsync(new ToHostMessage { ChatMessage = msg }).Wait();
     }
     catch (Exception ex)
     {

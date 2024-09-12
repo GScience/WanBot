@@ -4,18 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WanBot;
-using WanBot.Agent;
+using WanBot.Agent.gRPC;
+using WanBot.Agent.Server;
 
 namespace WanBot
 {
-    internal class WanBot
+    internal class WanBot : ChatHost
     {
-        private ChatAgentService _chatAgentService = new();
-
-        public void Run(string[] args)
-        {
-            _chatAgentService.Run(args);
-        }
         static void Main(string[] args)
         {
             new WanBot().Run(args);

@@ -3,7 +3,7 @@ import "Protos/ChatMessage.proto";
 
 service WanBotAgent {
   rpc GetVersion (GetVersionRequest) returns (GetVersionReply);
-  rpc PostChatMessage (PostChatMessageRequest) returns (PostChatMessageReply);
+  rpc CreateChatStream (stream ToHostMessage) returns (stream ToClientMessage);
 }
 
 message GetVersionRequest {
@@ -12,8 +12,11 @@ message GetVersionReply {
   string version = 1;
 }
 
-message PostChatMessageRequest {
-	ChatMessage chatMessage = 1;
+message ToHostMessage {
+	string session = 1;
+	ChatMessage chatMessage = 2;
 }
-message PostChatMessageReply {
+message ToClientMessage {
+	string session = 1;
+	ChatMessage chatMessage = 2;
 }
