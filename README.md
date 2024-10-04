@@ -1,4 +1,5 @@
 # WanBot
+MOVE TO [ProjectWanBot/WanBot](https://github.com/ProjectWanBot/WanBot)
 An open source chatbot framework by c# for QQ based on mirai. Provide a plugin support. 
 ## Plugin list
 1. WanBot.Plugin.Core
